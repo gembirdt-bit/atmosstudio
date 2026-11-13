@@ -267,7 +267,7 @@ body.demo [data-act=export],body.demo [data-act=import],body.demo [data-act=snap
 <script>
 'use strict';
 if(window.ATMOS_BLOCKED)throw new Error('Atmos Studio: otvori Android ili Windows aplikaciju');
-const VER='1.2.0';
+const VER='1.2.1';
 let authState='locked'; /* locked = mora prijava; ok = licenca važi; expired = samo pregled; demo = probna verzija */
 let RO=true;
 const $=id=>document.getElementById(id);
@@ -863,9 +863,9 @@ function supportCard(){
   return`<div class="supCard"><span class="muted">🛟 Tehnička podrška</span><a href="${esc(l.wa)}" target="_blank" rel="noopener">💬 WhatsApp ${SUPPORT_TEL}</a><a href="${esc(l.ml)}">✉️ ${SUPPORT_MAIL}</a></div>`;
 }
 /* ---------- DEMO (probna verzija) ----------
-   7 dana na ovom uređaju, najviše DEMO_MAX klijenata, bez izvoza / uvoza / kopija / Google Drive-a.
+   30 dana na ovom uređaju, najviše DEMO_MAX klijenata, bez izvoza / uvoza / kopija / Google Drive-a.
    Posle prijave licencom podaci iz demo verzije ostaju. */
-const DEMO_KEY='atmosStudioDemo1',DEMO_DAYS=7,DEMO_MAX=3,DEMO_WHAT='klijenta';
+const DEMO_KEY='atmosStudioDemo1',DEMO_DAYS=30,DEMO_MAX=3,DEMO_WHAT='klijenta';
 const DEMO_LIMIT_MSG='🎁 Demo verzija: najviše '+DEMO_MAX+' '+DEMO_WHAT+'. Aktiviraj aplikaciju za neograničen rad.';
 const demoCount=()=>db.clients.length;
 function demoRec(){try{const d=JSON.parse(localStorage.getItem(DEMO_KEY));return d&&d.t?d:null}catch{return null}}
