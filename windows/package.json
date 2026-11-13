@@ -2,7 +2,7 @@
   "name": "atmos-studio",
   "productName": "Atmos Studio",
   "version": "1.0.0",
-  "description": "Atmos Studio — zakazivanje termina, klijenti, usluge i računi za salone",
+  "description": "Atmos Studio — zakazivanje termina, klijenti, usluge i paketi za salone",
   "author": "Gemb-Bit Željko Ilić",
   "license": "UNLICENSED",
   "private": true,

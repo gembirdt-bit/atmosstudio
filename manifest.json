@@ -1,8 +1,8 @@
 {
  "id": "./",
- "name": "Atmos Studio — zakazivanje i računi",
+ "name": "Atmos Studio — zakazivanje termina",
  "short_name": "Atmos Studio",
- "description": "Zakazivanje termina, klijenti, usluge i računi za salone, frizere, kozmetičare i masere",
+ "description": "Zakazivanje termina, klijenti, usluge i paketi za salone, frizere, kozmetičare i masere",
  "lang": "sr",
  "start_url": "./index.html",
  "scope": "./",
@@ -45,8 +45,8 @@
    "url": "./index.html?tab=kalendar"
   },
   {
-   "name": "Računi",
-   "url": "./index.html?tab=racuni"
+   "name": "Paketi",
+   "url": "./index.html?tab=paketi"
   }
  ]
 }

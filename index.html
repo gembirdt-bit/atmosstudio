@@ -190,6 +190,10 @@ body{max-width:100vw;overflow-x:clip;touch-action:pan-y pinch-zoom}
 .appt:hover{filter:brightness(1.12)}
 .irow{grid-template-columns:70px 84px minmax(0,1fr) auto}
 @media(max-width:560px){.ccol{min-width:130px}}
+.demoBar{background:rgba(219,39,119,.12);border:1px solid rgba(219,39,119,.45);border-radius:12px;padding:8px 12px;margin-bottom:12px;font-size:.85rem;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+body.demo [data-act=export],body.demo [data-act=import],body.demo [data-act=snaprest],body.demo [data-act=gdconnect],body.demo [data-act=gdsync],body.demo [data-act=csvappt],body.demo [data-act=csvcli],body.demo [data-act=repprint],body.demo [data-act=docshare],body.demo [data-act=print]{opacity:.4;filter:grayscale(1);cursor:not-allowed}
+.seg.wrap{flex-wrap:wrap}
+#nav [hidden],[hidden].admtab{display:none!important}
 </style>
 </head>
 <body>
@@ -201,7 +205,7 @@ body{max-width:100vw;overflow-x:clip;touch-action:pan-y pinch-zoom}
   <button data-tab="pregled"><span>🏠</span>Pregled</button>
   <button data-tab="kalendar"><span>📅</span>Kalendar</button>
   <button data-tab="klijenti"><span>👥</span>Klijenti</button>
-  <button data-tab="racuni"><span>🧾</span>Računi</button>
+  <button data-tab="paketi"><span>📦</span>Paketi</button>
   <button data-tab="usluge" class="sec"><span>✂️</span>Usluge</button>
   <button data-tab="zaposleni" class="sec"><span>💇</span>Zaposleni</button>
   <button data-tab="izvestaji" class="sec"><span>📊</span>Izveštaji</button>
@@ -211,7 +215,7 @@ body{max-width:100vw;overflow-x:clip;touch-action:pan-y pinch-zoom}
 </nav>
 <dialog id="dlg"><div class="dlg" id="dlgBody"></div></dialog>
 <dialog id="authDlg"><div class="dlg" id="authBody"></div></dialog>
-<div id="docView" hidden><div class="dtool"><button class="btn-p" data-act="print">🖨️ Štampaj</button><button class="btn-v" data-act="docshare">📤 Podeli PDF</button><button data-act="docmsg">💬 Poruka klijentu</button><button data-act="docclose">✕ Zatvori</button></div><div class="doc" id="docBody"></div></div>
+<div id="docView" hidden><div class="dtool"><button class="btn-p" data-act="print">🖨️ Štampaj</button><button class="btn-v" data-act="docshare">📤 Podeli PDF</button><button data-act="docclose">✕ Zatvori</button></div><div class="doc" id="docBody"></div></div>
 <div class="upd" id="updBar" hidden><span class="grow">🔄 Dostupna je nova verzija aplikacije.</span><button data-act="updnow">Osveži</button></div>
 <div class="toast" id="toast"></div>
 <datalist id="cliList"></datalist><datalist id="catList"></datalist>
@@ -259,14 +263,10 @@ body{max-width:100vw;overflow-x:clip;touch-action:pan-y pinch-zoom}
 })();
 </script>
 <script>
-/* QR kod — QRCode for JavaScript (c) 2009 Kazuhiko Arase, MIT licenca; izmena: UTF-8. Izvor: tools/qr/ (npm run: esbuild tools/qr/entry.js --bundle --minify) */
-(()=>{var m=(t,e)=>()=>{try{return e||t((e={exports:{}}).exports,e),e.exports}catch(i){throw e=0,i}};var k=m((mt,G)=>{G.exports={MODE_NUMBER:1,MODE_ALPHA_NUM:2,MODE_8BIT_BYTE:4,MODE_KANJI:8}});var X=m((Et,U)=>{var st=k();function K(t){this.mode=st.MODE_8BIT_BYTE,this.bytes=Array.from(new TextEncoder().encode(t))}K.prototype={getLength:function(){return this.bytes.length},write:function(t){for(var e=0;e<this.bytes.length;e++)t.put(this.bytes[e],8)}};U.exports=K});var N=m((dt,x)=>{var v={glog:function(t){if(t<1)throw new Error("glog("+t+")");return v.LOG_TABLE[t]},gexp:function(t){for(;t<0;)t+=255;for(;t>=256;)t-=255;return v.EXP_TABLE[t]},EXP_TABLE:new Array(256),LOG_TABLE:new Array(256)};for(h=0;h<8;h++)v.EXP_TABLE[h]=1<<h;var h;for(h=8;h<256;h++)v.EXP_TABLE[h]=v.EXP_TABLE[h-4]^v.EXP_TABLE[h-5]^v.EXP_TABLE[h-6]^v.EXP_TABLE[h-8];var h;for(h=0;h<255;h++)v.LOG_TABLE[v.EXP_TABLE[h]]=h;var h;x.exports=v});var I=m((Tt,Y)=>{var p=N();function _(t,e){if(t.length===void 0)throw new Error(t.length+"/"+e);for(var i=0;i<t.length&&t[i]===0;)i++;this.num=new Array(t.length-i+e);for(var r=0;r<t.length-i;r++)this.num[r]=t[r+i]}_.prototype={get:function(t){return this.num[t]},getLength:function(){return this.num.length},multiply:function(t){for(var e=new Array(this.getLength()+t.getLength()-1),i=0;i<this.getLength();i++)for(var r=0;r<t.getLength();r++)e[i+r]^=p.gexp(p.glog(this.get(i))+p.glog(t.get(r)));return new _(e,0)},mod:function(t){if(this.getLength()-t.getLength()<0)return this;for(var e=p.glog(this.get(0))-p.glog(t.get(0)),i=new Array(this.getLength()),r=0;r<this.getLength();r++)i[r]=this.get(r);for(var n=0;n<t.getLength();n++)i[n]^=p.gexp(p.glog(t.get(n))+e);return new _(i,0).mod(t)}};Y.exports=_});var F=m((Bt,J)=>{J.exports={PATTERN000:0,PATTERN001:1,PATTERN010:2,PATTERN011:3,PATTERN100:4,PATTERN101:5,PATTERN110:6,PATTERN111:7}});var Z=m((Lt,W)=>{var g=k(),V=I(),ut=N(),T=F(),f={PATTERN_POSITION_TABLE:[[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50],[6,30,54],[6,32,58],[6,34,62],[6,26,46,66],[6,26,48,70],[6,26,50,74],[6,30,54,78],[6,30,56,82],[6,30,58,86],[6,34,62,90],[6,28,50,72,94],[6,26,50,74,98],[6,30,54,78,102],[6,28,54,80,106],[6,32,58,84,110],[6,30,58,86,114],[6,34,62,90,118],[6,26,50,74,98,122],[6,30,54,78,102,126],[6,26,52,78,104,130],[6,30,56,82,108,134],[6,34,60,86,112,138],[6,30,58,86,114,142],[6,34,62,90,118,146],[6,30,54,78,102,126,150],[6,24,50,76,102,128,154],[6,28,54,80,106,132,158],[6,32,58,84,110,136,162],[6,26,54,82,110,138,166],[6,30,58,86,114,142,170]],G15:1335,G18:7973,G15_MASK:21522,getBCHTypeInfo:function(t){for(var e=t<<10;f.getBCHDigit(e)-f.getBCHDigit(f.G15)>=0;)e^=f.G15<<f.getBCHDigit(e)-f.getBCHDigit(f.G15);return(t<<10|e)^f.G15_MASK},getBCHTypeNumber:function(t){for(var e=t<<12;f.getBCHDigit(e)-f.getBCHDigit(f.G18)>=0;)e^=f.G18<<f.getBCHDigit(e)-f.getBCHDigit(f.G18);return t<<12|e},getBCHDigit:function(t){for(var e=0;t!==0;)e++,t>>>=1;return e},getPatternPosition:function(t){return f.PATTERN_POSITION_TABLE[t-1]},getMask:function(t,e,i){switch(t){case T.PATTERN000:return(e+i)%2===0;case T.PATTERN001:return e%2===0;case T.PATTERN010:return i%3===0;case T.PATTERN011:return(e+i)%3===0;case T.PATTERN100:return(Math.floor(e/2)+Math.floor(i/3))%2===0;case T.PATTERN101:return e*i%2+e*i%3===0;case T.PATTERN110:return(e*i%2+e*i%3)%2===0;case T.PATTERN111:return(e*i%3+(e+i)%2)%2===0;default:throw new Error("bad maskPattern:"+t)}},getErrorCorrectPolynomial:function(t){for(var e=new V([1],0),i=0;i<t;i++)e=e.multiply(new V([1,ut.gexp(i)],0));return e},getLengthInBits:function(t,e){if(1<=e&&e<10)switch(t){case g.MODE_NUMBER:return 10;case g.MODE_ALPHA_NUM:return 9;case g.MODE_8BIT_BYTE:return 8;case g.MODE_KANJI:return 8;default:throw new Error("mode:"+t)}else if(e<27)switch(t){case g.MODE_NUMBER:return 12;case g.MODE_ALPHA_NUM:return 11;case g.MODE_8BIT_BYTE:return 16;case g.MODE_KANJI:return 10;default:throw new Error("mode:"+t)}else if(e<41)switch(t){case g.MODE_NUMBER:return 14;case g.MODE_ALPHA_NUM:return 13;case g.MODE_8BIT_BYTE:return 16;case g.MODE_KANJI:return 12;default:throw new Error("mode:"+t)}else throw new Error("type:"+e)},getLostPoint:function(t){var e=t.getModuleCount(),i=0,r=0,n=0;for(r=0;r<e;r++)for(n=0;n<e;n++){for(var a=0,o=t.isDark(r,n),s=-1;s<=1;s++)if(!(r+s<0||e<=r+s))for(var u=-1;u<=1;u++)n+u<0||e<=n+u||s===0&&u===0||o===t.isDark(r+s,n+u)&&a++;a>5&&(i+=3+a-5)}for(r=0;r<e-1;r++)for(n=0;n<e-1;n++){var l=0;t.isDark(r,n)&&l++,t.isDark(r+1,n)&&l++,t.isDark(r,n+1)&&l++,t.isDark(r+1,n+1)&&l++,(l===0||l===4)&&(i+=3)}for(r=0;r<e;r++)for(n=0;n<e-6;n++)t.isDark(r,n)&&!t.isDark(r,n+1)&&t.isDark(r,n+2)&&t.isDark(r,n+3)&&t.isDark(r,n+4)&&!t.isDark(r,n+5)&&t.isDark(r,n+6)&&(i+=40);for(n=0;n<e;n++)for(r=0;r<e-6;r++)t.isDark(r,n)&&!t.isDark(r+1,n)&&t.isDark(r+2,n)&&t.isDark(r+3,n)&&t.isDark(r+4,n)&&!t.isDark(r+5,n)&&t.isDark(r+6,n)&&(i+=40);var L=0;for(n=0;n<e;n++)for(r=0;r<e;r++)t.isDark(r,n)&&L++;var A=Math.abs(100*L/e/e-50)/5;return i+=A*10,i}};W.exports=f});var y=m((pt,$)=>{$.exports={L:1,M:0,Q:3,H:2}});var q=m((At,z)=>{var c=y();function E(t,e){this.totalCount=t,this.dataCount=e}E.RS_BLOCK_TABLE=[[1,26,19],[1,26,16],[1,26,13],[1,26,9],[1,44,34],[1,44,28],[1,44,22],[1,44,16],[1,70,55],[1,70,44],[2,35,17],[2,35,13],[1,100,80],[2,50,32],[2,50,24],[4,25,9],[1,134,108],[2,67,43],[2,33,15,2,34,16],[2,33,11,2,34,12],[2,86,68],[4,43,27],[4,43,19],[4,43,15],[2,98,78],[4,49,31],[2,32,14,4,33,15],[4,39,13,1,40,14],[2,121,97],[2,60,38,2,61,39],[4,40,18,2,41,19],[4,40,14,2,41,15],[2,146,116],[3,58,36,2,59,37],[4,36,16,4,37,17],[4,36,12,4,37,13],[2,86,68,2,87,69],[4,69,43,1,70,44],[6,43,19,2,44,20],[6,43,15,2,44,16],[4,101,81],[1,80,50,4,81,51],[4,50,22,4,51,23],[3,36,12,8,37,13],[2,116,92,2,117,93],[6,58,36,2,59,37],[4,46,20,6,47,21],[7,42,14,4,43,15],[4,133,107],[8,59,37,1,60,38],[8,44,20,4,45,21],[12,33,11,4,34,12],[3,145,115,1,146,116],[4,64,40,5,65,41],[11,36,16,5,37,17],[11,36,12,5,37,13],[5,109,87,1,110,88],[5,65,41,5,66,42],[5,54,24,7,55,25],[11,36,12],[5,122,98,1,123,99],[7,73,45,3,74,46],[15,43,19,2,44,20],[3,45,15,13,46,16],[1,135,107,5,136,108],[10,74,46,1,75,47],[1,50,22,15,51,23],[2,42,14,17,43,15],[5,150,120,1,151,121],[9,69,43,4,70,44],[17,50,22,1,51,23],[2,42,14,19,43,15],[3,141,113,4,142,114],[3,70,44,11,71,45],[17,47,21,4,48,22],[9,39,13,16,40,14],[3,135,107,5,136,108],[3,67,41,13,68,42],[15,54,24,5,55,25],[15,43,15,10,44,16],[4,144,116,4,145,117],[17,68,42],[17,50,22,6,51,23],[19,46,16,6,47,17],[2,139,111,7,140,112],[17,74,46],[7,54,24,16,55,25],[34,37,13],[4,151,121,5,152,122],[4,75,47,14,76,48],[11,54,24,14,55,25],[16,45,15,14,46,16],[6,147,117,4,148,118],[6,73,45,14,74,46],[11,54,24,16,55,25],[30,46,16,2,47,17],[8,132,106,4,133,107],[8,75,47,13,76,48],[7,54,24,22,55,25],[22,45,15,13,46,16],[10,142,114,2,143,115],[19,74,46,4,75,47],[28,50,22,6,51,23],[33,46,16,4,47,17],[8,152,122,4,153,123],[22,73,45,3,74,46],[8,53,23,26,54,24],[12,45,15,28,46,16],[3,147,117,10,148,118],[3,73,45,23,74,46],[4,54,24,31,55,25],[11,45,15,31,46,16],[7,146,116,7,147,117],[21,73,45,7,74,46],[1,53,23,37,54,24],[19,45,15,26,46,16],[5,145,115,10,146,116],[19,75,47,10,76,48],[15,54,24,25,55,25],[23,45,15,25,46,16],[13,145,115,3,146,116],[2,74,46,29,75,47],[42,54,24,1,55,25],[23,45,15,28,46,16],[17,145,115],[10,74,46,23,75,47],[10,54,24,35,55,25],[19,45,15,35,46,16],[17,145,115,1,146,116],[14,74,46,21,75,47],[29,54,24,19,55,25],[11,45,15,46,46,16],[13,145,115,6,146,116],[14,74,46,23,75,47],[44,54,24,7,55,25],[59,46,16,1,47,17],[12,151,121,7,152,122],[12,75,47,26,76,48],[39,54,24,14,55,25],[22,45,15,41,46,16],[6,151,121,14,152,122],[6,75,47,34,76,48],[46,54,24,10,55,25],[2,45,15,64,46,16],[17,152,122,4,153,123],[29,74,46,14,75,47],[49,54,24,10,55,25],[24,45,15,46,46,16],[4,152,122,18,153,123],[13,74,46,32,75,47],[48,54,24,14,55,25],[42,45,15,32,46,16],[20,147,117,4,148,118],[40,75,47,7,76,48],[43,54,24,22,55,25],[10,45,15,67,46,16],[19,148,118,6,149,119],[18,75,47,31,76,48],[34,54,24,34,55,25],[20,45,15,61,46,16]];E.getRSBlocks=function(t,e){var i=E.getRsBlockTable(t,e);if(i===void 0)throw new Error("bad rs block @ typeNumber:"+t+"/errorCorrectLevel:"+e);for(var r=i.length/3,n=[],a=0;a<r;a++)for(var o=i[a*3+0],s=i[a*3+1],u=i[a*3+2],l=0;l<o;l++)n.push(new E(s,u));return n};E.getRsBlockTable=function(t,e){switch(e){case c.L:return E.RS_BLOCK_TABLE[(t-1)*4+0];case c.M:return E.RS_BLOCK_TABLE[(t-1)*4+1];case c.Q:return E.RS_BLOCK_TABLE[(t-1)*4+2];case c.H:return E.RS_BLOCK_TABLE[(t-1)*4+3];default:return}};z.exports=E});var et=m((Pt,tt)=>{function j(){this.buffer=[],this.length=0}j.prototype={get:function(t){var e=Math.floor(t/8);return(this.buffer[e]>>>7-t%8&1)==1},put:function(t,e){for(var i=0;i<e;i++)this.putBit((t>>>e-i-1&1)==1)},getLengthInBits:function(){return this.length},putBit:function(t){var e=Math.floor(this.length/8);this.buffer.length<=e&&this.buffer.push(0),t&&(this.buffer[e]|=128>>>this.length%8),this.length++}};tt.exports=j});var at=m((Dt,it)=>{var ht=X(),B=Z(),ft=I(),rt=q(),nt=et();function d(t,e){this.typeNumber=t,this.errorCorrectLevel=e,this.modules=null,this.moduleCount=0,this.dataCache=null,this.dataList=[]}d.prototype={addData:function(t){var e=new ht(t);this.dataList.push(e),this.dataCache=null},isDark:function(t,e){if(t<0||this.moduleCount<=t||e<0||this.moduleCount<=e)throw new Error(t+","+e);return this.modules[t][e]},getModuleCount:function(){return this.moduleCount},make:function(){if(this.typeNumber<1){var t=1;for(t=1;t<40;t++){for(var e=rt.getRSBlocks(t,this.errorCorrectLevel),i=new nt,r=0,n=0;n<e.length;n++)r+=e[n].dataCount;for(var a=0;a<this.dataList.length;a++){var o=this.dataList[a];i.put(o.mode,4),i.put(o.getLength(),B.getLengthInBits(o.mode,t)),o.write(i)}if(i.getLengthInBits()<=r*8)break}this.typeNumber=t}this.makeImpl(!1,this.getBestMaskPattern())},makeImpl:function(t,e){this.moduleCount=this.typeNumber*4+17,this.modules=new Array(this.moduleCount);for(var i=0;i<this.moduleCount;i++){this.modules[i]=new Array(this.moduleCount);for(var r=0;r<this.moduleCount;r++)this.modules[i][r]=null}this.setupPositionProbePattern(0,0),this.setupPositionProbePattern(this.moduleCount-7,0),this.setupPositionProbePattern(0,this.moduleCount-7),this.setupPositionAdjustPattern(),this.setupTimingPattern(),this.setupTypeInfo(t,e),this.typeNumber>=7&&this.setupTypeNumber(t),this.dataCache===null&&(this.dataCache=d.createData(this.typeNumber,this.errorCorrectLevel,this.dataList)),this.mapData(this.dataCache,e)},setupPositionProbePattern:function(t,e){for(var i=-1;i<=7;i++)if(!(t+i<=-1||this.moduleCount<=t+i))for(var r=-1;r<=7;r++)e+r<=-1||this.moduleCount<=e+r||(0<=i&&i<=6&&(r===0||r===6)||0<=r&&r<=6&&(i===0||i===6)||2<=i&&i<=4&&2<=r&&r<=4?this.modules[t+i][e+r]=!0:this.modules[t+i][e+r]=!1)},getBestMaskPattern:function(){for(var t=0,e=0,i=0;i<8;i++){this.makeImpl(!0,i);var r=B.getLostPoint(this);(i===0||t>r)&&(t=r,e=i)}return e},createMovieClip:function(t,e,i){var r=t.createEmptyMovieClip(e,i),n=1;this.make();for(var a=0;a<this.modules.length;a++)for(var o=a*n,s=0;s<this.modules[a].length;s++){var u=s*n,l=this.modules[a][s];l&&(r.beginFill(0,100),r.moveTo(u,o),r.lineTo(u+n,o),r.lineTo(u+n,o+n),r.lineTo(u,o+n),r.endFill())}return r},setupTimingPattern:function(){for(var t=8;t<this.moduleCount-8;t++)this.modules[t][6]===null&&(this.modules[t][6]=t%2===0);for(var e=8;e<this.moduleCount-8;e++)this.modules[6][e]===null&&(this.modules[6][e]=e%2===0)},setupPositionAdjustPattern:function(){for(var t=B.getPatternPosition(this.typeNumber),e=0;e<t.length;e++)for(var i=0;i<t.length;i++){var r=t[e],n=t[i];if(this.modules[r][n]===null)for(var a=-2;a<=2;a++)for(var o=-2;o<=2;o++)Math.abs(a)===2||Math.abs(o)===2||a===0&&o===0?this.modules[r+a][n+o]=!0:this.modules[r+a][n+o]=!1}},setupTypeNumber:function(t){for(var e=B.getBCHTypeNumber(this.typeNumber),i,r=0;r<18;r++)i=!t&&(e>>r&1)===1,this.modules[Math.floor(r/3)][r%3+this.moduleCount-8-3]=i;for(var n=0;n<18;n++)i=!t&&(e>>n&1)===1,this.modules[n%3+this.moduleCount-8-3][Math.floor(n/3)]=i},setupTypeInfo:function(t,e){for(var i=this.errorCorrectLevel<<3|e,r=B.getBCHTypeInfo(i),n,a=0;a<15;a++)n=!t&&(r>>a&1)===1,a<6?this.modules[a][8]=n:a<8?this.modules[a+1][8]=n:this.modules[this.moduleCount-15+a][8]=n;for(var o=0;o<15;o++)n=!t&&(r>>o&1)===1,o<8?this.modules[8][this.moduleCount-o-1]=n:o<9?this.modules[8][15-o-1+1]=n:this.modules[8][15-o-1]=n;this.modules[this.moduleCount-8][8]=!t},mapData:function(t,e){for(var i=-1,r=this.moduleCount-1,n=7,a=0,o=this.moduleCount-1;o>0;o-=2)for(o===6&&o--;;){for(var s=0;s<2;s++)if(this.modules[r][o-s]===null){var u=!1;a<t.length&&(u=(t[a]>>>n&1)===1);var l=B.getMask(e,r,o-s);l&&(u=!u),this.modules[r][o-s]=u,n--,n===-1&&(a++,n=7)}if(r+=i,r<0||this.moduleCount<=r){r-=i,i=-i;break}}}};d.PAD0=236;d.PAD1=17;d.createData=function(t,e,i){for(var r=rt.getRSBlocks(t,e),n=new nt,a=0;a<i.length;a++){var o=i[a];n.put(o.mode,4),n.put(o.getLength(),B.getLengthInBits(o.mode,t)),o.write(n)}for(var s=0,u=0;u<r.length;u++)s+=r[u].dataCount;if(n.getLengthInBits()>s*8)throw new Error("code length overflow. ("+n.getLengthInBits()+">"+s*8+")");for(n.getLengthInBits()+4<=s*8&&n.put(0,4);n.getLengthInBits()%8!==0;)n.putBit(!1);for(;!(n.getLengthInBits()>=s*8||(n.put(d.PAD0,8),n.getLengthInBits()>=s*8));)n.put(d.PAD1,8);return d.createBytes(n,r)};d.createBytes=function(t,e){for(var i=0,r=0,n=0,a=new Array(e.length),o=new Array(e.length),s=0;s<e.length;s++){var u=e[s].dataCount,l=e[s].totalCount-u;r=Math.max(r,u),n=Math.max(n,l),a[s]=new Array(u);for(var L=0;L<a[s].length;L++)a[s][L]=255&t.buffer[L+i];i+=u;var A=B.getErrorCorrectPolynomial(l),ot=new ft(a[s],A.getLength()-1),O=ot.mod(A);o[s]=new Array(A.getLength()-1);for(var P=0;P<o[s].length;P++){var Q=P+O.getLength()-o[s].length;o[s][P]=Q>=0?O.get(Q):0}}for(var H=0,C=0;C<e.length;C++)H+=e[C].totalCount;for(var b=new Array(H),S=0,D=0;D<r;D++)for(var w=0;w<e.length;w++)D<a[w].length&&(b[S++]=a[w][D]);for(var M=0;M<n;M++)for(var R=0;R<e.length;R++)M<o[R].length&&(b[S++]=o[R][M]);return b};it.exports=d});var lt=at(),gt=y();window.AtmosQR={matrix:function(t){var e=new lt(-1,gt.M);e.addData(t),e.make();for(var i=e.getModuleCount(),r=[],n=0;n<i;n++){r.push([]);for(var a=0;a<i;a++)r[n].push(e.isDark(n,a))}return r},svg:function(t,e){for(var i=this.matrix(t),r=i.length,n=4,a=r+n*2,o="",s=0;s<r;s++)for(var u=0;u<r;u++)i[s][u]&&(o+="M"+(u+n)+" "+(s+n)+"h1v1h-1z");return'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+a+" "+a+'" width="'+(e||132)+'" height="'+(e||132)+'" shape-rendering="crispEdges"><rect width="'+a+'" height="'+a+'" fill="#fff"/><path d="'+o+'" fill="#000"/></svg>'}};})();
-</script>
-<script>
 'use strict';
 if(window.ATMOS_BLOCKED)throw new Error('Atmos Studio: otvori Android ili Windows aplikaciju');
-const VER='1.0.0';
-let authState='locked'; /* locked = mora prijava; ok = licenca važi; expired = licenca istekla (samo pregled) */
+const VER='1.1.0';
+let authState='locked'; /* locked = mora prijava; ok = licenca važi; expired = samo pregled; demo = probna verzija */
 let RO=true;
 const $=id=>document.getElementById(id);
 const KEY='atmosStudio1';
@@ -281,9 +281,6 @@ const addD=(s,n)=>{const d=new Date(s+'T12:00:00');d.setDate(d.getDate()+n);retu
 const fmtDate=s=>{if(!s)return'—';const p=String(s).split('-');return p.length===3?`${p[2]}.${p[1]}.${p[0]}.`:s};
 const fmtN=(n,d)=>(Number(n)||0).toLocaleString('sr-RS',{maximumFractionDigits:d==null?0:d});
 const money=n=>{const r=Math.round(num(n)*100)/100;return r.toLocaleString('sr-RS',{minimumFractionDigits:Number.isInteger(r)?0:2,maximumFractionDigits:2})+' RSD'};
-/* broj za polje za unos: bez tačke za hiljade (1500 → „1500“, 1.5 → „1,5“) */
-const fIn=v=>v===''||v==null?'':String(Math.round(num(v)*100)/100).replace('.',',');
-const md=n=>(Math.round(num(n)*100)/100).toLocaleString('sr-RS',{minimumFractionDigits:2,maximumFractionDigits:2});
 const MSL=['Januar','Februar','Mart','April','Maj','Jun','Jul','Avgust','Septembar','Oktobar','Novembar','Decembar'];
 const DN=['Nedelja','Ponedeljak','Utorak','Sreda','Četvrtak','Petak','Subota'],DS=['Ned','Pon','Uto','Sre','Čet','Pet','Sub'];
 const tmin=t=>{const m=/^(\d{1,2}):(\d{2})/.exec(t||'');return m?(+m[1])*60+(+m[2]):0};
@@ -291,27 +288,27 @@ const mtime=m=>pad(Math.floor(m/60)%24)+':'+pad(m%60);
 const dLabel=s=>{const k=dayDiff(s);const d=new Date(s+'T12:00:00');return(k===0?'Danas':k===1?'Sutra':k===-1?'Juče':DN[d.getDay()])+', '+d.getDate()+'. '+MSL[d.getMonth()].toLowerCase()};
 const nName=s=>String(s||'').trim().toLowerCase().replace(/\s+/g,' ');
 const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'dj');
-/* statusi termina */
-const AST={zak:{l:'Zakazan',c:'#38bdf8',i:'📅'},dosao:{l:'Završen',c:'#34d399',i:'✅'},otk:{l:'Otkazan',c:'#94a3b8',i:'🚫'},nije:{l:'Nije došao',c:'#f87171',i:'❌'}};
-const PAY=['Gotovina','Kartica','Prenos na račun (IPS)','Ostalo'];
+/* statusi termina: zakazan → dolazi (potvrđen) / kasni → završen; otkazan, nije došao */
+const AST={zak:{l:'Zakazan',c:'#38bdf8',i:'📅'},potv:{l:'Dolazi',c:'#a78bfa',i:'👍'},kasni:{l:'Kasni',c:'#fb923c',i:'⏰'},dosao:{l:'Završen',c:'#34d399',i:'✅'},otk:{l:'Otkazan',c:'#94a3b8',i:'🚫'},nije:{l:'Nije došao',c:'#f87171',i:'❌'}};
+const OPEN=s=>s==='zak'||s==='potv'||s==='kasni';
 const SCOL=['#ec4899','#8b5cf6','#3b82f6','#14b8a6','#22c55e','#eab308','#f97316','#ef4444','#64748b','#a855f7'];
 
 /* ---------- PODACI ---------- */
-const DEF_REM='Poštovani {ime}, podsećamo Vas na termin {datum} u {vreme}h{usluge}. {salon}{telefon}';
-const DEF_INV='Poštovani {ime}, u prilogu je račun {broj} na iznos {iznos}. Hvala na poverenju! {salon}';
-const DEF_SET=()=>({theme:'dark',accent:'#db2777',fs:'m',shop:{name:'',addr:'',city:'',phone:'',email:'',pib:'',mb:'',acc:'',bank:''},pdvRate:0,pdvIncl:true,hourRate:0,
-  dayStart:'08:00',dayEnd:'20:00',slot:30,workDays:[1,2,3,4,5,6],cc:'381',msgRem:DEF_REM,msgInv:DEF_INV,invNote:'',ipsQr:true,ipsSf:'289',logo:'',
-  backupDays:7,snapKeep:7,lastExport:'',calStaff:'',sig:false});
-const COLLS=['clients','services','staff','appts','invoices'];
-const fresh=()=>({v:1,settings:DEF_SET(),clients:[],services:[],staff:[],appts:[],invoices:[],counters:{}});
-function norm2(d){const s=d.settings||{};d.settings=Object.assign(DEF_SET(),s);d.settings.shop=Object.assign(DEF_SET().shop,s.shop||{});COLLS.forEach(k=>d[k]=Array.isArray(d[k])?d[k].filter(x=>x&&x.id):[]);d.counters=d.counters||{};return d}
+const DEF_REM='Poštovani {ime}, podsećamo Vas na termin {datum} u {vreme}h{usluge}. Molimo potvrdite dolazak. {salon}{telefon}';
+const DEF_LATE='Poštovani {ime}, čekamo Vas na terminu u {vreme}h. Da li stižete? {salon}';
+const DEF_SET=()=>({theme:'dark',accent:'#db2777',fs:'m',shop:{name:'',addr:'',city:'',phone:'',email:''},
+  dayStart:'08:00',dayEnd:'20:00',slot:30,cc:'381',msgRem:DEF_REM,msgLate:DEF_LATE,ndoUsed:true,logo:'',
+  backupDays:7,snapKeep:7,lastExport:''});
+const COLLS=['clients','services','staff','appts','packages'];
+const fresh=()=>({v:2,settings:DEF_SET(),clients:[],services:[],staff:[],appts:[],packages:[],counters:{}});
+function norm2(d){const s=d.settings||{};d.settings=Object.assign(DEF_SET(),s);d.settings.shop=Object.assign(DEF_SET().shop,s.shop||{});COLLS.forEach(k=>d[k]=Array.isArray(d[k])?d[k].filter(x=>x&&x.id):[]);d.counters=d.counters||{};delete d.invoices;return d}
 function load(){try{const r=JSON.parse(localStorage.getItem(KEY));if(r&&typeof r==='object')return norm2(r)}catch{}return fresh()}
 let db=load();
 const S=()=>db.settings;
 const hasData=()=>COLLS.some(k=>db[k].length);
-function persist(){if(RO)return true;try{localStorage.setItem(KEY,JSON.stringify(db));if(typeof gdSoon==='function')gdSoon();return true}catch{toast('Greška pri čuvanju (memorija puna?) — napravi rezervnu kopiju!');return false}}
-function save(){persist();updateBadge()}
-function nextNo(p){const y=new Date().getFullYear(),k=p+y;db.counters[k]=(db.counters[k]||0)+1;return `${p}-${y}-${String(db.counters[k]).padStart(4,'0')}`}
+function persist(){if(RO)return true;if(demoOver()){db=load();toast(DEMO_LIMIT_MSG);setTimeout(render,0);return false}
+  try{localStorage.setItem(KEY,JSON.stringify(db));if(typeof gdSoon==='function')gdSoon();return true}catch{toast('Greška pri čuvanju (memorija puna?) — napravi rezervnu kopiju!');return false}}
+function save(){return persist()&&(updateBadge(),true)}
 function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('on'),2800)}
 function download(name,text,mime){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:mime}));a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 function setPath(o,p,v){const k=p.split('.');let c=o;while(k.length>1)c=c[k.shift()];c[k[0]]=v}
@@ -319,7 +316,7 @@ const cliById=id=>db.clients.find(c=>c.id===id);
 const svcById=id=>db.services.find(s=>s.id===id);
 const staffById=id=>db.staff.find(s=>s.id===id);
 const apptById=id=>db.appts.find(a=>a.id===id);
-const invById=id=>db.invoices.find(i=>i.id===id);
+const pkgById=id=>db.packages.find(p=>p.id===id);
 const activeStaff=()=>db.staff.filter(s=>!s.off);
 const sortA=(a,b)=>a.date.localeCompare(b.date)||tmin(a.time)-tmin(b.time);
 const dayAppts=d=>db.appts.filter(a=>a.date===d).sort(sortA);
@@ -328,25 +325,20 @@ const apptSvc=a=>(a.svcs||[]).map(id=>(svcById(id)||{}).name).filter(Boolean).jo
 const firstName=n=>String(n||'').trim().split(/\s+/)[0]||'';
 function age(b){if(!b)return null;const d=new Date(b+'T12:00:00'),n=new Date();let a=n.getFullYear()-d.getFullYear();if(n.getMonth()<d.getMonth()||(n.getMonth()===d.getMonth()&&n.getDate()<d.getDate()))a--;return a>0&&a<120?a:null}
 function bdayIn(b){if(!b||b.length<10)return null;const t=todayStr(),y=+t.slice(0,4);for(const yy of[y,y+1]){const k=dayDiff(yy+b.slice(4));if(k>=0)return k}return null}
-
-/* ---------- OBRAČUN RAČUNA ---------- */
-function calc(o){
-  let sub=0,hours=0,svc=0,prod=0;(o.items||[]).forEach(i=>{const a=num(i.qty)*num(i.price);sub+=a;if(i.kind==='sat')hours+=a;else if(i.kind==='proizvod')prod+=a;else svc+=a});
-  const disc=sub*num(o.discount)/100,after=sub-disc,r=num(S().pdvRate)/100;
-  let base=after,pdv=0,total=after;
-  if(r>0){if(S().pdvIncl){base=after/(1+r);pdv=after-base}else{pdv=after*r;total=after+pdv}}
-  return{sub,svc,hours,prod,disc,after,base,pdv,total,r};
-}
-const invTotal=o=>calc(o).total;
-function totHtml(t){const row=(l,v,b)=>`<div class="row sp" style="padding:3px 0;${b?'font-weight:800;font-size:1.1rem;border-top:1px solid var(--line);margin-top:4px;padding-top:6px':''}"><span class="${b?'':'muted'}">${l}</span><span>${v}</span></div>`;
-  return row('Zbir stavki',money(t.sub))+(t.disc?row('Popust',' − '+money(t.disc)):'')+(t.r>0?row('Osnovica',money(t.base))+row('PDV '+Math.round(t.r*100)+'%',money(t.pdv)):'')+row('UKUPNO',money(t.total),1)}
+/* cena termina: zbir usluga (usluga „po satu“ × trajanje); termin iz paketa nema posebnu cenu */
+function svcPrice(a){return(a.svcs||[]).reduce((t,id)=>{const s=svcById(id);if(!s)return t;return t+(s.unit==='h'?num(s.price)*(num(a.dur)||60)/60:num(s.price))},0)}
+const apptPrice=a=>a.pkg?0:(a.price!=null&&a.price!==''?num(a.price):svcPrice(a));
+/* paketi: broj termina u periodu; potrošeno = završeni (+ nedolasci ako je tako podešeno) */
+const usedSt=a=>a.status==='dosao'||(a.status==='nije'&&S().ndoUsed);
+function pkgInfo(p){const as=db.appts.filter(a=>a.pkg===p.id),u=as.filter(usedSt).length,booked=as.filter(a=>OPEN(a.status)).length,left=p.count?Math.max(0,p.count-u):null,exp=!!(p.end&&p.end<todayStr());return{u,booked,left,exp,active:!exp&&(left==null||left>0)}}
+const activePkg=cid=>db.packages.filter(p=>p.cid===cid).sort((a,b)=>String(b.start).localeCompare(String(a.start))).find(p=>pkgInfo(p).active);
 
 /* ---------- UI STANJE ---------- */
-const ui={tab:'pregled',q:'',day:todayStr(),rp:'m',rmon:todayStr().slice(0,7),ry:String(new Date().getFullYear()),inv:'all',cf:'all'};
+const ui={tab:'pregled',q:'',day:todayStr(),rp:'m',rmon:todayStr().slice(0,7),ry:String(new Date().getFullYear()),pf:'act'};
 const SEC=['vise','korisnici','usluge','zaposleni','izvestaji','podesavanja'];
 const ACCS=['#db2777','#7c3aed','#2563eb','#0891b2','#16a34a','#ea580c','#475569'];
 function applyTheme(){const s=S();document.documentElement.dataset.theme=s.theme==='auto'?(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):s.theme;
-  document.documentElement.style.setProperty('--acc',s.accent);document.body.className=(s.fs==='l'?'fs-l':s.fs==='s'?'fs-s':'')+(RO?' ro':'')+(authState==='locked'?' locked':'');
+  document.documentElement.style.setProperty('--acc',s.accent);document.body.className=(s.fs==='l'?'fs-l':s.fs==='s'?'fs-s':'')+(RO?' ro':'')+(authState==='locked'?' locked':'')+(authState==='demo'?' demo':'');
   document.querySelector('meta[name=theme-color]').content=document.documentElement.dataset.theme==='light'?'#f3f4f6':'#141218'}
 function go(t){ui.tab=t;ui.q='';render();window.scrollTo(0,0)}
 function render(){
@@ -355,12 +347,12 @@ function render(){
   $('catList').innerHTML=[...new Set(db.services.map(s=>s.cat).filter(Boolean))].map(c=>`<option value="${esc(c)}">`).join('');
   $('cliList').innerHTML=db.clients.map(c=>`<option value="${esc(c.name)}">${esc(c.phone||'')}</option>`).join('');
   document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.tab===ui.tab||(b.dataset.tab==='vise'&&SEC.includes(ui.tab)&&innerWidth<900)));
-  $('fab').style.display=['pregled','kalendar','klijenti','racuni','usluge','zaposleni'].includes(ui.tab)&&!RO?'block':'none';
+  $('fab').style.display=['pregled','kalendar','klijenti','paketi','usluge','zaposleni'].includes(ui.tab)&&!RO?'block':'none';
   updateBadge();
   document.querySelectorAll('.admtab').forEach(b=>b.hidden=!isAdmin);
   if(ui.tab==='korisnici'&&!isAdmin)ui.tab='pregled';
-  const P={korisnici:pgKorisnici,pregled:pgPregled,kalendar:pgKalendar,klijenti:pgKlijenti,racuni:pgRacuni,usluge:pgUsluge,zaposleni:pgZaposleni,izvestaji:pgIzvestaji,vise:pgVise,podesavanja:pgPodesavanja};
-  $('view').innerHTML=(RO&&authState==='expired'?`<div class="roBar">⛔ Licenca je istekla — aplikacija radi samo za pregled. <a href="${esc(activationLink())}" target="_blank" rel="noopener" style="color:inherit"><b>Aktivacija</b></a></div>`:'')+P[ui.tab]();
+  const P={korisnici:pgKorisnici,pregled:pgPregled,kalendar:pgKalendar,klijenti:pgKlijenti,paketi:pgPaketi,usluge:pgUsluge,zaposleni:pgZaposleni,izvestaji:pgIzvestaji,vise:pgVise,podesavanja:pgPodesavanja};
+  $('view').innerHTML=(RO&&authState==='expired'?`<div class="roBar">⛔ ${esc(demoExpired()?'Probni period je istekao':'Licenca je istekla')} — aplikacija radi samo za pregled. <a href="${esc(activationLink())}" target="_blank" rel="noopener" style="color:inherit"><b>Aktivacija</b></a></div>`:'')+demoBar()+P[ui.tab]();
   if(ui.tab==='kalendar')calAfter();
 }
 let rPend=false;
@@ -368,45 +360,49 @@ const typing=()=>{const a=document.activeElement;return!!(a&&a.closest&&a.closes
 function bgRender(){if(typing()){rPend=true;return}rPend=false;render()}
 document.addEventListener('focusout',()=>setTimeout(()=>{if(rPend&&!typing())bgRender()},200));
 const aBadge=s=>{const x=AST[s]||AST.zak;return`<span class="badge" style="background:${x.c}26;color:${x.c}">${x.i} ${x.l}</span>`};
-function updateBadge(){try{if(!navigator.setAppBadge)return;const n=dayAppts(todayStr()).filter(a=>a.status==='zak').length;n?navigator.setAppBadge(n):navigator.clearAppBadge()}catch{}}
+function updateBadge(){try{if(!navigator.setAppBadge)return;const n=dayAppts(todayStr()).filter(a=>OPEN(a.status)).length;n?navigator.setAppBadge(n):navigator.clearAppBadge()}catch{}}
 
 /* ---------- KARTICE ---------- */
-function apptRow(a,opt){opt=opt||{};const st=staffById(a.staffId),c=cliById(a.cid),inv=a.invId&&invById(a.invId),end=mtime(tmin(a.time)+(num(a.dur)||30));
+function payBadge(a){const p=a.pkg&&pkgById(a.pkg);if(p)return`<span class="badge b-n">📦 ${esc(p.name||'paket')}</span>`;const pr=apptPrice(a);if(!pr)return'';return a.paid?`<span class="badge b-ok">${money(pr)} ✔</span>`:(a.status==='dosao'?`<span class="badge b-warn">${money(pr)} · nije naplaćeno</span>`:`<span class="badge b-n">${money(pr)}</span>`)}
+function apptRow(a,opt){opt=opt||{};const st=staffById(a.staffId),c=cliById(a.cid),end=mtime(tmin(a.time)+(num(a.dur)||30));
   return`<div class="item ${a.status==='otk'?'dim':''}" style="border-left:4px solid ${st?st.color:'var(--acc)'}"><div class="grow">
    <div class="row sp"><div><b>${esc(a.time)}–${end}</b> · <b>${esc(apptName(a))}</b>${opt.date?` <span class="muted small">· ${esc(dLabel(a.date))}</span>`:''}</div>${aBadge(a.status)}</div>
    <div class="small muted">${esc(apptSvc(a)||a.note||'—')}${st?' · '+esc(st.name):''}${c&&c.phone?' · 📞 '+esc(c.phone):''}${a.remSent?' · 🔔 podsetnik poslat':''}</div>
-   ${inv?`<div class="small" style="margin-top:2px">🧾 ${esc(inv.no)} · ${money(invTotal(inv))} ${inv.paid?'<span class="badge b-ok">Plaćeno</span>':'<span class="badge b-warn">Nije plaćeno</span>'}</div>`:''}
-   <div class="acts">${a.status==='zak'?`<button class="btn-s btn-p w" data-act="adone" data-id="${a.id}">✅ Završeno</button><button class="btn-s btn-v" data-act="arem" data-id="${a.id}">🔔 Podsetnik</button>`:''}
-    ${a.status==='dosao'&&!inv?`<button class="btn-s btn-p w" data-act="ainv" data-id="${a.id}">🧾 Izdaj račun</button>`:''}${inv?`<button class="btn-s" data-act="invdoc" data-id="${inv.id}">🖨️ Račun</button>`:''}
+   <div class="row wrap" style="gap:6px;margin-top:4px">${payBadge(a)}</div>
+   <div class="acts">${OPEN(a.status)?`<button class="btn-s btn-p w" data-act="ast" data-v="dosao" data-id="${a.id}">✅ Završeno</button>${a.status!=='potv'?`<button class="btn-s w" data-act="ast" data-v="potv" data-id="${a.id}">👍 Dolazi</button>`:''}${a.status!=='kasni'&&dayDiff(a.date)===0?`<button class="btn-s w" data-act="ast" data-v="kasni" data-id="${a.id}">⏰ Kasni</button>`:''}<button class="btn-s btn-v" data-act="arem" data-id="${a.id}">🔔</button>`:''}
+    ${a.status==='dosao'&&!a.paid&&!a.pkg&&apptPrice(a)?`<button class="btn-s btn-p w" data-act="apaid" data-id="${a.id}">💳 Naplaćeno</button>`:''}
     <button class="btn-s" data-act="aedit" data-id="${a.id}">✏️</button></div></div></div>`}
-function invRow(o){const t=calc(o),c=cliById(o.cid);
-  return`<div class="item"><div class="grow"><div class="row sp"><div><b>${esc(o.no)}</b> · ${esc(c?c.name:o.cname||'Kupac')}</div><div class="amt">${money(t.total)}</div></div>
-   <div class="small muted">${fmtDate(o.date)} · ${esc(o.pay||'Gotovina')}${o.staffId&&staffById(o.staffId)?' · '+esc(staffById(o.staffId).name):''} · ${(o.items||[]).length} stavki</div>
-   <div class="acts">${o.paid?'<span class="badge b-ok">Plaćeno</span>':`<span class="badge b-warn">Nije plaćeno</span><button class="btn-s btn-p w" data-act="invpaid" data-id="${o.id}">💳 Naplaćeno</button>`}
-    <button class="btn-s" data-act="invdoc" data-id="${o.id}">🖨️ Prikaži</button><button class="btn-s" data-act="invsend" data-id="${o.id}">📤 Pošalji</button><button class="btn-s" data-act="invedit" data-id="${o.id}">✏️</button></div></div></div>`}
 
 /* ---------- PREGLED ---------- */
 function pgPregled(){const t=todayStr(),tm=addD(t,1),ta=dayAppts(t),tma=dayAppts(tm),mon=t.slice(0,7);
-  const minv=db.invoices.filter(o=>(o.date||'').startsWith(mon)),rev=minv.reduce((s,o)=>s+invTotal(o),0),unpaid=db.invoices.filter(o=>!o.paid),unp=unpaid.reduce((s,o)=>s+invTotal(o),0);
-  const rem=tma.filter(a=>a.status==='zak'),remN=rem.filter(a=>!a.remSent).length;
+  const mdone=db.appts.filter(a=>a.status==='dosao'&&a.date.startsWith(mon));
+  const rev=mdone.filter(a=>a.paid&&!a.pkg).reduce((s,a)=>s+apptPrice(a),0)+db.packages.filter(p=>p.paid&&(p.paidDate||p.start||'').startsWith(mon)).reduce((s,p)=>s+num(p.price),0);
+  const unpaid=db.appts.filter(a=>a.status==='dosao'&&!a.paid&&!a.pkg&&apptPrice(a)>0),unp=unpaid.reduce((s,a)=>s+apptPrice(a),0);
+  const rem=tma.filter(a=>OPEN(a.status)),remN=rem.filter(a=>!a.remSent).length;
   const bd=db.clients.map(c=>({c,k:bdayIn(c.birth)})).filter(x=>x.k!=null&&x.k<=7).sort((a,b)=>a.k-b.k);
+  const al=[];db.packages.forEach(p=>{const c=cliById(p.cid);if(!c||p.renewed)return;const i=pkgInfo(p);
+    if(i.left===1&&!i.exp)al.push(['📦',`${esc(c.name)} — u paketu „${esc(p.name||'paket')}“ ostao je još <b>1 termin</b>`,c.id]);
+    else if(i.left===0&&dayDiff(p.start||t)>-120)al.push(['📦',`${esc(c.name)} — paket „${esc(p.name||'paket')}“ je potrošen`,c.id]);
+    else if(p.end&&!i.exp&&dayDiff(p.end)<=3&&i.left)al.push(['⏳',`${esc(c.name)} — paket ističe ${esc(dLabel(p.end).toLowerCase())}, ostalo ${i.left}`,c.id]);
+    if(!p.paid&&num(p.price))al.push(['💰',`${esc(c.name)} — paket nije plaćen (${money(p.price)})`,c.id])});
   const setupMissing=!S().shop.name||!db.services.length;
   return`${backupBanner()}
-  ${setupMissing&&!RO?`<div class="card" style="border-color:var(--acc)"><h3>👋 Dobro došli u Atmos Studio</h3><div class="small" style="line-height:1.7">1. U <b>Podešavanjima</b> upiši naziv salona, adresu i tekući račun (za IPS QR na računu).<br>2. Dodaj <b>usluge</b> sa trajanjem i cenom — ili učitaj gotov spisak za frizere, kozmetiku, masažu ili nokte.<br>3. Dodaj <b>zaposlene</b> (ako vas je više) — svako dobija svoju kolonu u kalendaru.<br>4. Poveži <b>Google Drive</b> da podaci budu isti na svim uređajima.</div>
+  ${setupMissing&&!RO?`<div class="card" style="border-color:var(--acc)"><h3>👋 Dobro došli u Atmos Studio</h3><div class="small" style="line-height:1.7">1. U <b>Podešavanjima</b> upiši naziv salona i telefon (idu u poruke klijentima).<br>2. Dodaj <b>usluge</b> sa trajanjem i cenom — ili učitaj gotov spisak za frizere, kozmetiku, masažu ili nokte.<br>3. Dodaj <b>zaposlene</b> (ako vas je više) — svako dobija svoju kolonu u kalendaru.<br>4. Poveži <b>Google Drive</b> da podaci budu isti na svim uređajima.</div>
    <div class="row wrap" style="margin-top:10px"><button class="btn-p grow" data-tab="podesavanja">⚙️ Podešavanja</button><button class="grow" data-tab="usluge">✂️ Usluge</button></div></div>`:''}
-  <div class="row wrap noprint" style="margin-bottom:12px"><button class="btn-p grow w" data-act="newappt">📅 Novi termin</button><button class="grow w" data-act="newinv">🧾 Novi račun</button><button class="grow w" data-act="newcli">👤 Novi klijent</button></div>
+  <div class="row wrap noprint" style="margin-bottom:12px"><button class="btn-p grow w" data-act="newappt">📅 Novi termin</button><button class="grow w" data-act="newcli">👤 Novi klijent</button></div>
   <div class="grid g4" style="margin-bottom:12px">
    <div class="stat" data-tab="kalendar"><small>Danas termina</small><b>${ta.filter(a=>a.status!=='otk').length}</b></div>
-   <div class="stat" style="border-left-color:var(--ok)" data-tab="racuni"><small>Promet (ovaj mesec)</small><b>${money(rev)}</b></div>
-   <div class="stat" style="border-left-color:var(--warn)" data-act="goinv" data-v="unpaid"><small>Nije naplaćeno</small><b>${money(unp)}</b></div>
-   <div class="stat" style="border-left-color:#8b5cf6" data-tab="klijenti"><small>Klijenata</small><b>${db.clients.length}</b></div></div>
+   <div class="stat" style="border-left-color:#8b5cf6"><small>Završeno (ovaj mesec)</small><b>${mdone.length}</b></div>
+   <div class="stat" style="border-left-color:var(--ok)"><small>Naplaćeno (ovaj mesec)</small><b>${money(rev)}</b></div>
+   <div class="stat" style="border-left-color:var(--warn)" data-act="unpaid"><small>Nije naplaćeno</small><b>${money(unp)}</b></div></div>
   <div class="card"><h3>📅 Danas · ${esc(dLabel(t).split(', ')[1])} <button class="btn-s" data-act="calday" data-v="${t}">Kalendar</button></h3>${ta.length?ta.map(a=>apptRow(a)).join(''):'<div class="empty">Danas nema zakazanih termina.</div>'}</div>
   <div class="card"><h3>🌙 Sutra${rem.length?` <button class="btn-s ${remN?'btn-p':''}" data-act="bulkrem" data-v="${tm}">🔔 Podsetnici (${remN?remN+' za slanje':'poslato'})</button>`:''}</h3>${tma.length?tma.map(a=>apptRow(a)).join(''):'<div class="empty">Sutra nema termina.</div>'}</div>
+  ${al.length?`<div class="card"><h3>🔔 Na šta treba obratiti pažnju</h3>${al.slice(0,12).map(x=>`<div class="alert warn" data-act="opencli" data-id="${x[2]}" style="cursor:pointer"><span>${x[0]}</span><span class="grow">${x[1]}</span></div>`).join('')}</div>`:''}
   ${bd.length?`<div class="card"><h3>🎂 Rođendani</h3>${bd.map(x=>`<div class="alert warn" data-act="opencli" data-id="${x.c.id}" style="cursor:pointer"><span>🎂</span><span class="grow">${esc(x.c.name)} — ${x.k===0?'<b>danas</b>':x.k===1?'sutra':'za '+x.k+' dana'}</span><button class="btn-s btn-v" data-act="climsg" data-id="${x.c.id}" data-k="bday">💬 Čestitka</button></div>`).join('')}</div>`:''}
-  ${unpaid.length?`<div class="card"><h3>💰 Nenaplaćeni računi <button class="btn-s" data-act="goinv" data-v="unpaid">Svi</button></h3>${unpaid.slice(0,5).map(invRow).join('')}</div>`:''}`;
+  <div id="unpaidCard">${unpaid.length?`<div class="card"><h3>💰 Završeni, nije naplaćeno</h3>${unpaid.sort(sortA).slice(-6).reverse().map(a=>apptRow(a,{date:1})).join('')}</div>`:''}</div>`;
 }
 function backupBanner(){return backupDue()?`<div class="card" style="border-color:var(--warn)"><h3>💾 Vreme je za rezervnu kopiju</h3><div class="small muted" style="margin:-4px 0 8px">Podaci nisu sačuvani na Google Drive-u ni u kopiji više od ${num(S().backupDays)||7} dana. Poveži Google Drive ili napravi rezervnu kopiju.</div><div class="row wrap"><button class="btn-p grow" data-act="export">💾 Napravi rezervnu kopiju</button><button class="grow" data-tab="podesavanja">☁️ Google Drive</button></div></div>`:''}
-function backupDue(){const n=num(S().backupDays);if(!n||!hasData())return false;if(gd.on&&gd.last&&Date.now()-gd.last<n*864e5)return false;const last=S().lastExport;return !last||-dayDiff(last)>=n}
+function backupDue(){if(authState==='demo')return false;const n=num(S().backupDays);if(!n||!hasData())return false;if(gd.on&&gd.last&&Date.now()-gd.last<n*864e5)return false;const last=S().lastExport;return !last||-dayDiff(last)>=n}
 
 /* ---------- KALENDAR (dan po zaposlenima) ---------- */
 const PXM=1.6; /* piksela po minutu */
@@ -432,72 +428,55 @@ function calAfter(){const di=$('calDate');if(di)di.onchange=()=>{if(di.value){ui
     const r=b.getBoundingClientRect(),slot=num(S().slot)||30,m=lo+Math.floor((e.clientY-r.top)/PXM/slot)*slot;openAppt(null,{date:ui.day,time:mtime(m),staffId:b.dataset.staff})})}
 
 /* ---------- KLIJENTI ---------- */
-function cliStats(id){const as=db.appts.filter(a=>a.cid===id),inv=db.invoices.filter(o=>o.cid===id);
-  const done=as.filter(a=>a.status==='dosao').sort(sortA);return{visits:done.length,last:done.length?done[done.length-1].date:'',spent:inv.reduce((s,o)=>s+invTotal(o),0),due:inv.filter(o=>!o.paid).reduce((s,o)=>s+invTotal(o),0),next:as.filter(a=>a.status==='zak'&&a.date>=todayStr()).sort(sortA)[0]}}
+function cliStats(id){const as=db.appts.filter(a=>a.cid===id),done=as.filter(a=>a.status==='dosao').sort(sortA),miss=as.filter(a=>a.status==='nije').length;
+  const pk=db.packages.filter(p=>p.cid===id);
+  return{visits:done.length,miss,last:done.length?done[done.length-1].date:'',spent:done.filter(a=>a.paid).reduce((s,a)=>s+apptPrice(a),0)+pk.filter(p=>p.paid).reduce((s,p)=>s+num(p.price),0),
+    due:done.filter(a=>!a.paid&&!a.pkg).reduce((s,a)=>s+apptPrice(a),0)+pk.filter(p=>!p.paid).reduce((s,p)=>s+num(p.price),0),next:as.filter(a=>OPEN(a.status)&&a.date>=todayStr()).sort(sortA)[0],pkg:activePkg(id)}}
 function pgKlijenti(){const q=norm(ui.q);let l=db.clients.filter(c=>!q||norm(c.name+' '+(c.phone||'')+' '+(c.email||'')+' '+(c.note||'')).includes(q)).sort((a,b)=>a.name.localeCompare(b.name,'sr'));
   return`<div class="row wrap" style="margin-bottom:12px;gap:8px"><input class="fld grow" id="q" placeholder="🔍 Ime, telefon, beleška…" value="${esc(ui.q)}"><button class="btn-p w" data-act="newcli">➕ Novi klijent</button></div>
-  ${l.length?l.map(c=>{const s=cliStats(c.id);return`<div class="item" data-act="opencli" data-id="${c.id}" style="cursor:pointer"><span class="av">${esc(c.name.split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase())}</span><div class="grow"><div class="row sp"><b>${esc(c.name)}</b>${s.due?`<span class="badge b-warn">duguje ${money(s.due)}</span>`:''}</div>
-   <div class="small muted">${c.phone?'📞 '+esc(c.phone)+' · ':''}${s.visits} dolazaka${s.last?' · poslednji '+fmtDate(s.last):''}${s.next?' · sledeći '+fmtDate(s.next.date)+' '+esc(s.next.time):''}</div>${c.allergy?`<div class="small" style="color:var(--warn)">⚠️ ${esc(c.allergy)}</div>`:''}</div></div>`}).join(''):`<div class="empty">${db.clients.length?'Nema rezultata.':'Još nema klijenata.'}</div>`}`}
-function openCli(id){const c=cliById(id);if(!c)return;const s=cliStats(id),as=db.appts.filter(a=>a.cid===id).sort(sortA).reverse(),inv=db.invoices.filter(o=>o.cid===id).sort((a,b)=>b.date.localeCompare(a.date));
+  ${l.length?l.map(c=>{const s=cliStats(c.id),pi=s.pkg&&pkgInfo(s.pkg);return`<div class="item" data-act="opencli" data-id="${c.id}" style="cursor:pointer"><span class="av">${esc(c.name.split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase())}</span><div class="grow"><div class="row sp"><b>${esc(c.name)}</b>${s.due?`<span class="badge b-warn">duguje ${money(s.due)}</span>`:''}</div>
+   <div class="small muted">${c.phone?'📞 '+esc(c.phone)+' · ':''}${s.visits} dolazaka${s.last?' · poslednji '+fmtDate(s.last):''}${s.next?' · sledeći '+fmtDate(s.next.date)+' '+esc(s.next.time):''}${pi&&pi.left!=null?' · 📦 ostalo '+pi.left:''}</div>${c.allergy?`<div class="small" style="color:var(--warn)">⚠️ ${esc(c.allergy)}</div>`:''}</div></div>`}).join(''):`<div class="empty">${db.clients.length?'Nema rezultata.':'Još nema klijenata.'}</div>`}`}
+function pkgRow(p){const i=pkgInfo(p),c=cliById(p.cid);return`<div class="item" data-act="editpkg" data-id="${p.id}" style="cursor:pointer"><div class="grow"><div class="row sp"><b>📦 ${esc(p.name||'Paket')}${ui.tab==='paketi'&&c?' · '+esc(c.name):''}</b>${i.exp?'<span class="badge b-n">istekao</span>':i.left===0?'<span class="badge b-n">potrošen</span>':i.left===1?'<span class="badge b-warn">još 1</span>':'<span class="badge b-ok">aktivan</span>'}</div>
+  <div class="small muted">${p.count?`Iskorišćeno ${i.u} od ${p.count} · ostalo <b style="color:var(--txt)">${i.left}</b>`:`Neograničeno · iskorišćeno ${i.u}`}${i.booked?' · zakazano '+i.booked:''}${p.end?' · važi do '+fmtDate(p.end):''}${num(p.price)?' · '+money(p.price)+(p.paid?' ✔':' · <span style="color:var(--warn)">nije plaćeno</span>'):''}</div>
+  ${p.count?`<div class="mbar" style="margin-top:6px"><i style="width:${Math.min(100,i.u/p.count*100)}%;${i.left<=1?'background:var(--warn)':''}"></i></div>`:''}</div></div>`}
+function openCli(id){const c=cliById(id);if(!c)return;const s=cliStats(id),as=db.appts.filter(a=>a.cid===id).sort(sortA).reverse(),pk=db.packages.filter(p=>p.cid===id).sort((a,b)=>String(b.start).localeCompare(String(a.start)));
   const svcCount={};as.filter(a=>a.status==='dosao').forEach(a=>(a.svcs||[]).forEach(x=>svcCount[x]=(svcCount[x]||0)+1));const fav=Object.entries(svcCount).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([k,n])=>((svcById(k)||{}).name||'')+' ('+n+'×)').join(', ');
+  const done=as.filter(a=>a.status==='dosao').length,rate=done+s.miss?Math.round(done/(done+s.miss)*100):null;
   $('dlgBody').innerHTML=`<div class="row sp"><h3 style="margin:0">👤 ${esc(c.name)}</h3><button class="btn-s w" data-act="editcli" data-id="${c.id}">✏️ Izmeni</button></div>
    <div class="small muted" style="margin:6px 0 10px;line-height:1.7">${c.phone?'📞 '+esc(c.phone)+'<br>':''}${c.email?'✉️ '+esc(c.email)+'<br>':''}${c.birth?'🎂 '+fmtDate(c.birth)+(age(c.birth)?' ('+age(c.birth)+' god.)':'')+'<br>':''}${fav?'⭐ Najčešće: '+esc(fav):''}</div>
    ${c.allergy?`<div class="alert warn">⚠️ ${esc(c.allergy)}</div>`:''}${c.note?`<div class="small" style="white-space:pre-wrap;margin-bottom:10px;background:var(--card2);padding:8px 10px;border-radius:10px">📝 ${esc(c.note)}</div>`:''}
-   <div class="grid g3" style="margin-bottom:10px"><div class="stat"><small>Dolazaka</small><b>${s.visits}</b></div><div class="stat" style="border-left-color:var(--ok)"><small>Ukupno potrošio</small><b>${money(s.spent)}</b></div><div class="stat" style="border-left-color:var(--warn)"><small>Duguje</small><b>${money(s.due)}</b></div></div>
-   <div class="grid g2" style="margin-bottom:10px">${c.phone?`<a class="supLink" href="tel:${esc(c.phone)}" style="text-align:center">📞 Pozovi</a>`:''}<button class="btn-v" data-act="climsg" data-id="${c.id}">💬 Poruka</button><button class="btn-p w" data-act="newappt" data-c="${c.id}">📅 Zakaži</button><button class="w" data-act="newinv" data-c="${c.id}">🧾 Račun</button></div>
-   <h4>📅 Termini (${as.length})</h4>${as.length?as.slice(0,30).map(a=>`<div class="row sp small" style="padding:6px 0;border-bottom:1px solid var(--line);cursor:pointer" data-act="aedit" data-id="${a.id}"><span>${fmtDate(a.date)} ${esc(a.time)} · ${esc(apptSvc(a)||'—')}</span>${aBadge(a.status)}</div>`).join(''):'<div class="small muted">Nema termina.</div>'}
-   <h4>🧾 Računi (${inv.length})</h4>${inv.length?inv.slice(0,30).map(o=>`<div class="row sp small" style="padding:6px 0;border-bottom:1px solid var(--line);cursor:pointer" data-act="invdoc" data-id="${o.id}"><span>${esc(o.no)} · ${fmtDate(o.date)}</span><span><b>${money(invTotal(o))}</b> ${o.paid?'✔':'<span style="color:var(--warn)">•</span>'}</span></div>`).join(''):'<div class="small muted">Nema računa.</div>'}
+   <div class="grid g3" style="margin-bottom:10px"><div class="stat"><small>Dolazaka</small><b>${s.visits}</b></div><div class="stat" style="border-left-color:${rate!=null&&rate<80?'var(--bad)':'var(--ok)'}"><small>Dolaznost</small><b>${rate==null?'—':rate+'%'}</b></div><div class="stat" style="border-left-color:var(--warn)"><small>Duguje</small><b>${money(s.due)}</b></div></div>
+   <div class="grid g2" style="margin-bottom:10px">${c.phone?`<a class="supLink" href="tel:${esc(c.phone)}" style="text-align:center">📞 Pozovi</a>`:''}<button class="btn-v" data-act="climsg" data-id="${c.id}">💬 Poruka</button><button class="btn-p w" data-act="newappt" data-c="${c.id}">📅 Zakaži</button><button class="w" data-act="newpkg" data-c="${c.id}">📦 Novi paket</button></div>
+   ${pk.length?`<h4>📦 Paketi</h4>${pk.map(pkgRow).join('')}`:''}
+   <h4>📅 Termini (${as.length})</h4>${as.length?as.slice(0,40).map(a=>`<div class="row sp small" style="padding:6px 0;border-bottom:1px solid var(--line);cursor:pointer" data-act="aedit" data-id="${a.id}"><span>${fmtDate(a.date)} ${esc(a.time)} · ${esc(apptSvc(a)||'—')}</span>${aBadge(a.status)}</div>`).join(''):'<div class="small muted">Nema termina.</div>'}
    <div class="row" style="margin-top:14px"><button class="grow" data-act="dlgclose">Zatvori</button></div>`;
   if(!$('dlg').open)$('dlg').showModal()}
-function cliForm(id,pre,after){if(RO){roBlock();return}const c=id?cliById(id):null;
+function cliForm(id,pre,after){if(RO){roBlock();return}if(!id&&demoFull()){toast(DEMO_LIMIT_MSG);return}const c=id?cliById(id):null;
   openForm({title:c?'✏️ Klijent':'👤 Novi klijent',values:c||Object.assign({name:''},pre||{}),fields:[
     {k:'name',l:'Ime i prezime',req:1},{k:'phone',l:'Telefon',t:'tel',h:1,ph:'06x xxx xxxx'},{k:'email',l:'E-pošta',t:'email',h:1},{k:'birth',l:'Datum rođenja',t:'date',h:1},
     {k:'allergy',l:'Alergije / upozorenja',h:1,ph:'npr. alergija na PPD'},{k:'note',l:'Beleška (boja, formula, preferencije…)',t:'textarea',rows:3}],
-    onSave:o=>{if(!o.name){toast('Upiši ime');return false}if(c)Object.assign(c,o);else{const n=Object.assign({id:uid(),created:todayStr()},o);db.clients.push(n);if(after)setTimeout(()=>after(n),0)}save();toast('Sačuvano ✔')}})}
-function findOrCreateCli(name){const n=nName(name);if(!n)return'';let c=db.clients.find(x=>nName(x.name)===n);if(!c){c={id:uid(),name:String(name).trim(),created:todayStr()};db.clients.push(c)}return c.id}
+    pre:c?`<div style="text-align:right;margin:-6px 0 8px"><button type="button" class="btn-s btn-d" data-act="delcli" data-id="${c.id}">🗑️ Obriši klijenta</button></div>`:'',
+    onSave:o=>{if(!o.name){toast('Upiši ime');return false}if(c)Object.assign(c,o);else{const n=Object.assign({id:uid(),created:todayStr()},o);db.clients.push(n);if(after)setTimeout(()=>after(n),0)}if(!save())return false;toast('Sačuvano ✔')}})}
+function findOrCreateCli(name){const n=nName(name);if(!n)return'';let c=db.clients.find(x=>nName(x.name)===n);if(!c){if(demoFull())return'';c={id:uid(),name:String(name).trim(),created:todayStr()};db.clients.push(c)}return c.id}
 
-/* ---------- RAČUNI ---------- */
-function pgRacuni(){const q=norm(ui.q),mon=todayStr().slice(0,7);
-  let l=db.invoices.slice().sort((a,b)=>b.date.localeCompare(a.date)||String(b.no).localeCompare(String(a.no)));
-  if(ui.inv==='unpaid')l=l.filter(o=>!o.paid);if(ui.inv==='month')l=l.filter(o=>(o.date||'').startsWith(mon));
-  if(q)l=l.filter(o=>norm(o.no+' '+((cliById(o.cid)||{}).name||o.cname||'')+' '+(o.items||[]).map(i=>i.name).join(' ')).includes(q));
-  const sum=l.reduce((s,o)=>s+invTotal(o),0);
-  return`<div class="row wrap" style="margin-bottom:10px;gap:8px"><input class="fld grow" id="q" placeholder="🔍 Broj, klijent, usluga…" value="${esc(ui.q)}"><button class="btn-p w" data-act="newinv">➕ Novi račun</button></div>
-   <div class="seg" style="margin-bottom:12px">${[['all','Svi'],['month','Ovaj mesec'],['unpaid','Nenaplaćeni']].map(x=>`<button data-act="goinv" data-v="${x[0]}" class="${ui.inv===x[0]?'on':''}">${x[1]}</button>`).join('')}</div>
-   <div class="small muted" style="margin:0 2px 8px">${l.length} računa · ukupno <b>${money(sum)}</b></div>
-   ${l.length?l.slice(0,200).map(invRow).join(''):'<div class="empty">Nema računa.</div>'}`}
-let ie=null;
-function openInv(id,pre){if(RO&&!id){roBlock();return}const o=id?JSON.parse(JSON.stringify(invById(id))):Object.assign({id:'',date:todayStr(),cid:'',items:[],discount:0,pay:'Gotovina',paid:true,note:'',staffId:''},pre||{});
-  ie={o,isNew:!id};invDraw()}
-function invDraw(){const o=ie.o,c=cliById(o.cid),t=calc(o);
-  const rows=(o.items||[]).map((it,i)=>`<div class="irow"><input class="fld nm" data-ii="${i}" data-k="name" value="${esc(it.name)}" placeholder="Naziv usluge / proizvoda"><input class="fld" data-ii="${i}" data-k="qty" inputmode="decimal" value="${esc(fIn(it.qty))}"><select class="fld" data-ii="${i}" data-k="kind">${[['usl','kom'],['sat','sat'],['proizvod','proizv.']].map(([k,l])=>`<option value="${k}" ${it.kind===k?'selected':''}>${l}</option>`).join('')}</select><input class="fld" data-ii="${i}" data-k="price" inputmode="decimal" value="${esc(fIn(it.price))}" placeholder="cena"><button class="btn-s btn-d" data-act="iidel" data-i="${i}">✕</button></div>`).join('');
-  $('dlgBody').innerHTML=`<h3>${ie.isNew?'🧾 Novi račun':'🧾 Račun '+esc(o.no)}</h3>
-   <div class="grid g2"><div style="grid-column:1/-1"><label class="l">Klijent / kupac</label><input class="fld" id="iCli" list="cliList" value="${esc(c?c.name:o.cname||'')}" placeholder="Ime klijenta (ili prazno za fizičko lice)" autocomplete="off"></div>
-    <div><label class="l">Datum</label><input class="fld" id="iDate" type="date" value="${esc(o.date)}"></div><div><label class="l">Zaposleni</label><select class="fld" id="iStaff"><option value="">—</option>${db.staff.map(s=>`<option value="${s.id}" ${s.id===o.staffId?'selected':''}>${esc(s.name)}</option>`).join('')}</select></div></div>
-   <h4>Stavke</h4><div class="small muted" style="margin:-4px 0 6px">Količina × cena. Vrsta „sat“ = naplata po radnom satu (npr. 1,5 sat).</div>
-   ${rows||'<div class="small muted" style="margin-bottom:8px">Dodaj uslugu iz cenovnika, radne sate ili proizvod.</div>'}
-   <div class="row wrap" style="gap:6px;margin-bottom:10px"><button class="btn-s btn-p" data-act="iiadd" data-k="usl">✂️ ＋ Usluga</button><button class="btn-s" data-act="iiadd" data-k="sat">⏱️ ＋ Radni sat${num(S().hourRate)?' ('+money(S().hourRate)+')':''}</button><button class="btn-s" data-act="iiadd" data-k="proizvod">🧴 ＋ Proizvod</button><button class="btn-s" data-act="iiadd" data-k="free">＋ Prazna stavka</button></div>
-   <div class="grid g2"><div><label class="l">Popust %</label><input class="fld" id="iDisc" inputmode="decimal" value="${esc(o.discount||'')}"></div><div><label class="l">Način plaćanja</label><select class="fld" id="iPay">${PAY.map(p=>`<option ${p===o.pay?'selected':''}>${p}</option>`).join('')}</select></div></div>
-   <label class="row" style="margin:10px 0"><input type="checkbox" id="iPaid" ${o.paid?'checked':''} style="width:20px;height:20px"> Plaćeno</label>
-   <label class="l">Napomena na računu</label><input class="fld" id="iNote" value="${esc(o.note||'')}">
-   <div class="card" style="margin-top:12px;padding:10px 12px" id="iTot">${totHtml(t)}</div>
-   <div class="row wrap" style="margin-top:12px;gap:8px">${ie.isNew?'':`<button class="btn-d w" data-act="invdel">🗑️</button>`}<button class="grow" data-act="dlgclose">Otkaži</button><button class="btn-p grow w" data-act="invsave">💾 Sačuvaj</button><button class="btn-v grow w" data-act="invsaveprint">🖨️ Sačuvaj i prikaži</button></div>`;
-  if(!$('dlg').open)$('dlg').showModal()}
-function invRead(){const o=ie.o;if(!$('iCli'))return o;const cn=$('iCli').value.trim(),c=db.clients.find(x=>nName(x.name)===nName(cn));o.cid=c?c.id:'';o.cname=c?'':cn;
-  o.date=$('iDate').value||todayStr();o.staffId=$('iStaff').value;o.discount=num($('iDisc').value);o.pay=$('iPay').value;o.paid=$('iPaid').checked;o.note=$('iNote').value.trim();
-  document.querySelectorAll('[data-ii]').forEach(el=>{const it=o.items[+el.dataset.ii];if(!it)return;const k=el.dataset.k;it[k]=k==='qty'||k==='price'?num(el.value):el.value});return o}
-function invSave(){const o=invRead();o.items=o.items.filter(i=>i.name||num(i.price));if(!o.items.length){toast('Dodaj bar jednu stavku');return null}
-  if(!o.cid&&o.cname&&confirm('Dodati „'+o.cname+'“ u klijente?')){o.cid=findOrCreateCli(o.cname);o.cname=''}
-  if(o.paid&&!o.paidDate)o.paidDate=todayStr();if(!o.paid)o.paidDate='';
-  if(ie.isNew){o.id=uid();o.no=nextNo('R');db.invoices.push(o);if(o.apptId){const a=apptById(o.apptId);if(a)a.invId=o.id}ie.isNew=false}
-  else{const i=db.invoices.findIndex(x=>x.id===o.id);db.invoices[i]=o}
-  save();return o}
-function svcPick(cb){const cats={};db.services.forEach(s=>(cats[s.cat||'Usluge']=cats[s.cat||'Usluge']||[]).push(s));
-  const d=document.createElement('dialog');d.id='pickDlg';d.innerHTML=`<div class="dlg"><h3>✂️ Izaberi uslugu</h3><input class="fld" id="spQ" placeholder="🔍 Traži…" style="margin-bottom:8px">${Object.keys(cats).length?Object.entries(cats).map(([k,l])=>`<h4>${esc(k)}</h4><div class="chips">${l.map(s=>`<button data-sp="${s.id}" data-n="${esc(norm(s.name))}">${esc(s.name)} <span class="muted small">${s.unit==='h'?money(s.price)+'/h':money(s.price)}${num(s.dur)?' · '+s.dur+' min':''}</span></button>`).join('')}</div>`).join(''):'<div class="empty">Cenovnik je prazan — dodaj usluge u meniju „Usluge“.</div>'}<div class="row" style="margin-top:12px"><button class="grow" data-x="1">Zatvori</button></div></div>`;
-  document.body.appendChild(d);d.showModal();d.addEventListener('close',()=>d.remove());
-  d.querySelector('#spQ').oninput=e=>{const q=norm(e.target.value);d.querySelectorAll('[data-sp]').forEach(b=>b.style.display=!q||b.dataset.n.includes(q)?'':'none')};
-  d.onclick=e=>{const b=e.target.closest('[data-sp],[data-x]');if(!b)return;if(b.dataset.x){d.close();return}d.close();cb(svcById(b.dataset.sp))}}
-
+/* ---------- PAKETI ---------- */
+function pgPaketi(){let l=db.packages.slice().sort((a,b)=>String(b.start).localeCompare(String(a.start)));
+  if(ui.pf==='act')l=l.filter(p=>pkgInfo(p).active);if(ui.pf==='end')l=l.filter(p=>!pkgInfo(p).active);if(ui.pf==='unpaid')l=l.filter(p=>!p.paid&&num(p.price));
+  return`<div class="row wrap" style="margin-bottom:10px;gap:8px"><button class="btn-p grow w" data-act="newpkg">➕ Novi paket</button></div>
+   <div class="small muted" style="margin:0 2px 10px">Paket je npr. „10 tretmana“ ili „mesečna karta“. Aplikacija sama broji iskorišćene termine — samo izaberi paket u terminu.</div>
+   <div class="seg" style="margin-bottom:12px">${[['act','Aktivni'],['end','Potrošeni / istekli'],['unpaid','Nisu plaćeni'],['all','Svi']].map(x=>`<button data-act="pf" data-v="${x[0]}" class="${ui.pf===x[0]?'on':''}">${x[1]}</button>`).join('')}</div>
+   ${l.length?l.map(pkgRow).join(''):'<div class="empty">Nema paketa.</div>'}`}
+function pkgForm(id,cid){if(RO){roBlock();return}const p=id?pkgById(id):null;
+  openForm({title:p?'📦 Paket':'📦 Novi paket',values:p||{cid:cid||'',name:'Paket 10 termina',count:10,start:todayStr(),end:addD(todayStr(),60),paid:true},
+    pre:`<div class="chips" style="margin-bottom:10px">${[['Paket 5 termina',5,30],['Paket 10 termina',10,60],['Mesečno neograničeno',0,30],['Godišnja članarina',0,365]].map(x=>`<button type="button" data-pp="${x[0]}|${x[1]}|${x[2]}">${x[0]}</button>`).join('')}</div>${p?`<div style="text-align:right;margin:-6px 0 8px"><button type="button" class="btn-s btn-d" data-act="delpkg" data-id="${p.id}">🗑️ Obriši paket</button></div>`:''}`,
+    fields:[{k:'cid',l:'Klijent',t:'select',o:()=>[['','— izaberi —'],...db.clients.slice().sort((a,b)=>a.name.localeCompare(b.name,'sr')).map(c=>[c.id,c.name])],req:1},{k:'name',l:'Naziv',req:1},{k:'count',l:'Broj termina (0 = neograničeno)',t:'number',h:1},{k:'price',l:'Cena (RSD)',t:'number',h:1},
+      {k:'start',l:'Važi od',t:'date',h:1},{k:'end',l:'Važi do (nije obavezno)',t:'date',h:1},{k:'paid',l:'Plaćeno',t:'check'}],
+    onSave:o=>{if(!o.cid){toast('Izaberi klijenta');return false}o.count=Math.max(0,Math.round(num(o.count)));
+      if(p){if(o.paid&&!p.paid)o.paidDate=todayStr();Object.assign(p,o)}else{const n=Object.assign({id:uid(),paidDate:o.paid?todayStr():''},o);db.packages.filter(x=>x.cid===n.cid).forEach(x=>x.renewed=true);db.packages.push(n);
+        /* zakazani termini klijenta u periodu paketa prelaze na paket */
+        db.appts.forEach(a=>{if(a.cid===n.cid&&OPEN(a.status)&&!a.pkg&&a.date>=(n.start||'')&&(!n.end||a.date<=n.end)&&!a.paid)a.pkg=n.id})}
+      if(!save())return false;toast('Paket sačuvan ✔')}});
+  setTimeout(()=>document.querySelectorAll('[data-pp]').forEach(b=>b.onclick=()=>{const[n,c,d]=b.dataset.pp.split('|'),f=$('gf');if(!f)return;const E=f.elements;E.name.value=n;E.count.value=c;E.end.value=addD(E.start.value||todayStr(),+d)}),0)}
 
 /* ---------- USLUGE ---------- */
 const PRESETS={
@@ -507,7 +486,6 @@ const PRESETS={
   'Nokti':[['Manikir','Ruke',45],['Trajni lak','Ruke',60],['Gel nokti — izlivanje','Ruke',120],['Gel — korekcija','Ruke',90],['Skidanje gela / laka','Ruke',20],['Nail art (po noktu)','Ruke',10],['Pedikir','Stopala',60],['Medicinski pedikir','Stopala',60],['Trajni lak — stopala','Stopala',45]]};
 function pgUsluge(){const cats={};db.services.forEach(s=>(cats[s.cat||'Usluge']=cats[s.cat||'Usluge']||[]).push(s));
   return`<div class="row wrap" style="margin-bottom:12px;gap:8px"><button class="btn-p grow w" data-act="newsvc">➕ Nova usluga</button><button class="grow w" data-act="presets">📋 Učitaj gotov spisak</button></div>
-   ${num(S().hourRate)?`<div class="small muted" style="margin:0 2px 10px">⏱️ Cena radnog sata: <b>${money(S().hourRate)}</b> (menja se u Podešavanjima)</div>`:''}
    ${Object.keys(cats).length?Object.entries(cats).sort().map(([k,l])=>`<div class="card"><h3>${esc(k)} <span class="muted small">${l.length}</span></h3>${l.sort((a,b)=>a.name.localeCompare(b.name,'sr')).map(s=>`<div class="row sp" style="padding:8px 0;border-bottom:1px solid var(--line)"><div class="grow"><b>${esc(s.name)}</b><div class="small muted">${num(s.dur)?'⏱️ '+s.dur+' min · ':''}${s.unit==='h'?'po satu':'po usluzi'}</div></div><b style="white-space:nowrap;${num(s.price)?'':'color:var(--warn)'}">${num(s.price)?money(s.price)+(s.unit==='h'?'/h':''):'upiši cenu'}</b><button class="btn-s w" data-act="editsvc" data-id="${s.id}">✏️</button></div>`).join('')}</div>`).join('')
    :'<div class="empty">Cenovnik je prazan.<br>Dodaj usluge ili učitaj gotov spisak za frizere, kozmetiku, masažu ili nokte.</div>'}`}
 function svcForm(id){if(RO){roBlock();return}const s=id?svcById(id):null;
@@ -523,49 +501,64 @@ function presetDlg(){if(RO){roBlock();return}$('dlgBody').innerHTML=`<h3>📋 Go
 function pgZaposleni(){const mon=todayStr().slice(0,7);
   return`<div class="row wrap" style="margin-bottom:12px"><button class="btn-p grow w" data-act="newstaff">➕ Novi zaposleni</button></div>
    <div class="small muted" style="margin:0 2px 10px">Svaki zaposleni ima svoju kolonu u kalendaru. Ako radiš sam/a, ne moraš da dodaješ nikoga.</div>
-   ${db.staff.length?db.staff.map(s=>{const as=db.appts.filter(a=>a.staffId===s.id&&a.status==='dosao'&&a.date.startsWith(mon)).length,inv=db.invoices.filter(o=>o.staffId===s.id&&(o.date||'').startsWith(mon)).reduce((t,o)=>t+invTotal(o),0);
-     return`<div class="item ${s.off?'dim':''}" style="border-left:4px solid ${s.color}"><div class="grow"><div class="row sp"><b>${esc(s.name)}</b>${s.off?'<span class="badge b-n">neaktivan</span>':''}</div><div class="small muted">${s.phone?'📞 '+esc(s.phone)+' · ':''}ovaj mesec: ${as} termina · ${money(inv)}</div><div class="acts"><button class="btn-s w" data-act="editstaff" data-id="${s.id}">✏️ Izmeni</button></div></div></div>`}).join(''):'<div class="empty">Nema zaposlenih.</div>'}`}
+   ${db.staff.length?db.staff.map(s=>{const as=db.appts.filter(a=>a.staffId===s.id&&a.status==='dosao'&&a.date.startsWith(mon)).length,inv=db.appts.filter(a=>a.staffId===s.id&&a.status==='dosao'&&a.paid&&!a.pkg&&a.date.startsWith(mon)).reduce((t,a)=>t+apptPrice(a),0);
+     return`<div class="item ${s.off?'dim':''}" style="border-left:4px solid ${s.color}"><div class="grow"><div class="row sp"><b>${esc(s.name)}</b>${s.off?'<span class="badge b-n">neaktivan</span>':''}</div><div class="small muted">${s.phone?'📞 '+esc(s.phone)+' · ':''}ovaj mesec: ${as} završenih termina · naplaćeno ${money(inv)}</div><div class="acts"><button class="btn-s w" data-act="editstaff" data-id="${s.id}">✏️ Izmeni</button></div></div></div>`}).join(''):'<div class="empty">Nema zaposlenih.</div>'}`}
 function staffForm(id){if(RO){roBlock();return}const s=id?staffById(id):null;
   openForm({title:s?'✏️ Zaposleni':'➕ Novi zaposleni',values:s||{color:SCOL[db.staff.length%SCOL.length]},fields:[{k:'name',l:'Ime',req:1},{k:'phone',l:'Telefon',t:'tel',h:1},{k:'color',l:'Boja u kalendaru',t:'color',h:1},{k:'off',l:'Neaktivan (ne prikazuje se u kalendaru)',t:'check'}],
     pre:s?`<div style="text-align:right;margin:-6px 0 8px"><button type="button" class="btn-s btn-d" data-act="delstaff" data-id="${s.id}">🗑️ Obriši</button></div>`:'',
     onSave:o=>{if(!o.name){toast('Upiši ime');return false}if(s)Object.assign(s,o);else db.staff.push(Object.assign({id:uid()},o));save();toast('Sačuvano ✔')}})}
 
 /* ---------- TERMIN ---------- */
+
+/* ---------- TERMIN ---------- */
 let ae=null;
-function openAppt(id,pre){const a=id?JSON.parse(JSON.stringify(apptById(id))):Object.assign({id:'',cid:'',date:ui.day||todayStr(),time:'10:00',dur:30,svcs:[],staffId:(activeStaff()[0]||{}).id||'',status:'zak',note:''},pre||{});
-  if(!id&&pre&&pre.staffId==='')a.staffId=(activeStaff()[0]||{}).id||'';ae={a,isNew:!id};apDraw()}
-function apConflicts(a){return db.appts.filter(x=>x.id!==a.id&&x.date===a.date&&x.status!=='otk'&&(x.staffId||'')===(a.staffId||'')&&tmin(x.time)<tmin(a.time)+num(a.dur)&&tmin(a.time)<tmin(x.time)+num(x.dur))}
+const fIn=v=>v===''||v==null?'':String(Math.round(num(v)*100)/100).replace('.',',');
+function openAppt(id,pre){const a=id?JSON.parse(JSON.stringify(apptById(id))):Object.assign({id:'',cid:'',date:ui.day||todayStr(),time:'10:00',dur:30,svcs:[],staffId:(activeStaff()[0]||{}).id||'',status:'zak',note:'',price:'',paid:false,pkg:''},pre||{});
+  if(!id&&pre&&pre.staffId==='')a.staffId=(activeStaff()[0]||{}).id||'';
+  if(!id&&a.cid&&!a.pkg){const p=activePkg(a.cid);if(p)a.pkg=p.id}
+  ae={a,isNew:!id};apDraw()}
+function apConflicts(a){return db.appts.filter(x=>x.id!==a.id&&x.date===a.date&&x.status!=='otk'&&x.status!=='nije'&&(x.staffId||'')===(a.staffId||'')&&tmin(x.time)<tmin(a.time)+num(a.dur)&&tmin(a.time)<tmin(x.time)+num(x.dur))}
 function apAlg(a){const c=cliById(a.cid);return c&&c.allergy?`<div class="small" style="color:var(--warn);margin-top:4px">⚠️ ${esc(c.allergy)}</div>`:''}
 function apCf(a){const cf=apConflicts(a);return cf.length?`<div class="alert warn" style="margin-top:8px">⚠️ Preklapa se sa: ${cf.map(x=>esc(x.time)+' '+esc(apptName(x))).join(', ')}</div>`:''}
-/* posle izmene polja osvežava se samo upozorenje (ne ceo prozor — inače bi se izgubio klik na „Sačuvaj“) */
-function apInfo(){apRead();$('aAlg').innerHTML=apAlg(ae.a);$('aCf').innerHTML=apCf(ae.a)}
-function apDraw(){const a=ae.a,c=cliById(a.cid),inv=a.invId&&invById(a.invId);
-  const sel=new Set(a.svcs||[]),sum=(a.svcs||[]).reduce((s,id)=>s+num((svcById(id)||{}).price),0);
+function apPkgOpts(a){const l=db.packages.filter(p=>p.cid&&p.cid===a.cid&&(p.id===a.pkg||pkgInfo(p).active));return l}
+function apPkg(a){const l=apPkgOpts(a);if(!l.length)return'';return`<label class="l" style="margin-top:10px">📦 Paket</label><select class="fld" id="aPkg"><option value="">Bez paketa (plaća se posebno)</option>${l.map(p=>{const i=pkgInfo(p);return`<option value="${p.id}" ${p.id===a.pkg?'selected':''}>${esc(p.name||'Paket')}${i.left!=null?' — ostalo '+i.left:''}</option>`}).join('')}</select>`}
+function apInfo(){apRead();$('aAlg').innerHTML=apAlg(ae.a);$('aCf').innerHTML=apCf(ae.a);$('aPkgW').innerHTML=apPkg(ae.a);apPriceUpd()}
+function apPriceUpd(){const a=ae.a,w=$('aPriceW');if(!w)return;w.hidden=!!a.pkg;const p=$('aPrice');if(p)p.placeholder=fIn(svcPrice(a))||'0'}
+function apDraw(){const a=ae.a,c=cliById(a.cid);
+  const sel=new Set(a.svcs||[]);
   $('dlgBody').innerHTML=`<div class="row sp"><h3 style="margin:0">${ae.isNew?'📅 Novi termin':'📅 Termin'}</h3>${ae.isNew?'':aBadge(a.status)}</div>
    <div class="grid g2" style="margin-top:10px"><div style="grid-column:1/-1"><label class="l">Klijent *</label><div class="row" style="gap:6px"><input class="fld grow" id="aCli" list="cliList" value="${esc(c?c.name:a.cname||'')}" placeholder="Ime klijenta" autocomplete="off"><button class="btn-s" data-act="apnewcli" title="Novi klijent sa telefonom">＋</button></div><div id="aAlg">${apAlg(a)}</div></div>
     <div><label class="l">Datum</label><input class="fld" id="aDate" type="date" value="${esc(a.date)}"></div><div><label class="l">Vreme</label><input class="fld" id="aTime" type="time" step="300" value="${esc(a.time)}"></div>
     <div><label class="l">Trajanje (min)</label><input class="fld" id="aDur" type="number" inputmode="numeric" value="${esc(a.dur)}"></div>
     <div><label class="l">Zaposleni</label><select class="fld" id="aStaff"><option value="">—</option>${db.staff.filter(s=>!s.off||s.id===a.staffId).map(s=>`<option value="${s.id}" ${s.id===a.staffId?'selected':''}>${esc(s.name)}</option>`).join('')}</select></div></div>
    <div id="aCf">${apCf(a)}</div>
-   <h4>Usluge ${sel.size?`<span class="muted small">· ${money(sum)}</span>`:''}</h4>
+   <h4>Usluge</h4>
    <div class="chips" id="aSvcs">${db.services.length?db.services.slice().sort((x,y)=>(x.cat||'').localeCompare(y.cat||'')||x.name.localeCompare(y.name,'sr')).map(s=>`<button data-act="apsvc" data-id="${s.id}" class="${sel.has(s.id)?'btn-p':''}">${esc(s.name)}${num(s.dur)?` <span class="small" style="opacity:.75">${s.dur}′</span>`:''}</button>`).join(''):'<span class="small muted">Nema usluga u cenovniku — dodaj ih u meniju „Usluge“.</span>'}</div>
-   <label class="l" style="margin-top:10px">Napomena</label><input class="fld" id="aNote" value="${esc(a.note||'')}" placeholder="npr. boja 7.1, donosi svoju šampon">
-   ${ae.isNew?'':`<label class="l" style="margin-top:10px">Status</label><div class="seg">${Object.entries(AST).map(([k,v])=>`<button data-act="apst" data-v="${k}" class="${a.status===k?'on':''}">${v.i} ${v.l}</button>`).join('')}</div>`}
-   ${ae.isNew?`<label class="l" style="margin-top:10px">Ponavljanje</label><select class="fld" id="aRep"><option value="0">Ne ponavlja se</option>${[[7,'Svake nedelje'],[14,'Svake 2 nedelje'],[21,'Svake 3 nedelje'],[28,'Svake 4 nedelje']].map(([d,l])=>`<option value="${d}">${l}</option>`).join('')}</select><select class="fld" id="aRepN" style="margin-top:6px">${[2,3,4,6,8,12].map(n=>`<option value="${n}">${n} termina ukupno</option>`).join('')}</select>`:''}
+   <div id="aPkgW">${apPkg(a)}</div>
+   <div id="aPriceW" class="grid g2" style="margin-top:10px" ${a.pkg?'hidden':''}><div><label class="l">Cena (RSD)</label><input class="fld" id="aPrice" inputmode="decimal" value="${esc(fIn(a.price))}" placeholder="${esc(fIn(svcPrice(a))||'0')}"><div class="small muted" style="margin-top:3px">Prazno = po cenovniku</div></div>
+    <label class="row" style="align-self:center;margin-top:14px"><input type="checkbox" id="aPaid" ${a.paid?'checked':''} style="width:20px;height:20px"> 💳 Naplaćeno</label></div>
+   <label class="l" style="margin-top:10px">Napomena</label><input class="fld" id="aNote" value="${esc(a.note||'')}" placeholder="npr. boja 7.1, donosi svoj šampon">
+   <label class="l" style="margin-top:10px">Status</label><div class="seg wrap">${Object.entries(AST).map(([k,v])=>`<button data-act="apst" data-v="${k}" class="${a.status===k?'on':''}">${v.i} ${v.l}</button>`).join('')}</div>
+   ${ae.isNew?`<label class="l" style="margin-top:10px">Ponavljanje</label><select class="fld" id="aRep"><option value="0">Ne ponavlja se</option>${[[7,'Svake nedelje'],[14,'Svake 2 nedelje'],[21,'Svake 3 nedelje'],[28,'Svake 4 nedelje']].map(([d,l])=>`<option value="${d}">${l}</option>`).join('')}</select><select class="fld" id="aRepN" style="margin-top:6px">${[2,3,4,6,8,10,12].map(n=>`<option value="${n}">${n} termina ukupno</option>`).join('')}</select>`:''}
    <div class="row wrap" style="margin-top:14px;gap:8px">${ae.isNew?'':`<button class="btn-d w" data-act="apdel">🗑️</button>`}<button class="grow" data-act="dlgclose">Zatvori</button><button class="btn-p grow w" data-act="apsave">💾 Sačuvaj</button></div>
-   ${ae.isNew?'':`<div class="row wrap" style="margin-top:8px;gap:8px">${a.status==='zak'?`<button class="btn-v grow" data-act="arem" data-id="${a.id}">🔔 Podsetnik klijentu</button>`:''}${inv?`<button class="grow" data-act="invdoc" data-id="${inv.id}">🖨️ Račun ${esc(inv.no)}</button>`:`<button class="grow w" data-act="ainv" data-id="${a.id}">🧾 Izdaj račun</button>`}</div>`}`;
+   ${ae.isNew||!OPEN(a.status)?'':`<div class="row wrap" style="margin-top:8px;gap:8px"><button class="btn-v grow" data-act="arem" data-id="${a.id}">🔔 Podsetnik</button>${dayDiff(a.date)===0?`<button class="grow" data-act="alate" data-id="${a.id}">⏰ Poruka „kasnite“</button>`:''}</div>`}`;
   if(!$('dlg').open)$('dlg').showModal()}
-function apRead(){const a=ae.a;if(!$('aCli'))return a;const cn=$('aCli').value.trim(),c=db.clients.find(x=>nName(x.name)===nName(cn));a.cid=c?c.id:'';a.cname=c?'':cn;
+function apRead(){const a=ae.a;if(!$('aCli'))return a;const cn=$('aCli').value.trim(),c=db.clients.find(x=>nName(x.name)===nName(cn));
+  const oc=a.cid;a.cid=c?c.id:'';a.cname=c?'':cn;
   a.date=$('aDate').value||a.date;a.time=$('aTime').value||a.time;a.dur=num($('aDur').value)||30;a.staffId=$('aStaff').value;a.note=$('aNote').value.trim();
+  if($('aPkg'))a.pkg=$('aPkg').value;else if(oc!==a.cid){const p=a.cid&&activePkg(a.cid);a.pkg=p?p.id:''}
+  if(a.pkg&&!pkgById(a.pkg))a.pkg='';
+  if($('aPrice')){const v=$('aPrice').value.trim();a.price=v===''?'':num(v);a.paid=$('aPaid').checked}
   if($('aRep')){ae.rep=+$('aRep').value;ae.repN=+$('aRepN').value}return a}
 function apSave(){const a=apRead();if(!a.cid&&!a.cname){toast('Upiši klijenta');return false}
-  if(!a.cid){a.cid=findOrCreateCli(a.cname);a.cname=''}
-  if(ae.isNew){a.id=uid();a.created=Date.now();db.appts.push(a);if(ae.rep){const ser=uid();a.ser=ser;for(let k=1;k<ae.repN;k++)db.appts.push(Object.assign(JSON.parse(JSON.stringify(a)),{id:uid(),date:addD(a.date,ae.rep*k),status:'zak',remSent:'',invId:''}))}ae.isNew=false}
+  if(!a.cid){if(demoFull()){toast(DEMO_LIMIT_MSG);return false}a.cid=findOrCreateCli(a.cname);a.cname=''}
+  if(a.pkg)a.paid=false;
+  if(ae.isNew){a.id=uid();a.created=Date.now();db.appts.push(a);if(ae.rep){const ser=uid();a.ser=ser;for(let k=1;k<ae.repN;k++)db.appts.push(Object.assign(JSON.parse(JSON.stringify(a)),{id:uid(),date:addD(a.date,ae.rep*k),status:'zak',remSent:'',paid:false}))}ae.isNew=false}
   else{const i=db.appts.findIndex(x=>x.id===a.id);db.appts[i]=a}
-  save();return true}
-/* račun iz termina: usluge termina → stavke */
-function invFromAppt(a){const items=(a.svcs||[]).map(id=>{const s=svcById(id)||{};return s.unit==='h'?{name:s.name,qty:Math.round(num(a.dur)/60*100)/100||1,kind:'sat',price:num(s.price)}:{name:s.name,qty:1,kind:'usl',price:num(s.price)}});
-  openInv(null,{cid:a.cid,date:a.date,staffId:a.staffId,apptId:a.id,items,paid:true})}
+  return save()}
+/* promena statusa iz liste; „Završeno“ za termin bez paketa pita za naplatu */
+function setStatus(a,v){a.status=v;if(v==='dosao'){a.doneAt=Date.now();if(!a.pkg&&apptPrice(a)>0&&!a.paid&&confirm(`${apptName(a)} — naplaćeno ${money(apptPrice(a))}?`))a.paid=true}
+  if(save()){const p=a.pkg&&pkgById(a.pkg);if(p&&v==='dosao'){const i=pkgInfo(p);if(i.left===1)toast('📦 U paketu je ostao još 1 termin');else if(i.left===0)toast('📦 Paket je potrošen');else toast(AST[v].i+' '+AST[v].l)}else toast(AST[v].i+' '+AST[v].l)}}
 
 /* ---------- PORUKE (Viber / WhatsApp / SMS) ---------- */
 function phoneIntl(ph){let d=String(ph||'').replace(/[^\d+]/g,'');if(d.startsWith('+'))d=d.slice(1);else if(d.startsWith('00'))d=d.slice(2);else if(d.startsWith('0'))d=(String(S().cc||'381').replace(/\D/g,''))+d.slice(1);return d.replace(/\D/g,'')}
@@ -573,7 +566,7 @@ function fillMsg(tpl,map){return String(tpl||'').replace(/\{(\w+)\}/g,(x,k)=>k i
 function remMsg(a){const c=cliById(a.cid)||{},sh=S().shop,d=new Date(a.date+'T12:00:00'),k=dayDiff(a.date);
   const dat=(k===0?'danas':k===1?'sutra':DN[d.getDay()].toLowerCase())+' '+d.getDate()+'. '+MSL[d.getMonth()].toLowerCase(),sv=apptSvc(a);
   return fillMsg(S().msgRem||DEF_REM,{ime:firstName(c.name),datum:dat,vreme:a.time,usluge:sv?' ('+sv+')':'',salon:sh.name||'',telefon:sh.phone?', tel. '+sh.phone:'',adresa:sh.addr||''})}
-function invMsg(o){const c=cliById(o.cid)||{},sh=S().shop;return fillMsg(S().msgInv||DEF_INV,{ime:firstName(c.name||o.cname),broj:o.no,iznos:money(invTotal(o)),salon:sh.name||'',telefon:sh.phone?', tel. '+sh.phone:''})}
+function lateMsg(a){const c=cliById(a.cid)||{},sh=S().shop;return fillMsg(S().msgLate||DEF_LATE,{ime:firstName(c.name),vreme:a.time,usluge:'',salon:sh.name||'',telefon:sh.phone?', tel. '+sh.phone:'',datum:'danas',adresa:sh.addr||''})}
 function msgDlg(title,phone,text,onSent){
   $('dlgBody').innerHTML=`<h3>${title}</h3><div class="small muted" style="margin-bottom:8px">${phone?'📞 '+esc(phone):'<span style="color:var(--warn)">Nema upisan telefon — poruku možeš da kopiraš ili podeliš.</span>'}</div>
    <label class="l">Poruka (možeš da je izmeniš)</label><textarea class="fld" id="mTxt" rows="6">${esc(text)}</textarea>
@@ -588,7 +581,7 @@ function msgDlg(title,phone,text,onSent){
     else if(ch==='wa')window.open('https://wa.me/'+p+'?text='+encodeURIComponent(t),'_blank');
     else if(ch==='sms')location.href='sms:+'+p+(/iPhone|iPad/.test(navigator.userAgent)?'&':'?')+'body='+encodeURIComponent(t);
     if(onSent)onSent()})}
-function bulkRem(d){const l=dayAppts(d).filter(a=>a.status==='zak');
+function bulkRem(d){const l=dayAppts(d).filter(a=>OPEN(a.status));
   $('dlgBody').innerHTML=`<h3>🔔 Podsetnici · ${esc(dLabel(d))}</h3><div class="small muted" style="margin-bottom:10px">Dodirni kanal pored klijenta — otvoriće se poruka sa tekstom, samo je pošalji. Posle se vrati ovde za sledećeg.</div>
    ${l.map(a=>{const c=cliById(a.cid)||{};return`<div class="item"><div class="grow"><div class="row sp"><b>${esc(a.time)} · ${esc(apptName(a))}</b>${a.remSent?'<span class="badge b-ok">✔ poslato</span>':''}</div><div class="small muted">${esc(apptSvc(a))}${c.phone?' · '+esc(c.phone):' · nema telefona'}</div>
     <div class="acts">${c.phone?`<button class="btn-s btn-v" data-br="viber" data-id="${a.id}">💜 Viber</button><button class="btn-s" data-br="wa" data-id="${a.id}">🟢 WhatsApp</button><button class="btn-s" data-br="sms" data-id="${a.id}">📩 SMS</button>`:''}</div></div></div>`}).join('')||'<div class="empty">Nema zakazanih termina.</div>'}
@@ -601,74 +594,58 @@ function bulkRem(d){const l=dayAppts(d).filter(a=>a.status==='zak');
     if(!RO){a.remSent=todayStr();save()}setTimeout(()=>{const st=$('dlg').scrollTop;bulkRem(d);$('dlg').scrollTop=st;bgRender()},400)})}
 
 /* ---------- RAČUN (štampa / PDF) ---------- */
-let docCtx={};
-function showInv(id){const o=invById(id);if(!o)return;docCtx={name:'racun-'+o.no,inv:id};$('docBody').innerHTML=invHtml(o);$('docView').hidden=false;$('docView').scrollTop=0;if($('dlg').open)$('dlg').close()}
-function invHtml(o){const sh=S().shop,t=calc(o),c=cliById(o.cid),st=staffById(o.staffId);
-  const rows=(o.items||[]).map((i,n)=>`<tr><td class="c hm">${n+1}</td><td>${esc(i.name)}</td><td class="r q">${fmtN(i.qty,2)}</td><td class="hm">${i.kind==='sat'?'sat':i.kind==='proizvod'?'kom':'usl.'}</td><td class="r">${md(i.price)}</td><td class="r">${md(num(i.qty)*num(i.price))}</td></tr>`).join('')||'<tr><td colspan="6" class="c">—</td></tr>';
-  const tr=(l,v,g)=>`<tr class="${g?'g':''}"><td>${l}</td><td class="r">${v}</td></tr>`;
-  const tot=`<table class="tot">${t.disc||t.r>0?tr('Zbir stavki',md(t.sub)):''}${t.disc?tr('Popust '+num(o.discount)+'%','− '+md(t.disc)):''}${t.r>0?tr('Osnovica',md(t.base))+tr('PDV '+Math.round(t.r*100)+'%',md(t.pdv)):''}${tr('UKUPNO (RSD)',md(t.total),1)}</table>`;
-  const shopLines=[sh.addr,sh.city,sh.phone?'Tel: '+sh.phone:'',sh.email,sh.pib?'PIB: '+sh.pib:'',sh.mb?'MB: '+sh.mb:''].filter(Boolean).map(esc).join('<br>');
-  return`<div class="hd"><div class="hl">${S().logo?`<img class="dlogo" src="${esc(S().logo)}" alt="">`:''}<div><h1>${esc(sh.name||'Salon')}</h1><div style="font-size:12px;margin-top:4px">${shopLines}</div></div></div>
-   <div style="text-align:right"><h1>RAČUN</h1><div><b>Br. ${esc(o.no)}</b></div><div>Datum: ${fmtDate(o.date)}</div></div></div>
-  <div class="two"><div><h2>Kupac</h2><p><b>${esc(c?c.name:o.cname||'Fizičko lice')}</b></p>${c&&c.phone?`<p>Tel: ${esc(c.phone)}</p>`:''}${c&&c.email?`<p>${esc(c.email)}</p>`:''}</div>
-   <div><h2>Plaćanje</h2><p>${esc(o.pay||'Gotovina')}${o.paid?' — <b>plaćeno'+(o.paidDate?' '+fmtDate(o.paidDate):'')+'</b>':' — <b>nije plaćeno</b>'}</p>${st?`<p>Uslugu pružio/la: ${esc(st.name)}</p>`:''}</div></div>
-  <h2>Stavke</h2>
-  <table class="items"><tr><th class="hm" style="width:30px">R.br.</th><th>Opis</th><th style="width:50px" class="r q">Kol.</th><th class="hm" style="width:44px">Jed.</th><th style="width:90px" class="r">Cena</th><th style="width:100px" class="r">Iznos</th></tr>${rows}</table><div class="totrow">${ipsBlock(o,'racun')}${tot}</div>
-  ${o.note?`<p style="margin-top:10px">${esc(o.note)}</p>`:''}${sh.acc&&!o.paid?`<p>Tekući račun: ${esc(sh.acc)}${sh.bank?' ('+esc(sh.bank)+')':''}</p>`:''}${S().invNote?`<p>${esc(S().invNote)}</p>`:''}${num(S().pdvRate)?'':'<p class="small">Obveznik nije u sistemu PDV-a.</p>'}
-  ${S().sig?`<div class="sig"><div>Izdao/la</div><div>Primio/la</div></div>`:''}`}
 
 /* ---------- IZVEŠTAJI ---------- */
+let docCtx={};
 function repRange(){const M=ui.rp;if(M==='m'){const s=ui.rmon+'-01',[y,m]=ui.rmon.split('-').map(Number);return{a:s,b:ymd(new Date(y,m,0)),lbl:MSL[m-1]+' '+y}}
   if(M==='y')return{a:ui.ry+'-01-01',b:ui.ry+'-12-31',lbl:'Godina '+ui.ry};const n=+M,b=todayStr(),d=new Date();d.setMonth(d.getMonth()-n);return{a:ymd(d),b,lbl:'Poslednjih '+n+' meseci'}}
-function repData(){const R=repRange(),inv=db.invoices.filter(o=>o.date>=R.a&&o.date<=R.b),ap=db.appts.filter(a=>a.date>=R.a&&a.date<=R.b);
-  const tot={total:0,paid:0,svc:0,hours:0,prod:0},byStaff={},bySvc={},byPay={},byM={};
-  inv.forEach(o=>{const t=calc(o);tot.total+=t.total;if(o.paid)tot.paid+=t.total;tot.svc+=t.svc;tot.hours+=t.hours;tot.prod+=t.prod;
-    const k=o.staffId||'-';(byStaff[k]=byStaff[k]||{n:0,t:0}).n++;byStaff[k].t+=t.total;const p=o.pay||'Gotovina';(byPay[p]=byPay[p]||{n:0,t:0}).n++;byPay[p].t+=t.total;
-    const mk=o.date.slice(0,7);(byM[mk]=byM[mk]||{n:0,t:0}).n++;byM[mk].t+=t.total;
-    const f=t.sub?t.total/t.sub:1;(o.items||[]).forEach(i=>{const n=i.name||'—';(bySvc[n]=bySvc[n]||{n:0,t:0}).n+=num(i.qty)||1;bySvc[n].t+=num(i.qty)*num(i.price)*f})});
+function repData(){const R=repRange(),ap=db.appts.filter(a=>a.date>=R.a&&a.date<=R.b),done=ap.filter(a=>a.status==='dosao');
+  const pk=db.packages.filter(p=>{const d=p.paidDate||p.start||'';return p.paid&&d>=R.a&&d<=R.b});
+  const tot={paid:0,unpaid:0,pkg:0,min:0},byStaff={},bySvc={},byM={},byH={};
+  const add=(o,k,t)=>{(o[k]=o[k]||{n:0,t:0}).n++;o[k].t+=t};
+  done.forEach(a=>{const pr=a.pkg?0:apptPrice(a),got=a.paid?pr:0;if(!a.pkg){if(a.paid)tot.paid+=pr;else tot.unpaid+=pr}tot.min+=num(a.dur)||0;
+    add(byStaff,a.staffId||'-',got);add(byM,a.date.slice(0,7),got);add(byH,a.time.slice(0,2)+'h',got);
+    const sv=a.svcs||[],sp=svcPrice(a)||1;sv.forEach(id=>{const s=svcById(id);if(!s)return;const share=s.unit==='h'?num(s.price)*(num(a.dur)||60)/60:num(s.price);add(bySvc,s.name,got*share/sp)})});
+  pk.forEach(p=>{tot.pkg+=num(p.price);add(byM,(p.paidDate||p.start).slice(0,7),num(p.price))});
   const st={};Object.keys(AST).forEach(k=>st[k]=ap.filter(a=>a.status===k).length);
-  return Object.assign(R,{inv,ap,tot,byStaff,bySvc,byPay,byM,st,newC:db.clients.filter(c=>(c.created||'')>=R.a&&(c.created||'')<=R.b).length})}
-function bars(obj,lab){const e=Object.entries(obj).sort((a,b)=>b[1].t-a[1].t),mx=Math.max(1,...e.map(x=>x[1].t));return e.length?e.slice(0,12).map(([k,v])=>`<div class="mrow" style="grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) auto"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(lab?lab(k):k)}</span><div class="mbar"><i style="width:${v.t/mx*100}%"></i></div><span class="mval">${money(v.t)} <span class="muted small">(${fmtN(v.n,1)})</span></span></div>`).join(''):'<div class="small muted">Nema podataka.</div>'}
+  return Object.assign(R,{ap,done,pk,tot,byStaff,bySvc,byM,byH,st,rev:tot.paid+tot.pkg,newC:db.clients.filter(c=>(c.created||'')>=R.a&&(c.created||'')<=R.b).length})}
+function bars(obj,lab,cnt){const e=Object.entries(obj).sort((a,b)=>cnt?b[1].n-a[1].n:b[1].t-a[1].t),mx=Math.max(1,...e.map(x=>cnt?x[1].n:x[1].t));return e.length?e.slice(0,12).map(([k,v])=>`<div class="mrow" style="grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) auto"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(lab?lab(k):k)}</span><div class="mbar"><i style="width:${(cnt?v.n:v.t)/mx*100}%"></i></div><span class="mval">${cnt?fmtN(v.n)+' termina':money(v.t)+` <span class="muted small">(${fmtN(v.n)})</span>`}</span></div>`).join(''):'<div class="small muted">Nema podataka.</div>'}
+const stLab=k=>k==='-'?'Nije dodeljeno':(staffById(k)||{name:'(obrisan)'}).name;
 function pgIzvestaji(){const R=repData(),done=R.st.dosao,miss=R.st.nije,rate=done+miss?Math.round(done/(done+miss)*100):null;
   return`<div class="seg" style="margin-bottom:10px">${[['m','Mesec'],['3','3 meseca'],['6','6 meseci'],['y','Godina']].map(x=>`<button data-act="rp" data-v="${x[0]}" class="${ui.rp===x[0]?'on':''}">${x[1]}</button>`).join('')}</div>
-   ${ui.rp==='m'?`<div class="pnav"><button data-act="rmon" data-v="-1">‹</button><div class="lbl">${esc(R.lbl)}</div><button data-act="rmon" data-v="1">›</button></div>`:ui.rp==='y'?`<div class="pnav"><button data-act="ry" data-v="-1">‹</button><div class="lbl">${esc(ui.ry)}</div><button data-act="ry" data-v="1">›</button></div>`:''}
-   <div class="grid g4" style="margin-bottom:12px"><div class="stat" style="border-left-color:var(--ok)"><small>Promet</small><b>${money(R.tot.total)}</b></div><div class="stat"><small>Naplaćeno</small><b>${money(R.tot.paid)}</b></div><div class="stat" style="border-left-color:var(--warn)"><small>Nenaplaćeno</small><b>${money(R.tot.total-R.tot.paid)}</b></div><div class="stat" style="border-left-color:#8b5cf6"><small>Računa</small><b>${R.inv.length}</b></div>
+   ${ui.rp==='m'?`<div class="pnav"><button data-act="rmon" data-v="-1">‹</button><div class="lbl">${esc(R.lbl)}</div><button data-act="rmon" data-v="1">›</button></div>`:ui.rp==='y'?`<div class="pnav"><button data-act="ry" data-v="-1">‹</button><div class="lbl">${esc(ui.ry)}</div><button data-act="ry" data-v="1">›</button></div>`:`<div class="small muted" style="margin:0 2px 10px">${esc(R.lbl)}</div>`}
+   <div class="grid g4" style="margin-bottom:12px"><div class="stat" style="border-left-color:var(--ok)"><small>Naplaćeno ukupno</small><b>${money(R.rev)}</b></div><div class="stat"><small>Od toga paketi</small><b>${money(R.tot.pkg)}</b></div><div class="stat" style="border-left-color:var(--warn)"><small>Nije naplaćeno</small><b>${money(R.tot.unpaid)}</b></div><div class="stat"><small>Radnih sati</small><b>${fmtN(R.tot.min/60,1)}</b></div>
     <div class="stat"><small>Završenih termina</small><b>${done}</b></div><div class="stat" style="border-left-color:var(--bad)"><small>Nije došao / otkazano</small><b>${miss} / ${R.st.otk}</b></div><div class="stat"><small>Dolaznost</small><b>${rate==null?'—':rate+'%'}</b></div><div class="stat"><small>Novih klijenata</small><b>${R.newC}</b></div></div>
-   <div class="card"><h3>💇 Po zaposlenima</h3>${bars(R.byStaff,k=>k==='-'?'Nije dodeljeno':(staffById(k)||{name:'(obrisan)'}).name)}</div>
-   <div class="card"><h3>✂️ Usluge i proizvodi</h3>${bars(R.bySvc)}</div>
-   <div class="card"><h3>💳 Način plaćanja</h3>${bars(R.byPay)}</div>
+   <div class="card"><h3>💇 Po zaposlenima</h3>${bars(R.byStaff,stLab)}</div>
+   <div class="card"><h3>✂️ Usluge (najtraženije)</h3>${bars(R.bySvc,null,1)}</div>
+   <div class="card"><h3>🕘 Najprometniji sati</h3>${bars(R.byH,null,1)}</div>
    ${ui.rp!=='m'?`<div class="card"><h3>📆 Po mesecima</h3>${bars(R.byM,k=>MSL[+k.slice(5)-1]+' '+k.slice(0,4))}</div>`:''}
-   <div class="row wrap" style="gap:8px"><button class="grow" data-act="repprint">🖨️ Štampaj izveštaj</button><button class="grow" data-act="csvinv">📑 Računi (CSV / Excel)</button><button class="grow" data-act="csvcli">📑 Klijenti (CSV)</button></div>`}
+   <div class="row wrap" style="gap:8px"><button class="grow" data-act="repprint">🖨️ Štampaj izveštaj</button><button class="grow" data-act="csvappt">📑 Termini (CSV / Excel)</button><button class="grow" data-act="csvcli">📑 Klijenti (CSV)</button></div>`}
 function showReport(){const R=repData(),sh=S().shop,row=(a,b)=>`<tr><td>${a}</td><td class="r">${b}</td></tr>`;
   docCtx={name:'izvestaj-'+R.a+'_'+R.b};
-  const tb=(t,o,lab)=>`<h2>${t}</h2><table class="items"><tr><th>Naziv</th><th class="r">Kol.</th><th class="r">Iznos</th></tr>${Object.entries(o).sort((a,b)=>b[1].t-a[1].t).map(([k,v])=>`<tr><td>${esc(lab?lab(k):k)}</td><td class="r">${fmtN(v.n,1)}</td><td class="r">${money(v.t)}</td></tr>`).join('')||'<tr><td colspan="3" class="c">—</td></tr>'}</table>`;
+  const tb=(t,o,lab)=>`<h2>${t}</h2><table class="items"><tr><th>Naziv</th><th class="r">Termina</th><th class="r">Naplaćeno</th></tr>${Object.entries(o).sort((a,b)=>b[1].n-a[1].n).map(([k,v])=>`<tr><td>${esc(lab?lab(k):k)}</td><td class="r">${fmtN(v.n)}</td><td class="r">${money(v.t)}</td></tr>`).join('')||'<tr><td colspan="3">—</td></tr>'}</table>`;
   $('docBody').innerHTML=`<div class="hd"><div class="hl">${S().logo?`<img class="dlogo" src="${esc(S().logo)}" alt="">`:''}<div><h1>${esc(sh.name||'Salon')}</h1></div></div><div style="text-align:right"><h1>IZVEŠTAJ</h1><div><b>${esc(R.lbl)}</b></div><div>${fmtDate(R.a)} – ${fmtDate(R.b)}</div></div></div>
-   <h2>Pregled</h2><table class="items"><tr><th>Stavka</th><th class="r">Iznos</th></tr>${row('Računa',R.inv.length)}${row('Promet',money(R.tot.total))}${row('Naplaćeno',money(R.tot.paid))}${row('Nenaplaćeno',money(R.tot.total-R.tot.paid))}${row('Usluge',money(R.tot.svc))}${row('Radni sati',money(R.tot.hours))}${row('Proizvodi',money(R.tot.prod))}${row('Završenih termina',R.st.dosao)}${row('Nije došao / otkazano',R.st.nije+' / '+R.st.otk)}</table>
-   ${tb('Po zaposlenima',R.byStaff,k=>k==='-'?'Nije dodeljeno':(staffById(k)||{name:'(obrisan)'}).name)}${tb('Usluge i proizvodi',R.bySvc)}${tb('Način plaćanja',R.byPay)}
-   <h2>Računi</h2><table class="items"><tr><th>Broj</th><th>Datum</th><th>Kupac</th><th class="r">Iznos</th><th class="c">Plaćeno</th></tr>${R.inv.sort((a,b)=>a.date.localeCompare(b.date)).map(o=>`<tr><td>${esc(o.no)}</td><td>${fmtDate(o.date)}</td><td>${esc((cliById(o.cid)||{}).name||o.cname||'')}</td><td class="r">${money(invTotal(o))}</td><td class="c">${o.paid?'da':'ne'}</td></tr>`).join('')||'<tr><td colspan="5" class="c">—</td></tr>'}</table>`;
+   <h2>Pregled</h2><table class="items"><tr><th>Stavka</th><th class="r">Vrednost</th></tr>${row('Završenih termina',R.st.dosao)}${row('Nije došao',R.st.nije)}${row('Otkazano',R.st.otk)}${row('Naplaćeno za termine',money(R.tot.paid))}${row('Prodati paketi',money(R.tot.pkg))}${row('<b>Ukupno naplaćeno</b>','<b>'+money(R.rev)+'</b>')}${row('Nije naplaćeno',money(R.tot.unpaid))}${row('Radnih sati',fmtN(R.tot.min/60,1))}${row('Novih klijenata',R.newC)}</table>
+   ${tb('Po zaposlenima',R.byStaff,stLab)}${tb('Usluge',R.bySvc)}
+   <h2>Završeni termini</h2><table class="items"><tr><th>Datum</th><th>Klijent</th><th>Usluge</th><th class="r">Iznos</th><th class="c">Naplaćeno</th></tr>${R.done.sort(sortA).map(a=>`<tr><td>${fmtDate(a.date)} ${esc(a.time)}</td><td>${esc(apptName(a))}</td><td>${esc(apptSvc(a))}</td><td class="r">${a.pkg?'paket':money(apptPrice(a))}</td><td class="c">${a.pkg?'📦':a.paid?'✔':'—'}</td></tr>`).join('')||'<tr><td colspan="5">—</td></tr>'}</table>`;
   $('docView').hidden=false;$('docView').scrollTop=0}
 const csvOut=(name,rows)=>download(name,'﻿'+rows.map(r=>r.map(c=>'"'+String(c??'').replace(/"/g,'""')+'"').join(';')).join('\r\n'),'text/csv');
-function csvInv(){const rows=[['Broj','Datum','Kupac','Telefon','Zaposleni','Stavke','Popust %','Ukupno','Način plaćanja','Plaćeno']];
-  db.invoices.slice().sort((a,b)=>a.date.localeCompare(b.date)).forEach(o=>{const c=cliById(o.cid)||{};rows.push([o.no,o.date,c.name||o.cname||'',c.phone||'',(staffById(o.staffId)||{}).name||'',(o.items||[]).map(i=>i.name+' ×'+fmtN(i.qty,2)).join(' | '),num(o.discount)||'',String(Math.round(invTotal(o)*100)/100).replace('.',','),o.pay||'',o.paid?'da':'ne'])});csvOut(`racuni_${todayStr()}.csv`,rows)}
-function csvCli(){const rows=[['Ime','Telefon','E-pošta','Rođendan','Alergije','Beleška','Dolazaka','Potrošio']];db.clients.forEach(c=>{const s=cliStats(c.id);rows.push([c.name,c.phone,c.email,c.birth,c.allergy,c.note,s.visits,String(Math.round(s.spent)).replace('.',',')])});csvOut(`klijenti_${todayStr()}.csv`,rows)}
+function csvAppt(){const rows=[['Datum','Vreme','Trajanje (min)','Klijent','Telefon','Zaposleni','Usluge','Status','Paket','Cena','Naplaćeno','Napomena']];
+  db.appts.slice().sort(sortA).forEach(a=>{const c=cliById(a.cid)||{},p=a.pkg&&pkgById(a.pkg);rows.push([a.date,a.time,a.dur,apptName(a),c.phone||'',(staffById(a.staffId)||{}).name||'',apptSvc(a),(AST[a.status]||AST.zak).l,p?p.name:'',a.pkg?'':String(Math.round(apptPrice(a)*100)/100).replace('.',','),a.pkg?'':a.paid?'DA':'NE',a.note||''])});csvOut(`termini_${todayStr()}.csv`,rows)}
+function csvCli(){const rows=[['Ime','Telefon','E-pošta','Rođendan','Alergije','Beleška','Dolazaka','Nije došao','Platio']];db.clients.forEach(c=>{const s=cliStats(c.id);rows.push([c.name,c.phone,c.email,c.birth,c.allergy,c.note,s.visits,s.miss,String(Math.round(s.spent)).replace('.',',')])});csvOut(`klijenti_${todayStr()}.csv`,rows)}
 
 /* ---------- VIŠE / PODEŠAVANJA ---------- */
 function pgVise(){const b=(t,i,n,d)=>`<button data-tab="${t}"><span style="font-size:1.6rem">${i}</span><div><b>${n}</b><div class="small muted">${d}</div></div></button>`;
-  return`<div class="more">${b('usluge','✂️','Usluge i cene','Cenovnik, trajanje, po usluzi ili po satu')}${b('zaposleni','💇','Zaposleni','Kolone u kalendaru, promet po zaposlenom')}${b('izvestaji','📊','Izveštaji','Promet, usluge, zaposleni, dolaznost')}${isAdmin?b('korisnici','👑','Korisnici','Licence i uređaji (admin)'):''}${b('podesavanja','⚙️','Podešavanja','Salon, radno vreme, poruke, Google Drive, kopije')}</div>`}
+  return`<div class="more">${b('paketi','📦','Paketi','Paketi termina i članarine')}${b('usluge','✂️','Usluge i cene','Cenovnik, trajanje, cena po usluzi ili po satu')}${b('zaposleni','💇','Zaposleni','Kolone u kalendaru, termini po zaposlenom')}${b('izvestaji','📊','Izveštaji','Naplata, usluge, zaposleni, dolaznost')}${isAdmin?b('korisnici','👑','Korisnici','Licence i uređaji (admin)'):''}${b('podesavanja','⚙️','Podešavanja','Salon, radno vreme, poruke, Google Drive, kopije')}</div>`}
 function pgPodesavanja(){const s=S(),sh=s.shop,inp=(p,l,t,ph)=>`<div><label class="l">${l}</label><input class="fld" data-path="${p}" type="${t||'text'}" value="${esc(p.split('.').reduce((o,k)=>o&&o[k],s)??'')}" placeholder="${esc(ph||'')}"></div>`;
   return`${licCard()}
-   <div class="card"><h3>🏪 Salon (za račune i poruke)</h3><div class="grid g2">${inp('shop.name','Naziv salona')}${inp('shop.phone','Telefon','tel')}${inp('shop.addr','Adresa')}${inp('shop.city','Mesto')}${inp('shop.email','E-pošta','email')}${inp('shop.pib','PIB')}${inp('shop.mb','Matični broj')}${inp('shop.acc','Tekući račun (za IPS QR)','text','160-0000000000000-00')}${inp('shop.bank','Banka')}</div>
-    <div class="small muted" style="margin-top:6px">${sh.acc&&!ipsAcc(sh.acc)?'<span style="color:var(--warn)">⚠️ Broj tekućeg računa nije ispravan — IPS QR se neće prikazati.</span>':'Uz ispravan tekući račun na računu se prikazuje NBS IPS QR kod za plaćanje m-bankingom.'}</div>
-    <label class="l" style="margin-top:12px">Logo (za račun)</label>${s.logo?`<div class="logoPrev"><img src="${esc(s.logo)}" alt=""></div>`:''}<div class="row wrap" style="gap:8px"><button class="w" data-act="logopick">🖼️ ${s.logo?'Promeni':'Dodaj'} logo</button>${s.logo?'<button class="btn-d w" data-act="logodel">Ukloni</button>':''}</div></div>
+   <div class="card"><h3>🏪 Salon (za poruke i izveštaje)</h3><div class="grid g2">${inp('shop.name','Naziv salona')}${inp('shop.phone','Telefon','tel')}${inp('shop.addr','Adresa')}${inp('shop.city','Mesto')}${inp('shop.email','E-pošta','email')}</div>
+    <label class="l" style="margin-top:12px">Logo (za izveštaj)</label>${s.logo?`<div class="logoPrev"><img src="${esc(s.logo)}" alt=""></div>`:''}<div class="row wrap" style="gap:8px"><button class="w" data-act="logopick">🖼️ ${s.logo?'Promeni':'Dodaj'} logo</button>${s.logo?'<button class="btn-d w" data-act="logodel">Ukloni</button>':''}</div></div>
    <div class="card"><h3>🕘 Radno vreme i termini</h3><div class="grid g3">${inp('dayStart','Od','time')}${inp('dayEnd','Do','time')}<div><label class="l">Korak u kalendaru</label><select class="fld" data-path="slot">${[10,15,20,30,60].map(n=>`<option value="${n}" ${num(s.slot)===n?'selected':''}>${n} min</option>`).join('')}</select></div></div></div>
-   <div class="card"><h3>💰 Cene i porez</h3><div class="grid g2">${inp('hourRate','Cena radnog sata (RSD)','number')}<div><label class="l">PDV</label><select class="fld" data-path="pdvRate">${[[0,'Nisam u PDV sistemu'],[20,'20%'],[10,'10%']].map(([v,l])=>`<option value="${v}" ${num(s.pdvRate)===v?'selected':''}>${l}</option>`).join('')}</select></div></div>
-    ${num(s.pdvRate)?`<label class="row" style="margin-top:8px"><input type="checkbox" data-chk="pdvIncl" ${s.pdvIncl?'checked':''} style="width:20px;height:20px"> Cene u cenovniku već sadrže PDV</label>`:''}
-    <label class="row" style="margin-top:8px"><input type="checkbox" data-chk="ipsQr" ${s.ipsQr!==false?'checked':''} style="width:20px;height:20px"> IPS QR kod na nenaplaćenom računu</label>
-    <label class="row" style="margin-top:8px"><input type="checkbox" data-chk="sig" ${s.sig?'checked':''} style="width:20px;height:20px"> Polja za potpis na računu</label>
-    <label class="l" style="margin-top:10px">Napomena na svakom računu</label><input class="fld" data-path="invNote" value="${esc(s.invNote)}" placeholder="npr. Hvala na poverenju!"></div>
-   <div class="card"><h3>💬 Tekst poruka</h3><div class="small muted" style="margin-bottom:8px">Zamene: {ime} {datum} {vreme} {usluge} {salon} {telefon}; za račun {broj} {iznos}.</div>
+   <div class="card"><h3>📦 Paketi</h3><label class="row"><input type="checkbox" data-chk="ndoUsed" ${s.ndoUsed!==false?'checked':''} style="width:20px;height:20px"> Kad klijent ne dođe, termin se računa kao iskorišćen iz paketa</label></div>
+   <div class="card"><h3>💬 Tekst poruka</h3><div class="small muted" style="margin-bottom:8px">Zamene: {ime} {datum} {vreme} {usluge} {salon} {telefon} {adresa}.</div>
     <label class="l">Podsetnik za termin</label><textarea class="fld" data-path="msgRem" rows="3">${esc(s.msgRem)}</textarea>
-    <label class="l" style="margin-top:8px">Uz račun</label><textarea class="fld" data-path="msgInv" rows="2">${esc(s.msgInv)}</textarea>
+    <label class="l" style="margin-top:8px">Kad klijent kasni</label><textarea class="fld" data-path="msgLate" rows="2">${esc(s.msgLate)}</textarea>
     <button class="btn-s w" style="margin-top:8px" data-act="msgreset">↺ Podrazumevani tekst</button></div>
    ${gdCard()}
    <div class="card"><h3>💾 Rezervna kopija</h3><div class="grid g2"><button data-act="export">⬇️ Napravi kopiju (fajl)</button><button class="w" data-act="import">⬆️ Vrati iz fajla</button></div>
@@ -680,7 +657,6 @@ function pgPodesavanja(){const s=S(),sh=s.shop,inp=(p,l,t,ph)=>`<div><label clas
     <div class="seg" style="margin-top:12px">${[['s','Sitna slova'],['m','Normalna'],['l','Krupna']].map(x=>`<button data-set="fs" data-val="${x[0]}" class="${s.fs===x[0]?'on':''}">${x[1]}</button>`).join('')}</div></div>
    <div class="card"><h3>🔄 Ažuriranje</h3><div class="row sp"><span>Verzija <b>${VER}</b></span><button class="btn-s" data-act="checkupd">Proveri ažuriranje</button></div></div>
    ${supportCard()}`}
-
 /* ---------- GENERIČKA FORMA ---------- */
 let gf=null;
 function openForm(cfg){
@@ -700,8 +676,6 @@ document.addEventListener('submit',e=>{
   gf.fields.forEach(x=>{if(x.t==='check')o[x.k]=f.elements[x.k].checked;else{const v=fd.get(x.k);o[x.k]=x.t==='number'?(v===''?'':num(v)):String(v||'').trim()}});
   if(gf.onSave(o)!==false){$('dlg').close();render()}
 });
-
-
 /* ---------- LOGO ---------- */
 async function setLogo(file){if(RO){roBlock();return}
   try{const bmp=await createImageBitmap(file);const sc=Math.min(1,600/bmp.width,240/bmp.height),w=Math.max(1,Math.round(bmp.width*sc)),h=Math.max(1,Math.round(bmp.height*sc));
@@ -710,35 +684,6 @@ async function setLogo(file){if(RO){roBlock();return}
     if(u.length>350000){c.fillStyle='#fff';c.fillRect(0,0,w,h);c.drawImage(bmp,0,0,w,h);u=cv.toDataURL('image/jpeg',.85)}
     S().logo=u;if(!persist())return;save();render();toast('Logo sačuvan ✔')}catch{toast('Slika nije podržana — probaj PNG ili JPG')}}
 $('logoFile').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(f)setLogo(f)});
-
-
-/* ---------- NBS IPS QR (predračun i račun) ---------- */
-/* tekući račun u 18 cifara (banka 3 + broj 13 + kontrolni 2), sa proverom kontrolnog broja (mod 97) */
-function ipsAcc(a){
-  const t=String(a||'').replace(/[^\d-]/g,'');if(!t)return'';
-  let r;if(t.includes('-')){const p=t.split('-').filter(Boolean);if(p.length!==3||p[0].length>3||p[1].length>13||p[2].length>2)return'';r=p[0].padStart(3,'0')+p[1].padStart(13,'0')+p[2].padStart(2,'0')}else r=t;
-  if(!/^\d{18}$/.test(r))return'';
-  try{return BigInt(r)%97n===1n?r:''}catch{return r}
-}
-const ipsClean=(s,n)=>String(s||'').replace(/[|\r\n]+/g,' ').replace(/\s+/g,' ').trim().slice(0,n);
-function ipsText(o,kind){
-  const sh=S().shop,acc=ipsAcc(sh.acc),t=calc(o).total;
-  if(!acc||!(t>0)||!ipsClean(sh.name,70))return'';
-  const no=o.no;
-  const nm=ipsClean(sh.name,40),place=ipsClean([sh.addr,sh.city].filter(Boolean).join(', '),66-nm.length);
-  const ro=String(no||'').replace(/[^\d-]/g,'').replace(/^-+|-+$/g,'').replace(/-{2,}/g,'-');
-  const f=['K:PR','V:01','C:1','R:'+acc,'N:'+nm+(place?'\r\n'+place:''),'I:RSD'+(Math.round(t*100)/100).toFixed(2).replace('.',','),'SF:'+(/^[12]\d\d$/.test(String(S().ipsSf))?S().ipsSf:'289'),
-    'S:'+ipsClean((kind==='racun'?'Račun ':'Predračun ')+(no||''),35)];
-  if(ro)f.push('RO:00'+ro.slice(0,23));
-  return f.join('|');
-}
-function ipsBlock(o,kind){
-  if(S().ipsQr===false||!window.AtmosQR||(kind==='racun'&&o.paid))return'';
-  const txt=ipsText(o,kind);if(!txt)return'';
-  try{return`<div class="ipsqr">${AtmosQR.svg(txt,118)}<div><b>NBS IPS QR</b><br>Plati skeniranjem u aplikaciji m-banking (opcija „IPS skeniraj“). Iznos i podaci se popunjavaju sami.</div></div>`}catch{return''}
-}
-
-
 function pdfFromJpegs(pages){
   const enc=new TextEncoder(),parts=[],xref=[];let off=0;
   const push=b=>{const u=typeof b==='string'?enc.encode(b):b;parts.push(u);off+=u.length};
@@ -798,8 +743,6 @@ async function docPdf(){
     const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);toast('PDF preuzet ✔');
   }catch(e){docCtx.pdf=null;toast('PDF nije uspeo — koristi „Štampaj“ i sačuvaj kao PDF')}
 }
-
-
 /* ---------- IndexedDB: interne kopije + folder ---------- */
 const idbOpen=()=>new Promise((res,rej)=>{const r=indexedDB.open('atmosStudioDB',1);r.onupgradeneeded=()=>r.result.createObjectStore('h');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
 async function idbGet(k){const d=await idbOpen();return new Promise((res,rej)=>{const q=d.transaction('h').objectStore('h').get(k);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})}
@@ -813,13 +756,10 @@ async function takeSnap(reason,force){
 }
 async function restoreSnap(i){if(RO){roBlock();return}const s=snaps[i];if(!s)return;
   if(!confirm('Vratiti podatke iz kopije od '+new Date(s.t).toLocaleString('sr-RS')+'? Trenutno stanje se prvo sačuva.'))return;
-  const data=s.data;await takeSnap('pre-vraćanja',true);db=norm2(JSON.parse(data));persist();render();toast('Podaci vraćeni ✔')}
-
-
+  const data=s.data;await takeSnap('pre-vraćanja',true);db=norm(JSON.parse(data));persist();render();toast('Podaci vraćeni ✔')}
 async function shareText(title,text){
   try{if(navigator.share){await navigator.share({title,text});return}}catch(e){if(e&&e.name==='AbortError')return}
   try{await navigator.clipboard.writeText(text);toast('Tekst kopiran')}catch{download('poruka.txt',text,'text/plain')}}
-
 /* ---------- PWA + AUTOMATSKO AŽURIRANJE ---------- */
 let swReg=null;
 function showUpd(){$('updBar').hidden=false}
@@ -867,11 +807,26 @@ function supportCard(){
   const l=supportLinks();
   return`<div class="supCard"><span class="muted">🛟 Tehnička podrška</span><a href="${esc(l.wa)}" target="_blank" rel="noopener">💬 WhatsApp ${SUPPORT_TEL}</a><a href="${esc(l.ml)}">✉️ ${SUPPORT_MAIL}</a></div>`;
 }
-
-
+/* ---------- DEMO (probna verzija) ----------
+   7 dana na ovom uređaju, najviše DEMO_MAX klijenata, bez izvoza / uvoza / kopija / Google Drive-a.
+   Posle prijave licencom podaci iz demo verzije ostaju. */
+const DEMO_KEY='atmosStudioDemo1',DEMO_DAYS=7,DEMO_MAX=3,DEMO_WHAT='klijenta';
+const DEMO_LIMIT_MSG='🎁 Demo verzija: najviše '+DEMO_MAX+' '+DEMO_WHAT+'. Aktiviraj aplikaciju za neograničen rad.';
+const demoCount=()=>db.clients.length;
+function demoRec(){try{const d=JSON.parse(localStorage.getItem(DEMO_KEY));return d&&d.t?d:null}catch{return null}}
+function demoLeft(){const d=demoRec();return d?Math.max(0,DEMO_DAYS-Math.floor((Date.now()-d.t)/864e5)):DEMO_DAYS}
+const demoUsedUp=()=>!!demoRec()&&demoLeft()<=0;
+const demoExpired=()=>authState==='expired'&&authUser==='Demo';
+const demoOver=()=>authState==='demo'&&demoCount()>DEMO_MAX;
+const demoFull=()=>authState==='demo'&&demoCount()>=DEMO_MAX;
+function demoBegin(){if(demoUsedUp()){toast('Probni period je istekao');return}
+  if(!demoRec())try{localStorage.setItem(DEMO_KEY,JSON.stringify({t:Date.now(),dev:deviceId()}))}catch{}
+  $('authDlg').close();setAuth('demo','Demo',demoLeft());toast('🎁 Demo: '+demoLeft()+' '+plDan(demoLeft())+', do '+DEMO_MAX+' '+DEMO_WHAT)}
+function demoBar(){if(authState!=='demo')return'';const n=demoLeft();
+  return`<div class="demoBar"><span>🎁 <b>Demo verzija</b> · još ${n} ${plDan(n)} · ${demoCount()}/${DEMO_MAX} ${DEMO_WHAT} · izvoz i Google Drive isključeni</span><button class="btn-s btn-p" data-act="demoact">🔑 Aktiviraj</button></div>`}
 /* ---------- PRIJAVA (korisničko ime + PIN preko Google Apps Script) ---------- */
 /* URL web aplikacije iz Apps Script-a (Deploy → Manage deployments → Web app URL, završava se na /exec) */
-const AUTH_URL=''; /* ← upiši Web app URL iz Studio Code.gs (Deploy → Manage deployments), završava se na /exec */
+const AUTH_URL='https://script.google.com/macros/s/AKfycbwdXPoXak5jz1dvZy7ta_mwV8J8dTjIApbOTzEpPLo1xEWAlyO1B00tyKcN95VshFDjFw/exec'; /* ← upiši Web app URL iz Studio Code.gs (Deploy → Manage deployments), završava se na /exec */
 const AUTH_KEY='atmosStudioAuth1';
 const OFFLINE_DAYS=7;            /* koliko dana sme da radi bez internet provere; posle toga se traži prijava uz internet */
 const RECHECK_MIN=30;            /* na koliko minuta se ponovo proverava PIN */
@@ -883,33 +838,35 @@ const daysLeft=s=>s.days==null?null:s.days-Math.floor((Date.now()-s.t)/864e5);
 const freshAuth=s=>Date.now()-s.t<OFFLINE_DAYS*864e5;
 /* stanje na osnovu sačuvane prijave: istekla licenca = samo pregled */
 const stateOf=s=>(s.expired||(daysLeft(s)!=null&&daysLeft(s)<=0))?'expired':'ok';
-function roBlock(){toast(authState==='expired'?'🔒 Licenca je istekla — samo pregled. Klikni „Aktivacija“.':'🔒 Režim samo za pregled')}
+function roBlock(){toast(demoExpired()?'🔒 Probni period je istekao — samo pregled. Za nastavak aktiviraj aplikaciju.':authState==='expired'?'🔒 Licenca je istekla — samo pregled. Klikni „Aktivacija“.':'🔒 Režim samo za pregled')}
 function loadAuth(){try{const s=JSON.parse(localStorage.getItem(AUTH_KEY));return s&&s.u&&s.p?s:null}catch{return null}}
 let authDev=null; /* {n: prijavljeno uređaja, max: najviše} — šalje server (Code.gs uredjaji-2) */
 function storeAuth(u,p,days,exp,expired){try{localStorage.setItem(AUTH_KEY,JSON.stringify({u,p,days:days==null?null:Number(days),exp:exp||'',expired:!!expired,t:Date.now(),dev:authDev}))}catch{}}
 function clearAuth(){try{localStorage.removeItem(AUTH_KEY)}catch{}}
 const plDan=n=>(n%10===1&&n%100!==11)?'dan':'dana';
 function activationLink(){
-  const info='Atmos Studio v'+VER+(authUser?', korisnik: '+authUser:'');
+  const info='Atmos Studio v'+VER+(authUser&&authUser!=='Demo'?', korisnik: '+authUser:'');
   return'https://wa.me/'+SUPPORT_WA+'?text='+encodeURIComponent('Zdravo, želim da aktiviram / produžim licencu za aplikaciju Atmos Studio ('+info+').');
 }
 function footHtml(){
   if(authState==='locked')return'';
   let cls='',txt;
+  if(authState==='demo'){const n=demoLeft();return`<div class="foot-in"><div class="lic warn">🎁 Demo verzija — još <b>${n}</b> ${plDan(n)}<div class="small muted">do ${DEMO_MAX} ${DEMO_WHAT} · v${VER}</div></div><a class="supLink act wa" href="${esc(activationLink())}" target="_blank" rel="noopener">🔑 Kupi / aktiviraj</a></div>`}
+  if(demoExpired())return`<div class="foot-in"><div class="lic bad">⛔ Probni period je istekao — samo pregled<div class="small muted">v${VER}</div></div><a class="supLink act bad" href="${esc(activationLink())}" target="_blank" rel="noopener">🔑 Aktivacija</a></div>`;
   if(authState==='expired'){cls='bad';txt='⛔ Licenca je istekla'+(authExp?' ('+authExp+')':'')+' — aplikacija radi samo za pregled'}
   else if(authDays==null)txt='✔ Licenca: neograničeno';
   else{cls=authDays<=7?'warn':'';txt='⏳ Licenca: preostalo <b>'+authDays+'</b> '+plDan(authDays)+(authExp?' (do '+esc(authExp)+')':'')}
   return`<div class="foot-in"><div class="lic ${cls}">${txt}<div class="small muted">${esc(authUser)} · v${VER}</div></div><a class="supLink act ${authState==='expired'?'bad':authDays!=null&&authDays<=7?'wa':''}" href="${esc(activationLink())}" target="_blank" rel="noopener">🔑 Aktivacija</a></div>`;
 }
 function updAuthUI(){
-  RO=authState!=='ok';
+  RO=authState!=='ok'&&authState!=='demo';
   const b=$('authBtn');
-  b.textContent=authState==='expired'?'⛔ Licenca istekla · Odjava':'👤 '+authUser+(authDays!=null?' · '+authDays+' d':'')+' · Odjava';
+  b.textContent=authState==='demo'?'🎁 Demo · '+demoLeft()+' d · Prijava':demoExpired()?'⛔ Demo istekao · Prijava':authState==='expired'?'⛔ Licenca istekla · Odjava':'👤 '+authUser+(authDays!=null?' · '+authDays+' d':'')+' · Odjava';
   b.style.borderColor=authState==='expired'?'var(--bad)':authState==='ok'&&authDays!=null&&authDays<=7?'var(--warn)':'';
   bgRender();
   $('appFoot').innerHTML=footHtml();
 }
-function setAuth(state,name,days,exp){const was=authState;if(state!=='locked'&&was==='locked')gdSoon(1500);authState=state;authUser=state==='locked'?'':name||'';authDays=state==='ok'&&days!=null?days:null;authExp=exp||'';updAuthUI()}
+function setAuth(state,name,days,exp){const was=authState;if(state!=='locked'&&was==='locked')gdSoon(1500);authState=state;authUser=state==='locked'?'':name||'';authDays=(state==='ok'||state==='demo')&&days!=null?days:null;if(state==='demo'||name==='Demo')setAdmin(false);authExp=exp||'';updAuthUI()}
 function lock(msg){setAuth('locked');openAuth(msg)}
 /* ID ovog uređaja (nasumičan, pravi se jednom) — server dozvoljava ograničen broj uređaja po nalogu */
 const DEV_KEY='atmosStudioDev1';
@@ -933,20 +890,22 @@ async function serverCheck(u,p){
 }
 function openAuth(msg){
   $('authBody').innerHTML=`<h3 style="margin:0 0 4px">Prijava</h3>
-  <p style="margin:0 0 12px;color:var(--muted);font-size:.85rem">Za pristup aplikaciji unesi korisničko ime i PIN.</p>
+  <p style="margin:0 0 12px;color:var(--muted);font-size:.85rem">Za pristup aplikaciji unesi korisničko ime i PIN.${authState==='demo'||demoExpired()?' Podaci iz demo verzije ostaju.':''}</p>
   <label class="l" for="auU">Korisničko ime</label><input class="fld" id="auU" autocomplete="username" autocapitalize="off" spellcheck="false" style="margin-bottom:10px">
   <label class="l" for="auP">PIN</label><input class="fld" id="auP" type="password" inputmode="numeric" autocomplete="current-password" style="margin-bottom:10px">
   <div id="auMsg" style="min-height:1.2em;color:var(--bad);font-size:.85rem;margin-bottom:10px">${esc(msg||'')}</div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn-p" id="auGo" type="button">Prijavi se</button><a class="supLink wa" href="${esc(activationLink())}" target="_blank" rel="noopener">🔑 Aktivacija</a></div>
-  <div class="small muted" style="margin-top:14px">Treba ti pomoć? <a href="${esc(supportLinks().wa)}" target="_blank" rel="noopener" style="color:var(--acc)">WhatsApp ${SUPPORT_TEL}</a> · <a href="${esc(supportLinks().ml)}" style="color:var(--acc)">e-pošta</a></div>`;
+  <button class="btn-p" id="auGo" type="button" style="width:100%">Prijavi se</button>${authState!=='locked'?`<button class="btn-s" id="auBack" type="button" style="display:block;margin:8px auto 0">Nazad</button>`:''}
+  ${authState==='demo'?'':demoUsedUp()?`<div class="small muted" style="text-align:center;margin-top:10px">🎁 Probni period na ovom uređaju je istekao.</div>`:`<button class="btn-s" id="auDemo" type="button" style="display:block;margin:10px auto 0">🎁 Isprobaj besplatno (demo, ${DEMO_DAYS} dana)</button><div class="small muted" style="text-align:center;margin-top:4px">do ${DEMO_MAX} ${DEMO_WHAT}, bez izvoza i Google Drive-a</div>`}
+  <div class="small muted" style="margin-top:14px">Nemaš nalog? <a href="${esc(activationLink())}" target="_blank" rel="noopener" style="color:var(--acc)">🔑 Aktivacija</a> · Treba ti pomoć? <a href="${esc(supportLinks().wa)}" target="_blank" rel="noopener" style="color:var(--acc)">WhatsApp ${SUPPORT_TEL}</a> · <a href="${esc(supportLinks().ml)}" style="color:var(--acc)">e-pošta</a></div>`;
   const dlg=$('authDlg');if(!dlg.open)dlg.showModal();
   const s=loadAuth();if(s)$('auU').value=s.u;
-  $('auGo').onclick=doLogin;
+  $('auGo').onclick=doLogin;if($('auDemo'))$('auDemo').onclick=demoBegin;if($('auBack'))$('auBack').onclick=()=>$('authDlg').close();
   $('authBody').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();doLogin()}};
   setTimeout(()=>($('auU').value?$('auP'):$('auU')).focus(),50);
 }
 /* dok je aplikacija zaključana, prozor za prijavu se ne može zatvoriti (Esc) */
 $('authDlg').addEventListener('cancel',e=>{if(authState==='locked')e.preventDefault()});
+/* pri zatvaranju prozora za prijavu bez prijave: demo nastavlja, istekao demo ostaje samo pregled */
 async function doLogin(){
   const u=$('auU').value.trim(),p=$('auP').value.trim(),msg=m=>{$('auMsg').textContent=m},go=$('auGo');
   if(!u||!p){msg('Unesi korisničko ime i PIN.');return}
@@ -969,7 +928,7 @@ async function doLogin(){
 }
 /* provera sačuvanih podataka pri pokretanju i povremeno u toku rada */
 async function authRecheck(){
-  const s=loadAuth();if(!s)return;
+  const s=loadAuth();if(!s){if(authState==='demo'&&demoLeft()<=0)setAuth('expired','Demo');return}
   try{
     const r=await serverCheck(s.u,s.p);
     if(r.status==='ok'||r.status==='expired'){if(ui.tab==='podesavanja')setTimeout(bgRender,0)}
@@ -1092,8 +1051,6 @@ async function admAct(a,d){
   }
 }
 
-
-
 /* ---------- GOOGLE DRIVE SINHRONIZACIJA ----------
    Podaci salona se čuvaju u fajlu „Atmos Studio — podaci.json“ na Google Drive-u KORISNIKA (dozvola drive.file:
    aplikacija vidi samo fajl koji je sama napravila). Svi uređaji povezani istim Google nalogom dele podatke.
@@ -1124,7 +1081,7 @@ async function gdUpload(body){const txt=JSON.stringify(body);if(gd.fileId){await
   const r=await gdApi('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',{method:'POST',headers:{'Content-Type':'multipart/related; boundary='+b},body:'--'+b+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+JSON.stringify(meta)+'\r\n--'+b+'\r\nContent-Type: application/json\r\n\r\n'+txt+'\r\n--'+b+'--'});gd.fileId=(await r.json()).id}
 function gdSoon(ms){if(!gd.on)return;clearTimeout(gdT);gdT=setTimeout(()=>{if(gdValid())gdSync()},ms==null?5000:ms)}
 async function gdSync(manual){
-  if(!gd.on||gdBusy||authState==='locked')return;
+  if(!gd.on||gdBusy||authState==='locked'||authState==='demo')return;
   if(!navigator.onLine){gd.err='Nema interneta — izmene čekaju';gdStore();if(manual)toast(gd.err);return}
   if(document.querySelector('dialog[open]')&&!manual){gdSoon(20000);return}
   gdBusy=true;if(manual&&ui.tab==='podesavanja')bgRender();let got=0,sent=0,retry=false;
@@ -1187,7 +1144,9 @@ $('impFile').onchange=e=>{if(RO){roBlock();e.target.value='';return}const f=e.ta
     save();go('pregled');toast('Podaci uvezeni ✔')}catch{toast('Nepoznat format fajla')}e.target.value=''};r.readAsText(f)};
 
 /* ---------- AKCIJE ---------- */
-const W_ACTS=new Set(['newappt','newinv','newcli','editcli','newsvc','editsvc','delsvc','presets','preset','newstaff','editstaff','delstaff','adone','ainv','invpaid','invsave','invsaveprint','invdel','apsave','apdel','apst','import','reset','logopick','logodel','msgreset','snaprest']);
+const W_ACTS=new Set(['newappt','newcli','editcli','delcli','newsvc','editsvc','delsvc','presets','preset','newstaff','editstaff','delstaff','ast','apaid','apsave','apdel','newpkg','editpkg','delpkg','import','reset','logopick','logodel','msgreset','snaprest']);
+/* u demo verziji: izvoz, uvoz, kopije i Google Drive nisu dostupni */
+const DEMO_BLOCK=new Set(['export','import','snaprest','gdconnect','gdsync','csvappt','csvcli','repprint','docshare','print']);
 document.addEventListener('click',async e=>{
   const b=e.target.closest('[data-act],[data-tab],[data-set]');if(!b)return;const d=b.dataset;
   if(b.closest('#pickDlg'))return;
@@ -1195,11 +1154,14 @@ document.addEventListener('click',async e=>{
   if(d.tab&&!d.act){if($('dlg').open)$('dlg').close();go(d.tab);return}
   const a=d.act,id=d.id;
   if(RO&&W_ACTS.has(a)){roBlock();return}
+  if(authState==='demo'&&DEMO_BLOCK.has(a)){toast('🔒 Nije dostupno u demo verziji — aktiviraj aplikaciju');return}
   if(a&&a.startsWith('adm')){await admAct(a,d);return}
   switch(a){
     case'dlgclose':$('dlg').close();return;
+    case'demoact':openAuth();return;
     case'calday':ui.day=d.v;if(ui.tab!=='kalendar')ui.tab='kalendar';render();return;
-    case'goinv':ui.inv=d.v;go('racuni');return;
+    case'pf':ui.pf=d.v;render();return;
+    case'unpaid':{const el=$('unpaidCard');if(el&&el.firstElementChild)el.scrollIntoView({behavior:'smooth'});else toast('Sve je naplaćeno ✔');return}
     case'rp':ui.rp=d.v;render();return;
     case'rmon':{const[y,m]=ui.rmon.split('-').map(Number),x=new Date(y,m-1+(+d.v),1);ui.rmon=x.getFullYear()+'-'+pad(x.getMonth()+1);render();return}
     case'ry':ui.ry=String(+ui.ry+(+d.v));render();return;
@@ -1207,10 +1169,11 @@ document.addEventListener('click',async e=>{
     case'newcli':cliForm(null,null,c=>openCli(c.id));return;
     case'editcli':$('dlg').close();cliForm(id);return;
     case'opencli':openCli(id);return;
+    case'delcli':{const c=cliById(id);if(!c)return;const n=db.appts.filter(x=>x.cid===id).length;if(!confirm(`Obrisati klijenta ${c.name}?`+(n?`\n\nObrisaće se i ${n} termina i paketi ovog klijenta.`:'')))return;db.clients=db.clients.filter(x=>x.id!==id);db.appts=db.appts.filter(x=>x.cid!==id);db.packages=db.packages.filter(x=>x.cid!==id);save();$('dlg').close();render();toast('Klijent obrisan');return}
     case'climsg':{const c=cliById(id);if(!c)return;const sh=S().shop;const t=d.k==='bday'?`Srećan rođendan, ${firstName(c.name)}! 🎉 Želimo Vam sve najlepše. ${sh.name||''}`:`Poštovani ${firstName(c.name)}, `;msgDlg('💬 Poruka · '+esc(c.name),c.phone,t);return}
     /* usluge / zaposleni */
     case'newsvc':svcForm();return;case'editsvc':svcForm(id);return;
-    case'delsvc':if(confirm('Obrisati uslugu? Postojeći termini i računi ostaju.')){db.services=db.services.filter(x=>x.id!==id);save();$('dlg').close();render()}return;
+    case'delsvc':if(confirm('Obrisati uslugu? Postojeći termini ostaju.')){db.services=db.services.filter(x=>x.id!==id);save();$('dlg').close();render()}return;
     case'presets':presetDlg();return;
     case'preset':{const have=new Set(db.services.map(s=>nName(s.name)));let n=0;PRESETS[d.v].forEach(([nm,cat,dur])=>{if(!have.has(nName(nm))){db.services.push({id:uid(),name:nm,cat,dur,price:'',unit:'usl'});n++}});save();$('dlg').close();render();toast('Dodato usluga: '+n+' — upiši cene');return}
     case'newstaff':staffForm();return;case'editstaff':staffForm(id);return;
@@ -1220,37 +1183,29 @@ document.addEventListener('click',async e=>{
     case'aedit':openAppt(id);return;
     case'apsvc':{apRead();const s=new Set(ae.a.svcs||[]);if(s.has(id))s.delete(id);else s.add(id);ae.a.svcs=[...s];ae.a.dur=Math.max(15,ae.a.svcs.reduce((t,x)=>t+(num((svcById(x)||{}).dur)||0),0)||num(ae.a.dur));const st=$('dlg').scrollTop;apDraw();$('dlg').scrollTop=st;return}
     case'apst':apRead();ae.a.status=d.v;apDraw();return;
-    case'apnewcli':{apRead();const nm=($('aCli').value||'').trim()||(prompt('Ime i prezime klijenta:')||'').trim();if(!nm)return;const ph=(prompt('Telefon klijenta (za podsetnike):')||'').trim();let c=db.clients.find(x=>nName(x.name)===nName(nm));if(!c){c={id:uid(),name:nm,phone:ph,created:todayStr()};db.clients.push(c)}else if(ph)c.phone=ph;ae.a.cid=c.id;save();render();apDraw();return}
+    case'apnewcli':{apRead();const nm=($('aCli').value||'').trim()||(prompt('Ime i prezime klijenta:')||'').trim();if(!nm)return;if(!db.clients.some(x=>nName(x.name)===nName(nm))&&demoFull()){toast(DEMO_LIMIT_MSG);return}const ph=(prompt('Telefon klijenta (za podsetnike):')||'').trim();let c=db.clients.find(x=>nName(x.name)===nName(nm));if(!c){c={id:uid(),name:nm,phone:ph,created:todayStr()};db.clients.push(c)}else if(ph)c.phone=ph;ae.a.cid=c.id;save();render();apDraw();return}
     case'apsave':if(apSave()){$('dlg').close();render();toast(ae.rep?'Zakazano termina: '+ae.repN+' ✔':'Sačuvano ✔')}return;
     case'apdel':{const x=ae.a,ser=x.ser&&db.appts.filter(y=>y.ser===x.ser&&y.date>x.date&&y.status==='zak');let all=false;
       if(ser&&ser.length)all=confirm(`Termin se ponavlja. Obrisati i sledećih ${ser.length} termina iz serije?\n\nOK = sve sledeće · Otkaži = samo ovaj`);else if(!confirm('Obrisati termin?'))return;
       db.appts=db.appts.filter(y=>y.id!==x.id&&!(all&&ser.some(z=>z.id===y.id)));save();$('dlg').close();render();toast('Termin obrisan');return}
-    case'adone':{const x=apptById(id);x.status='dosao';save();render();if(!x.invId&&confirm('Termin je završen. Izdati račun?'))invFromAppt(x);return}
-    case'ainv':{if($('dlg').open&&ae&&ae.a.id===id&&!apSave())return;invFromAppt(apptById(id));return}
+    case'ast':{const x=apptById(id);if(!x)return;setStatus(x,d.v);render();return}
+    case'apaid':{const x=apptById(id);if(!x)return;x.paid=true;x.paidAt=Date.now();save();render();toast('💳 Naplaćeno ✔');return}
+    case'alate':{const x=apptById(id);if(!x)return;const c=cliById(x.cid)||{};msgDlg('⏰ Kasni · '+esc(apptName(x)),c.phone,lateMsg(x),()=>{if(!RO&&x.status!=='kasni'){x.status='kasni';save();bgRender()}});return}
+    /* paketi */
+    case'newpkg':{$('dlg').close();if(!db.clients.length){toast('Prvo dodaj klijenta');return}pkgForm(null,d.c||'');return}
+    case'editpkg':$('dlg').close();pkgForm(id);return;
+    case'delpkg':{const p=pkgById(id);if(!p)return;if(!confirm('Obrisati paket „'+(p.name||'')+'“? Termini ostaju, bez paketa.'))return;db.packages=db.packages.filter(x=>x.id!==id);db.appts.forEach(x=>{if(x.pkg===id)x.pkg=''});save();$('dlg').close();render();return}
     case'arem':{const x=apptById(id);if(!x)return;const c=cliById(x.cid)||{};msgDlg('🔔 Podsetnik · '+esc(apptName(x)),c.phone,remMsg(x),()=>{if(!RO){x.remSent=todayStr();save();bgRender()}});return}
     case'bulkrem':bulkRem(d.v);return;
-    /* računi */
-    case'newinv':openInv(null,d.c?{cid:d.c}:null);return;
-    case'invedit':openInv(id);return;
-    case'iiadd':{invRead();const k=d.k;if(k==='usl'){svcPick(s=>{if(!s)return;ie.o.items.push(s.unit==='h'?{name:s.name,qty:1,kind:'sat',price:num(s.price)}:{name:s.name,qty:1,kind:'usl',price:num(s.price)});invDraw()});return}
-      ie.o.items.push(k==='sat'?{name:'Radni sat',qty:1,kind:'sat',price:num(S().hourRate)}:k==='proizvod'?{name:'',qty:1,kind:'proizvod',price:''}:{name:'',qty:1,kind:'usl',price:''});invDraw();return}
-    case'iidel':invRead();ie.o.items.splice(+d.i,1);invDraw();return;
-    case'invsave':if(invSave()){$('dlg').close();render();toast('Račun sačuvan ✔')}return;
-    case'invsaveprint':{const o=invSave();if(o){$('dlg').close();render();showInv(o.id)}return}
-    case'invdel':if(confirm('Obrisati račun '+ie.o.no+'? Broj računa se ne vraća.')){db.invoices=db.invoices.filter(x=>x.id!==ie.o.id);db.appts.forEach(x=>{if(x.invId===ie.o.id)x.invId=''});save();$('dlg').close();render()}return;
-    case'invpaid':{const o=invById(id);o.paid=true;o.paidDate=todayStr();save();render();toast('Označeno kao plaćeno ✔');return}
-    case'invdoc':showInv(id);return;
-    case'invsend':{const o=invById(id),c=cliById(o.cid)||{};msgDlg('📤 Račun '+esc(o.no),c.phone,invMsg(o));return}
     case'print':window.print();return;
     case'docshare':docPdf();return;
     case'docclose':$('docView').hidden=true;docCtx={};return;
-    case'docmsg':{const o=docCtx.inv&&invById(docCtx.inv);if(!o)return;const c=cliById(o.cid)||{};$('docView').hidden=true;msgDlg('📤 Račun '+esc(o.no),c.phone,invMsg(o));return}
     /* izveštaji */
-    case'repprint':showReport();return;case'csvinv':csvInv();return;case'csvcli':csvCli();return;
+    case'repprint':showReport();return;case'csvappt':csvAppt();return;case'csvcli':csvCli();return;
     /* podešavanja */
     case'logopick':$('logoFile').click();return;
     case'logodel':S().logo='';save();render();return;
-    case'msgreset':S().msgRem=DEF_REM;S().msgInv=DEF_INV;save();render();toast('Vraćen podrazumevani tekst');return;
+    case'msgreset':S().msgRem=DEF_REM;S().msgLate=DEF_LATE;save();render();toast('Vraćen podrazumevani tekst');return;
     case'export':exportFile();return;
     case'import':$('impFile').click();return;
     case'snaprest':restoreSnap(+d.i);return;
@@ -1263,14 +1218,13 @@ document.addEventListener('click',async e=>{
 /* polja u podešavanjima i pretraga */
 document.addEventListener('input',e=>{const t=e.target;
   if(t.id==='q'){ui.q=t.value;const p=t.selectionStart;render();const n=$('q');if(n){n.focus();try{n.setSelectionRange(p,p)}catch{}}return}
-  if(t.dataset.path&&t.closest('#view')){if(RO){roBlock();return}let v=t.value;if(['hourRate','pdvRate','slot'].includes(t.dataset.path))v=num(v);setPath(S(),t.dataset.path,v);persist()}
-  if(t.closest('#dlgBody')&&(t.dataset.ii!==undefined||['iDisc'].includes(t.id))&&ie){invRead();$('iTot').innerHTML=totHtml(calc(ie.o))}});
+  if(t.dataset.path&&t.closest('#view')){if(RO){roBlock();return}let v=t.value;if(['slot'].includes(t.dataset.path))v=num(v);setPath(S(),t.dataset.path,v);persist()}
+  if(t.id==='aPrice'&&ae){}});
 document.addEventListener('change',e=>{const t=e.target;
   if(t.dataset.chk){if(RO){roBlock();return}S()[t.dataset.chk]=t.checked;save();render();return}
   if(t.dataset.path&&t.tagName==='SELECT'&&t.closest('#view')){render();return}
-  if(['aDate','aTime','aDur','aStaff','aCli'].includes(t.id)&&ae&&$('aCf'))apInfo();
-  if(t.dataset.k==='kind'&&ie){invRead();invDraw()}});
-$('fab').onclick=()=>{if(RO){roBlock();return}const m={pregled:'newappt',kalendar:'newappt',klijenti:'newcli',racuni:'newinv',usluge:'newsvc',zaposleni:'newstaff'}[ui.tab];if(m){const x=document.createElement('button');x.dataset.act=m;x.hidden=true;document.body.appendChild(x);x.click();x.remove()}};
+  if(['aDate','aTime','aDur','aStaff','aCli','aPkg'].includes(t.id)&&ae&&$('aCf'))apInfo();});
+$('fab').onclick=()=>{if(RO){roBlock();return}const m={pregled:'newappt',kalendar:'newappt',klijenti:'newcli',paketi:'newpkg',usluge:'newsvc',zaposleni:'newstaff'}[ui.tab];if(m){const x=document.createElement('button');x.dataset.act=m;x.hidden=true;document.body.appendChild(x);x.click();x.remove()}};
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('docView').hidden){$('docView').hidden=true}});
 
 /* ---------- START ---------- */
@@ -1279,23 +1233,20 @@ let lastW=innerWidth;
 addEventListener('resize',()=>{clearTimeout(addEventListener.t);addEventListener.t=setTimeout(()=>{if(innerWidth===lastW)return;lastW=innerWidth;if(!$('dlg').open)bgRender()},200)});
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch{}
 loadSnaps().then(()=>takeSnap('automatski')).then(()=>{if(ui.tab==='podesavanja')bgRender()});
-(function(){const q=new URLSearchParams(location.search),t=q.get('tab');if(['kalendar','klijenti','racuni','usluge','zaposleni','izvestaji','podesavanja'].includes(t))ui.tab=t;render();
+(function(){const q=new URLSearchParams(location.search),t=q.get('tab');if(['kalendar','klijenti','paketi','usluge','zaposleni','izvestaji','podesavanja'].includes(t))ui.tab=t;render();
   if(q.get('new')==='appt')setTimeout(()=>{if(!RO)openAppt(null)},300)})();
-
+authStart();
 setInterval(()=>{if(ui.tab==='kalendar'&&!document.querySelector('dialog[open]'))bgRender()},60000);
-
 function authStart(){
-  $('authBtn').onclick=()=>{if(confirm('Odjaviti se? Za ponovni ulaz biće potrebni korisničko ime i PIN.')){clearAuth();lock()}};
+  $('authBtn').onclick=()=>{if(authState==='demo'||demoExpired()){openAuth();return}if(confirm('Odjaviti se? Za ponovni ulaz biće potrebni korisničko ime i PIN.')){clearAuth();lock()}};
   const s=loadAuth();if(s&&s.dev)authDev=s.dev;
   if(s&&freshAuth(s)){setAuth(stateOf(s),s.u,daysLeft(s),s.exp);authRecheck()}
+  else if(!s&&demoRec()){if(demoLeft()>0)setAuth('demo','Demo',demoLeft());else{setAuth('expired','Demo');openAuth('Probni period je istekao. Prijavi se ili se javi za aktivaciju.')}}
   else lock(s?'Prijava je istekla — poveži se na internet i prijavi se ponovo.':'');
   setInterval(authRecheck,RECHECK_MIN*60*1000);
   gdStart();
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)authRecheck()});
 }
-
-
-authStart();
 </script>
 </body>
 </html>
