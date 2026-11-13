@@ -1,0 +1,15 @@
+# Android
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+*.jks
+*.keystore
+
+# Windows (Electron)
+windows/node_modules/
+windows/dist/
+
+# Sajt (minifikovana verzija)
+node_modules/
+dist/

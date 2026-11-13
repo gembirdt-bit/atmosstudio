@@ -1,0 +1,44 @@
+plugins {
+    id 'com.android.application'
+}
+
+// Verziju i potpisni ključ prosleđuje GitHub Actions (vidi .github/workflows/aplikacije.yml)
+def env = System.getenv()
+
+android {
+    namespace 'io.github.gembirdt_bit.atmosstudio'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'io.github.gembirdt_bit.atmosstudio'
+        minSdk 21
+        targetSdk 35
+        versionCode((env.VERSION_CODE ?: '1') as int)
+        versionName env.VERSION_NAME ?: '1.0.0'
+    }
+
+    signingConfigs {
+        release {
+            storeFile file(env.KEYSTORE_FILE ?: 'release.jks')
+            storePassword env.KEYSTORE_PASSWORD
+            keyAlias env.KEY_ALIAS ?: 'atmos'
+            keyPassword env.KEYSTORE_PASSWORD
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.5.0'
+}

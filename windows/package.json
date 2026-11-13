@@ -1,0 +1,41 @@
+{
+  "name": "atmos-studio",
+  "productName": "Atmos Studio",
+  "version": "1.0.0",
+  "description": "Atmos Studio — zakazivanje termina, klijenti, usluge i računi za salone",
+  "author": "Gemb-Bit Željko Ilić",
+  "license": "UNLICENSED",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win --x64 --publish never"
+  },
+  "devDependencies": {
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "io.github.gembirdt-bit.atmosstudio",
+    "productName": "Atmos Studio",
+    "copyright": "Gemb-Bit Željko Ilić",
+    "files": ["main.js", "offline.html", "icon.png"],
+    "directories": { "output": "dist" },
+    "win": {
+      "icon": "icon.png",
+      "target": ["nsis", "portable"]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Atmos Studio",
+      "artifactName": "AtmosStudio-Setup.exe"
+    },
+    "portable": {
+      "artifactName": "AtmosStudio-Portable.exe"
+    }
+  }
+}

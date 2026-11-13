@@ -1,0 +1,52 @@
+{
+ "id": "./",
+ "name": "Atmos Studio — zakazivanje i računi",
+ "short_name": "Atmos Studio",
+ "description": "Zakazivanje termina, klijenti, usluge i računi za salone, frizere, kozmetičare i masere",
+ "lang": "sr",
+ "start_url": "./index.html",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "any",
+ "background_color": "#141218",
+ "theme_color": "#141218",
+ "categories": [
+  "business",
+  "productivity",
+  "lifestyle"
+ ],
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-maskable.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ],
+ "shortcuts": [
+  {
+   "name": "Novi termin",
+   "url": "./index.html?new=appt"
+  },
+  {
+   "name": "Kalendar",
+   "url": "./index.html?tab=kalendar"
+  },
+  {
+   "name": "Računi",
+   "url": "./index.html?tab=racuni"
+  }
+ ]
+}
