@@ -193,6 +193,8 @@ body{max-width:100vw;overflow-x:clip;touch-action:pan-y pinch-zoom}
 .demoBar{background:rgba(219,39,119,.12);border:1px solid rgba(219,39,119,.45);border-radius:12px;padding:8px 12px;margin-bottom:12px;font-size:.85rem;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
 body.demo [data-act=export],body.demo [data-act=import],body.demo [data-act=snaprest],body.demo [data-act=gdconnect],body.demo [data-act=gdsync],body.demo [data-act=csvappt],body.demo [data-act=csvcli],body.demo [data-act=repprint],body.demo [data-act=docshare],body.demo [data-act=print]{opacity:.4;filter:grayscale(1);cursor:not-allowed}
 .seg.wrap{flex-wrap:wrap}
+.cbx{position:relative}.cdd{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:30;background:var(--card);border:1px solid var(--line);border-radius:12px;max-height:260px;overflow:auto;box-shadow:0 10px 30px #0007}
+.cdd button{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid var(--line);border-radius:0;background:none;padding:10px 12px;color:var(--txt)}.cdd button:hover{background:var(--card2)}
 #nav [hidden],[hidden].admtab{display:none!important}
 </style>
 </head>
@@ -265,7 +267,7 @@ body.demo [data-act=export],body.demo [data-act=import],body.demo [data-act=snap
 <script>
 'use strict';
 if(window.ATMOS_BLOCKED)throw new Error('Atmos Studio: otvori Android ili Windows aplikaciju');
-const VER='1.1.0';
+const VER='1.2.0';
 let authState='locked'; /* locked = mora prijava; ok = licenca važi; expired = samo pregled; demo = probna verzija */
 let RO=true;
 const $=id=>document.getElementById(id);
@@ -295,16 +297,20 @@ const SCOL=['#ec4899','#8b5cf6','#3b82f6','#14b8a6','#22c55e','#eab308','#f97316
 
 /* ---------- PODACI ---------- */
 const DEF_REM='Poštovani {ime}, podsećamo Vas na termin {datum} u {vreme}h{usluge}. Molimo potvrdite dolazak. {salon}{telefon}';
+const DEF_CONF='Poštovani {ime}, Vaš termin je zakazan za {datum} u {vreme}h{usluge}. Vidimo se! {salon}{telefon}{adresa}';
+const DEF_THX='Hvala Vam na poseti, {ime}! Radujemo se sledećem viđenju. {salon}';
 const DEF_LATE='Poštovani {ime}, čekamo Vas na terminu u {vreme}h. Da li stižete? {salon}';
 const DEF_SET=()=>({theme:'dark',accent:'#db2777',fs:'m',shop:{name:'',addr:'',city:'',phone:'',email:''},
-  dayStart:'08:00',dayEnd:'20:00',slot:30,cc:'381',msgRem:DEF_REM,msgLate:DEF_LATE,ndoUsed:true,logo:'',
+  dayStart:'08:00',dayEnd:'20:00',slot:30,cc:'381',msgRem:DEF_REM,msgLate:DEF_LATE,msgConf:DEF_CONF,msgThx:DEF_THX,ndoUsed:true,logo:'',
+  biz:'',feat:{pkg:true,hour:true},chan:'wa',confAsk:true,notif:{on:false,before:15},
   backupDays:7,snapKeep:7,lastExport:''});
 const COLLS=['clients','services','staff','appts','packages'];
 const fresh=()=>({v:2,settings:DEF_SET(),clients:[],services:[],staff:[],appts:[],packages:[],counters:{}});
-function norm2(d){const s=d.settings||{};d.settings=Object.assign(DEF_SET(),s);d.settings.shop=Object.assign(DEF_SET().shop,s.shop||{});COLLS.forEach(k=>d[k]=Array.isArray(d[k])?d[k].filter(x=>x&&x.id):[]);d.counters=d.counters||{};delete d.invoices;return d}
+function norm2(d){const s=d.settings||{};d.settings=Object.assign(DEF_SET(),s);d.settings.shop=Object.assign(DEF_SET().shop,s.shop||{});d.settings.feat=Object.assign({pkg:true,hour:true},s.feat||{});d.settings.notif=Object.assign({on:false,before:15},s.notif||{});COLLS.forEach(k=>d[k]=Array.isArray(d[k])?d[k].filter(x=>x&&x.id):[]);d.counters=d.counters||{};delete d.invoices;return d}
 function load(){try{const r=JSON.parse(localStorage.getItem(KEY));if(r&&typeof r==='object')return norm2(r)}catch{}return fresh()}
 let db=load();
 const S=()=>db.settings;
+const FEAT=k=>!S().feat||S().feat[k]!==false;
 const hasData=()=>COLLS.some(k=>db[k].length);
 function persist(){if(RO)return true;if(demoOver()){db=load();toast(DEMO_LIMIT_MSG);setTimeout(render,0);return false}
   try{localStorage.setItem(KEY,JSON.stringify(db));if(typeof gdSoon==='function')gdSoon();return true}catch{toast('Greška pri čuvanju (memorija puna?) — napravi rezervnu kopiju!');return false}}
@@ -350,6 +356,7 @@ function render(){
   $('fab').style.display=['pregled','kalendar','klijenti','paketi','usluge','zaposleni'].includes(ui.tab)&&!RO?'block':'none';
   updateBadge();
   document.querySelectorAll('.admtab').forEach(b=>b.hidden=!isAdmin);
+  document.querySelectorAll('#nav [data-tab=paketi]').forEach(b=>b.hidden=!FEAT('pkg'));if(ui.tab==='paketi'&&!FEAT('pkg'))ui.tab='pregled';
   if(ui.tab==='korisnici'&&!isAdmin)ui.tab='pregled';
   const P={korisnici:pgKorisnici,pregled:pgPregled,kalendar:pgKalendar,klijenti:pgKlijenti,paketi:pgPaketi,usluge:pgUsluge,zaposleni:pgZaposleni,izvestaji:pgIzvestaji,vise:pgVise,podesavanja:pgPodesavanja};
   $('view').innerHTML=(RO&&authState==='expired'?`<div class="roBar">⛔ ${esc(demoExpired()?'Probni period je istekao':'Licenca je istekla')} — aplikacija radi samo za pregled. <a href="${esc(activationLink())}" target="_blank" rel="noopener" style="color:inherit"><b>Aktivacija</b></a></div>`:'')+demoBar()+P[ui.tab]();
@@ -380,15 +387,15 @@ function pgPregled(){const t=todayStr(),tm=addD(t,1),ta=dayAppts(t),tma=dayAppts
   const unpaid=db.appts.filter(a=>a.status==='dosao'&&!a.paid&&!a.pkg&&apptPrice(a)>0),unp=unpaid.reduce((s,a)=>s+apptPrice(a),0);
   const rem=tma.filter(a=>OPEN(a.status)),remN=rem.filter(a=>!a.remSent).length;
   const bd=db.clients.map(c=>({c,k:bdayIn(c.birth)})).filter(x=>x.k!=null&&x.k<=7).sort((a,b)=>a.k-b.k);
-  const al=[];db.packages.forEach(p=>{const c=cliById(p.cid);if(!c||p.renewed)return;const i=pkgInfo(p);
+  const al=[];(FEAT('pkg')?db.packages:[]).forEach(p=>{const c=cliById(p.cid);if(!c||p.renewed)return;const i=pkgInfo(p);
     if(i.left===1&&!i.exp)al.push(['📦',`${esc(c.name)} — u paketu „${esc(p.name||'paket')}“ ostao je još <b>1 termin</b>`,c.id]);
     else if(i.left===0&&dayDiff(p.start||t)>-120)al.push(['📦',`${esc(c.name)} — paket „${esc(p.name||'paket')}“ je potrošen`,c.id]);
     else if(p.end&&!i.exp&&dayDiff(p.end)<=3&&i.left)al.push(['⏳',`${esc(c.name)} — paket ističe ${esc(dLabel(p.end).toLowerCase())}, ostalo ${i.left}`,c.id]);
     if(!p.paid&&num(p.price))al.push(['💰',`${esc(c.name)} — paket nije plaćen (${money(p.price)})`,c.id])});
-  const setupMissing=!S().shop.name||!db.services.length;
+  const setupMissing=!S().biz||!db.services.length;
   return`${backupBanner()}
-  ${setupMissing&&!RO?`<div class="card" style="border-color:var(--acc)"><h3>👋 Dobro došli u Atmos Studio</h3><div class="small" style="line-height:1.7">1. U <b>Podešavanjima</b> upiši naziv salona i telefon (idu u poruke klijentima).<br>2. Dodaj <b>usluge</b> sa trajanjem i cenom — ili učitaj gotov spisak za frizere, kozmetiku, masažu ili nokte.<br>3. Dodaj <b>zaposlene</b> (ako vas je više) — svako dobija svoju kolonu u kalendaru.<br>4. Poveži <b>Google Drive</b> da podaci budu isti na svim uređajima.</div>
-   <div class="row wrap" style="margin-top:10px"><button class="btn-p grow" data-tab="podesavanja">⚙️ Podešavanja</button><button class="grow" data-tab="usluge">✂️ Usluge</button></div></div>`:''}
+  ${setupMissing&&!RO?`<div class="card" style="border-color:var(--acc)"><h3>👋 Dobro došli u Atmos Studio</h3><div class="small" style="line-height:1.7">${S().biz?'':'1. Izaberi <b>vrstu posla</b> (frizer, kozmetika, masaža, nokti…) — aplikacija se sama podesi i učita uobičajene usluge.<br>'}${db.services.length?'':'• Upiši <b>cene usluga</b> u meniju „Usluge“.<br>'}• Dodaj <b>zaposlene</b> (ako vas je više) — svako dobija svoju kolonu u kalendaru.<br>• Poveži <b>Google Drive</b> da podaci budu isti na svim uređajima.</div>
+   <div class="row wrap" style="margin-top:10px">${S().biz?'':'<button class="btn-p grow w" data-act="wizard">🧩 Izaberi vrstu posla</button>'}<button class="grow" data-tab="usluge">✂️ Usluge</button></div></div>`:''}
   <div class="row wrap noprint" style="margin-bottom:12px"><button class="btn-p grow w" data-act="newappt">📅 Novi termin</button><button class="grow w" data-act="newcli">👤 Novi klijent</button></div>
   <div class="grid g4" style="margin-bottom:12px">
    <div class="stat" data-tab="kalendar"><small>Danas termina</small><b>${ta.filter(a=>a.status!=='otk').length}</b></div>
@@ -446,7 +453,7 @@ function openCli(id){const c=cliById(id);if(!c)return;const s=cliStats(id),as=db
    <div class="small muted" style="margin:6px 0 10px;line-height:1.7">${c.phone?'📞 '+esc(c.phone)+'<br>':''}${c.email?'✉️ '+esc(c.email)+'<br>':''}${c.birth?'🎂 '+fmtDate(c.birth)+(age(c.birth)?' ('+age(c.birth)+' god.)':'')+'<br>':''}${fav?'⭐ Najčešće: '+esc(fav):''}</div>
    ${c.allergy?`<div class="alert warn">⚠️ ${esc(c.allergy)}</div>`:''}${c.note?`<div class="small" style="white-space:pre-wrap;margin-bottom:10px;background:var(--card2);padding:8px 10px;border-radius:10px">📝 ${esc(c.note)}</div>`:''}
    <div class="grid g3" style="margin-bottom:10px"><div class="stat"><small>Dolazaka</small><b>${s.visits}</b></div><div class="stat" style="border-left-color:${rate!=null&&rate<80?'var(--bad)':'var(--ok)'}"><small>Dolaznost</small><b>${rate==null?'—':rate+'%'}</b></div><div class="stat" style="border-left-color:var(--warn)"><small>Duguje</small><b>${money(s.due)}</b></div></div>
-   <div class="grid g2" style="margin-bottom:10px">${c.phone?`<a class="supLink" href="tel:${esc(c.phone)}" style="text-align:center">📞 Pozovi</a>`:''}<button class="btn-v" data-act="climsg" data-id="${c.id}">💬 Poruka</button><button class="btn-p w" data-act="newappt" data-c="${c.id}">📅 Zakaži</button><button class="w" data-act="newpkg" data-c="${c.id}">📦 Novi paket</button></div>
+   <div class="grid g2" style="margin-bottom:10px">${c.phone?`<a class="supLink" href="tel:${esc(c.phone)}" style="text-align:center">📞 Pozovi</a>`:''}<button class="btn-v" data-act="climsg" data-id="${c.id}">💬 Poruka</button><button class="btn-p w" data-act="newappt" data-c="${c.id}">📅 Zakaži</button>${FEAT('pkg')?`<button class="w" data-act="newpkg" data-c="${c.id}">📦 Novi paket</button>`:''}</div>
    ${pk.length?`<h4>📦 Paketi</h4>${pk.map(pkgRow).join('')}`:''}
    <h4>📅 Termini (${as.length})</h4>${as.length?as.slice(0,40).map(a=>`<div class="row sp small" style="padding:6px 0;border-bottom:1px solid var(--line);cursor:pointer" data-act="aedit" data-id="${a.id}"><span>${fmtDate(a.date)} ${esc(a.time)} · ${esc(apptSvc(a)||'—')}</span>${aBadge(a.status)}</div>`).join(''):'<div class="small muted">Nema termina.</div>'}
    <div class="row" style="margin-top:14px"><button class="grow" data-act="dlgclose">Zatvori</button></div>`;
@@ -483,6 +490,7 @@ const PRESETS={
   'Frizerski salon':[['Šišanje — muško','Šišanje',30],['Šišanje — žensko','Šišanje',45],['Šišanje — dečje','Šišanje',20],['Brijanje / brada','Šišanje',20],['Feniranje','Stilizovanje',30],['Pranje i feniranje','Stilizovanje',40],['Svečana frizura','Stilizovanje',60],['Farbanje izrastka','Boja',90],['Farbanje cele dužine','Boja',120],['Pramenovi','Boja',150],['Balayage','Boja',180],['Keratinski tretman','Nega',150],['Maska / nega kose','Nega',20]],
   'Kozmetički salon':[['Čišćenje lica','Lice',60],['Hidratantni tretman lica','Lice',60],['Hemijski piling','Lice',45],['Oblikovanje obrva','Obrve i trepavice',20],['Farbanje obrva','Obrve i trepavice',15],['Laminacija obrva','Obrve i trepavice',45],['Lash lift','Obrve i trepavice',60],['Ekstenzije trepavica','Obrve i trepavice',120],['Depilacija — noge','Depilacija',45],['Depilacija — prepone','Depilacija',30],['Depilacija — pazuh','Depilacija',15],['Šminkanje','Šminka',60]],
   'Masaža':[['Relaks masaža 30 min','Masaža',30],['Relaks masaža 60 min','Masaža',60],['Sportska masaža','Masaža',60],['Terapeutska masaža leđa','Masaža',45],['Limfna drenaža','Masaža',60],['Anticelulit masaža','Masaža',45],['Masaža toplim kamenom','Masaža',75],['Refleksologija stopala','Masaža',45]],
+  'Trepavice i obrve':[['Oblikovanje obrva','Obrve',20],['Farbanje obrva','Obrve',15],['Laminacija obrva','Obrve',45],['Kana obrve','Obrve',30],['Lash lift','Trepavice',60],['Farbanje trepavica','Trepavice',15],['Ekstenzije trepavica — klasične','Trepavice',120],['Ekstenzije trepavica — volumen','Trepavice',150],['Korekcija ekstenzija','Trepavice',75],['Skidanje ekstenzija','Trepavice',20]],
   'Nokti':[['Manikir','Ruke',45],['Trajni lak','Ruke',60],['Gel nokti — izlivanje','Ruke',120],['Gel — korekcija','Ruke',90],['Skidanje gela / laka','Ruke',20],['Nail art (po noktu)','Ruke',10],['Pedikir','Stopala',60],['Medicinski pedikir','Stopala',60],['Trajni lak — stopala','Stopala',45]]};
 function pgUsluge(){const cats={};db.services.forEach(s=>(cats[s.cat||'Usluge']=cats[s.cat||'Usluge']||[]).push(s));
   return`<div class="row wrap" style="margin-bottom:12px;gap:8px"><button class="btn-p grow w" data-act="newsvc">➕ Nova usluga</button><button class="grow w" data-act="presets">📋 Učitaj gotov spisak</button></div>
@@ -490,7 +498,7 @@ function pgUsluge(){const cats={};db.services.forEach(s=>(cats[s.cat||'Usluge']=
    :'<div class="empty">Cenovnik je prazan.<br>Dodaj usluge ili učitaj gotov spisak za frizere, kozmetiku, masažu ili nokte.</div>'}`}
 function svcForm(id){if(RO){roBlock();return}const s=id?svcById(id):null;
   openForm({title:s?'✏️ Usluga':'✂️ Nova usluga',values:s||{unit:'usl',dur:30},fields:[{k:'name',l:'Naziv usluge',req:1},{k:'cat',l:'Kategorija',h:1,list:'catList',ph:'npr. Šišanje'},{k:'dur',l:'Trajanje (min)',t:'number',h:1},
-    {k:'price',l:'Cena (RSD)',t:'number',h:1},{k:'unit',l:'Naplata',t:'select',h:1,o:()=>[['usl','Po usluzi'],['h','Po radnom satu']]}],
+    {k:'price',l:'Cena (RSD)',t:'number',h:1},...(FEAT('hour')||(s&&s.unit==='h')?[{k:'unit',l:'Naplata',t:'select',h:1,o:()=>[['usl','Po usluzi'],['h','Po radnom satu']]}]:[])],
     pre:s?`<div style="text-align:right;margin:-6px 0 8px"><button type="button" class="btn-s btn-d" data-act="delsvc" data-id="${s.id}">🗑️ Obriši uslugu</button></div>`:'',
     onSave:o=>{if(!o.name){toast('Upiši naziv');return false}if(s)Object.assign(s,o);else db.services.push(Object.assign({id:uid()},o));save();toast('Sačuvano ✔')}})}
 function presetDlg(){if(RO){roBlock();return}$('dlgBody').innerHTML=`<h3>📋 Gotov spisak usluga</h3><div class="small muted" style="margin-bottom:10px">Dodaje uobičajene usluge sa trajanjem. Cene upiši sam (ostaju prazne). Postojeće usluge se ne brišu.</div>
@@ -521,19 +529,19 @@ function apConflicts(a){return db.appts.filter(x=>x.id!==a.id&&x.date===a.date&&
 function apAlg(a){const c=cliById(a.cid);return c&&c.allergy?`<div class="small" style="color:var(--warn);margin-top:4px">⚠️ ${esc(c.allergy)}</div>`:''}
 function apCf(a){const cf=apConflicts(a);return cf.length?`<div class="alert warn" style="margin-top:8px">⚠️ Preklapa se sa: ${cf.map(x=>esc(x.time)+' '+esc(apptName(x))).join(', ')}</div>`:''}
 function apPkgOpts(a){const l=db.packages.filter(p=>p.cid&&p.cid===a.cid&&(p.id===a.pkg||pkgInfo(p).active));return l}
-function apPkg(a){const l=apPkgOpts(a);if(!l.length)return'';return`<label class="l" style="margin-top:10px">📦 Paket</label><select class="fld" id="aPkg"><option value="">Bez paketa (plaća se posebno)</option>${l.map(p=>{const i=pkgInfo(p);return`<option value="${p.id}" ${p.id===a.pkg?'selected':''}>${esc(p.name||'Paket')}${i.left!=null?' — ostalo '+i.left:''}</option>`}).join('')}</select>`}
+function apPkg(a){if(!FEAT('pkg')&&!a.pkg)return'';const l=apPkgOpts(a);if(!l.length)return'';return`<label class="l" style="margin-top:10px">📦 Paket</label><select class="fld" id="aPkg"><option value="">Bez paketa (plaća se posebno)</option>${l.map(p=>{const i=pkgInfo(p);return`<option value="${p.id}" ${p.id===a.pkg?'selected':''}>${esc(p.name||'Paket')}${i.left!=null?' — ostalo '+i.left:''}</option>`}).join('')}</select>`}
 function apInfo(){apRead();$('aAlg').innerHTML=apAlg(ae.a);$('aCf').innerHTML=apCf(ae.a);$('aPkgW').innerHTML=apPkg(ae.a);apPriceUpd()}
 function apPriceUpd(){const a=ae.a,w=$('aPriceW');if(!w)return;w.hidden=!!a.pkg;const p=$('aPrice');if(p)p.placeholder=fIn(svcPrice(a))||'0'}
 function apDraw(){const a=ae.a,c=cliById(a.cid);
   const sel=new Set(a.svcs||[]);
   $('dlgBody').innerHTML=`<div class="row sp"><h3 style="margin:0">${ae.isNew?'📅 Novi termin':'📅 Termin'}</h3>${ae.isNew?'':aBadge(a.status)}</div>
-   <div class="grid g2" style="margin-top:10px"><div style="grid-column:1/-1"><label class="l">Klijent *</label><div class="row" style="gap:6px"><input class="fld grow" id="aCli" list="cliList" value="${esc(c?c.name:a.cname||'')}" placeholder="Ime klijenta" autocomplete="off"><button class="btn-s" data-act="apnewcli" title="Novi klijent sa telefonom">＋</button></div><div id="aAlg">${apAlg(a)}</div></div>
+   <div class="grid g2" style="margin-top:10px"><div style="grid-column:1/-1"><label class="l">Klijent *</label><div class="row" style="gap:6px"><div class="grow cbx"><input class="fld" id="aCli" value="${esc(c?c.name:a.cname||'')}" placeholder="🔍 Izaberi ili upiši ime klijenta" autocomplete="off"><div class="cdd" id="aCliDd" hidden></div></div><button class="btn-s" data-act="apnewcli" title="Novi klijent sa telefonom">＋</button></div><div id="aAlg">${apAlg(a)}</div></div>
     <div><label class="l">Datum</label><input class="fld" id="aDate" type="date" value="${esc(a.date)}"></div><div><label class="l">Vreme</label><input class="fld" id="aTime" type="time" step="300" value="${esc(a.time)}"></div>
     <div><label class="l">Trajanje (min)</label><input class="fld" id="aDur" type="number" inputmode="numeric" value="${esc(a.dur)}"></div>
     <div><label class="l">Zaposleni</label><select class="fld" id="aStaff"><option value="">—</option>${db.staff.filter(s=>!s.off||s.id===a.staffId).map(s=>`<option value="${s.id}" ${s.id===a.staffId?'selected':''}>${esc(s.name)}</option>`).join('')}</select></div></div>
    <div id="aCf">${apCf(a)}</div>
    <h4>Usluge</h4>
-   <div class="chips" id="aSvcs">${db.services.length?db.services.slice().sort((x,y)=>(x.cat||'').localeCompare(y.cat||'')||x.name.localeCompare(y.name,'sr')).map(s=>`<button data-act="apsvc" data-id="${s.id}" class="${sel.has(s.id)?'btn-p':''}">${esc(s.name)}${num(s.dur)?` <span class="small" style="opacity:.75">${s.dur}′</span>`:''}</button>`).join(''):'<span class="small muted">Nema usluga u cenovniku — dodaj ih u meniju „Usluge“.</span>'}</div>
+   <div id="aSvcs">${svcChips(sel)}</div>
    <div id="aPkgW">${apPkg(a)}</div>
    <div id="aPriceW" class="grid g2" style="margin-top:10px" ${a.pkg?'hidden':''}><div><label class="l">Cena (RSD)</label><input class="fld" id="aPrice" inputmode="decimal" value="${esc(fIn(a.price))}" placeholder="${esc(fIn(svcPrice(a))||'0')}"><div class="small muted" style="margin-top:3px">Prazno = po cenovniku</div></div>
     <label class="row" style="align-self:center;margin-top:14px"><input type="checkbox" id="aPaid" ${a.paid?'checked':''} style="width:20px;height:20px"> 💳 Naplaćeno</label></div>
@@ -541,8 +549,19 @@ function apDraw(){const a=ae.a,c=cliById(a.cid);
    <label class="l" style="margin-top:10px">Status</label><div class="seg wrap">${Object.entries(AST).map(([k,v])=>`<button data-act="apst" data-v="${k}" class="${a.status===k?'on':''}">${v.i} ${v.l}</button>`).join('')}</div>
    ${ae.isNew?`<label class="l" style="margin-top:10px">Ponavljanje</label><select class="fld" id="aRep"><option value="0">Ne ponavlja se</option>${[[7,'Svake nedelje'],[14,'Svake 2 nedelje'],[21,'Svake 3 nedelje'],[28,'Svake 4 nedelje']].map(([d,l])=>`<option value="${d}">${l}</option>`).join('')}</select><select class="fld" id="aRepN" style="margin-top:6px">${[2,3,4,6,8,10,12].map(n=>`<option value="${n}">${n} termina ukupno</option>`).join('')}</select>`:''}
    <div class="row wrap" style="margin-top:14px;gap:8px">${ae.isNew?'':`<button class="btn-d w" data-act="apdel">🗑️</button>`}<button class="grow" data-act="dlgclose">Zatvori</button><button class="btn-p grow w" data-act="apsave">💾 Sačuvaj</button></div>
-   ${ae.isNew||!OPEN(a.status)?'':`<div class="row wrap" style="margin-top:8px;gap:8px"><button class="btn-v grow" data-act="arem" data-id="${a.id}">🔔 Podsetnik</button>${dayDiff(a.date)===0?`<button class="grow" data-act="alate" data-id="${a.id}">⏰ Poruka „kasnite“</button>`:''}</div>`}`;
+   ${ae.isNew?'':OPEN(a.status)?`<div class="row wrap" style="margin-top:8px;gap:8px"><button class="btn-v grow" data-act="arem" data-id="${a.id}">🔔 Podsetnik</button><button class="grow" data-act="aconf" data-id="${a.id}">✅ Potvrda termina</button>${dayDiff(a.date)===0?`<button class="grow" data-act="alate" data-id="${a.id}">⏰ Poruka „kasnite“</button>`:''}</div>`:a.status==='dosao'?`<div class="row wrap" style="margin-top:8px"><button class="grow" data-act="athx" data-id="${a.id}">💬 Zahvalnica klijentu</button></div>`:''}`;
   if(!$('dlg').open)$('dlg').showModal()}
+function svcChips(sel){const g={};db.services.forEach(s=>(g[s.cat||'Usluge']=g[s.cat||'Usluge']||[]).push(s));
+  return Object.keys(g).sort((a,b)=>a.localeCompare(b,'sr')).map(k=>`${Object.keys(g).length>1?`<div class="small muted" style="margin:6px 0 4px">${esc(k)}</div>`:''}<div class="chips">${g[k].sort((x,y)=>x.name.localeCompare(y.name,'sr')).map(s=>`<button data-act="apsvc" data-id="${s.id}" class="${sel.has(s.id)?'btn-p':''}">${esc(s.name)}<span class="small" style="opacity:.75">${num(s.dur)?' '+s.dur+'′':''}${num(s.price)?' · '+fmtN(s.price)+(s.unit==='h'?'/h':''):''}</span></button>`).join('')}</div>`).join('')
+   +`<div class="chips" style="margin-top:6px"><button data-act="apnewsvc" class="btn-s">＋ Nova usluga</button>${db.services.length?'':'<span class="small muted">Cenovnik je prazan — dodaj uslugu ovde ili u meniju „Usluge“.</span>'}</div>`}
+/* izbor klijenta: padajuća lista (radi i na telefonu, za razliku od datalist) */
+function apCliDd(show){const dd=$('aCliDd'),inp=$('aCli');if(!dd||!inp)return;if(show===false){dd.hidden=true;return}
+  const q=norm(inp.value.trim()),last={};db.appts.forEach(a=>{if(a.cid&&(!last[a.cid]||last[a.cid]<a.date))last[a.cid]=a.date});
+  let l=db.clients.filter(c=>!q||norm(c.name+' '+(c.phone||'')).includes(q));l.sort((a,b)=>q?a.name.localeCompare(b.name,'sr'):String(last[b.id]||'').localeCompare(String(last[a.id]||''))||a.name.localeCompare(b.name,'sr'));
+  const ex=db.clients.some(c=>nName(c.name)===nName(inp.value));
+  dd.innerHTML=(l.length?l.slice(0,30).map(c=>`<button type="button" data-act="apcli" data-id="${c.id}"><b>${esc(c.name)}</b>${c.phone?` <span class="muted small">${esc(c.phone)}</span>`:''}${c.allergy?' <span style="color:var(--warn)">⚠️</span>':''}</button>`).join(''):`<div class="small muted" style="padding:9px 12px">${db.clients.length?'Nema klijenta sa tim imenom.':'Još nema klijenata.'}</div>`)
+   +(inp.value.trim()&&!ex?`<button type="button" data-act="apnewcli" style="color:var(--acc)"><b>＋ Novi klijent: ${esc(inp.value.trim())}</b></button>`:'');
+  dd.hidden=false}
 function apRead(){const a=ae.a;if(!$('aCli'))return a;const cn=$('aCli').value.trim(),c=db.clients.find(x=>nName(x.name)===nName(cn));
   const oc=a.cid;a.cid=c?c.id:'';a.cname=c?'':cn;
   a.date=$('aDate').value||a.date;a.time=$('aTime').value||a.time;a.dur=num($('aDur').value)||30;a.staffId=$('aStaff').value;a.note=$('aNote').value.trim();
@@ -566,11 +585,15 @@ function fillMsg(tpl,map){return String(tpl||'').replace(/\{(\w+)\}/g,(x,k)=>k i
 function remMsg(a){const c=cliById(a.cid)||{},sh=S().shop,d=new Date(a.date+'T12:00:00'),k=dayDiff(a.date);
   const dat=(k===0?'danas':k===1?'sutra':DN[d.getDay()].toLowerCase())+' '+d.getDate()+'. '+MSL[d.getMonth()].toLowerCase(),sv=apptSvc(a);
   return fillMsg(S().msgRem||DEF_REM,{ime:firstName(c.name),datum:dat,vreme:a.time,usluge:sv?' ('+sv+')':'',salon:sh.name||'',telefon:sh.phone?', tel. '+sh.phone:'',adresa:sh.addr||''})}
+function apMap(a){const c=cliById(a.cid)||{},sh=S().shop,d=new Date(a.date+'T12:00:00'),k=dayDiff(a.date),sv=apptSvc(a);
+  return{ime:firstName(c.name||a.cname),datum:(k===0?'danas':k===1?'sutra':DN[d.getDay()].toLowerCase())+' '+d.getDate()+'. '+MSL[d.getMonth()].toLowerCase(),vreme:a.time,usluge:sv?' ('+sv+')':'',salon:sh.name||'',telefon:sh.phone?', tel. '+sh.phone:'',adresa:sh.addr?', '+sh.addr+(sh.city?', '+sh.city:''):''}}
+const confMsg=a=>fillMsg(S().msgConf||DEF_CONF,apMap(a)),thxMsg=a=>fillMsg(S().msgThx||DEF_THX,apMap(a));
 function lateMsg(a){const c=cliById(a.cid)||{},sh=S().shop;return fillMsg(S().msgLate||DEF_LATE,{ime:firstName(c.name),vreme:a.time,usluge:'',salon:sh.name||'',telefon:sh.phone?', tel. '+sh.phone:'',datum:'danas',adresa:sh.addr||''})}
+const CHANS=[['wa','🟢 WhatsApp'],['viber','💜 Viber'],['sms','📩 SMS']];
 function msgDlg(title,phone,text,onSent){
   $('dlgBody').innerHTML=`<h3>${title}</h3><div class="small muted" style="margin-bottom:8px">${phone?'📞 '+esc(phone):'<span style="color:var(--warn)">Nema upisan telefon — poruku možeš da kopiraš ili podeliš.</span>'}</div>
    <label class="l">Poruka (možeš da je izmeniš)</label><textarea class="fld" id="mTxt" rows="6">${esc(text)}</textarea>
-   <div class="grid g2" style="margin-top:10px"><button class="btn-v" data-ms="viber">💜 Viber</button><button data-ms="wa">🟢 WhatsApp</button><button data-ms="sms">📩 SMS</button><button data-ms="copy">📋 Kopiraj</button></div>
+   <div class="grid g2" style="margin-top:10px">${CHANS.map(([k,l])=>`<button data-ms="${k}" class="${(S().chan||'wa')===k?'btn-p':''}" style="${(S().chan||'wa')===k?'grid-column:1/-1;order:-1':''}">${l}</button>`).join('')}<button data-ms="copy">📋 Kopiraj</button></div>
    <div class="small muted" style="margin-top:8px">Viber: poruka se kopira i otvara se razgovor sa klijentom — samo je nalepi.</div>
    <div class="row" style="margin-top:12px"><button class="grow" data-act="dlgclose">Zatvori</button></div>`;
   if(!$('dlg').open)$('dlg').showModal();
@@ -636,15 +659,20 @@ function csvCli(){const rows=[['Ime','Telefon','E-pošta','Rođendan','Alergije'
 
 /* ---------- VIŠE / PODEŠAVANJA ---------- */
 function pgVise(){const b=(t,i,n,d)=>`<button data-tab="${t}"><span style="font-size:1.6rem">${i}</span><div><b>${n}</b><div class="small muted">${d}</div></div></button>`;
-  return`<div class="more">${b('paketi','📦','Paketi','Paketi termina i članarine')}${b('usluge','✂️','Usluge i cene','Cenovnik, trajanje, cena po usluzi ili po satu')}${b('zaposleni','💇','Zaposleni','Kolone u kalendaru, termini po zaposlenom')}${b('izvestaji','📊','Izveštaji','Naplata, usluge, zaposleni, dolaznost')}${isAdmin?b('korisnici','👑','Korisnici','Licence i uređaji (admin)'):''}${b('podesavanja','⚙️','Podešavanja','Salon, radno vreme, poruke, Google Drive, kopije')}</div>`}
+  return`<div class="more">${FEAT('pkg')?b('paketi','📦','Paketi','Paketi termina i članarine'):''}${b('usluge','✂️','Usluge i cene','Cenovnik, trajanje, cena po usluzi ili po satu')}${b('zaposleni','💇','Zaposleni','Kolone u kalendaru, termini po zaposlenom')}${b('izvestaji','📊','Izveštaji','Naplata, usluge, zaposleni, dolaznost')}${isAdmin?b('korisnici','👑','Korisnici','Licence i uređaji (admin)'):''}${b('podesavanja','⚙️','Podešavanja','Salon, radno vreme, poruke, Google Drive, kopije')}</div>`}
 function pgPodesavanja(){const s=S(),sh=s.shop,inp=(p,l,t,ph)=>`<div><label class="l">${l}</label><input class="fld" data-path="${p}" type="${t||'text'}" value="${esc(p.split('.').reduce((o,k)=>o&&o[k],s)??'')}" placeholder="${esc(ph||'')}"></div>`;
   return`${licCard()}
    <div class="card"><h3>🏪 Salon (za poruke i izveštaje)</h3><div class="grid g2">${inp('shop.name','Naziv salona')}${inp('shop.phone','Telefon','tel')}${inp('shop.addr','Adresa')}${inp('shop.city','Mesto')}${inp('shop.email','E-pošta','email')}</div>
     <label class="l" style="margin-top:12px">Logo (za izveštaj)</label>${s.logo?`<div class="logoPrev"><img src="${esc(s.logo)}" alt=""></div>`:''}<div class="row wrap" style="gap:8px"><button class="w" data-act="logopick">🖼️ ${s.logo?'Promeni':'Dodaj'} logo</button>${s.logo?'<button class="btn-d w" data-act="logodel">Ukloni</button>':''}</div></div>
    <div class="card"><h3>🕘 Radno vreme i termini</h3><div class="grid g3">${inp('dayStart','Od','time')}${inp('dayEnd','Do','time')}<div><label class="l">Korak u kalendaru</label><select class="fld" data-path="slot">${[10,15,20,30,60].map(n=>`<option value="${n}" ${num(s.slot)===n?'selected':''}>${n} min</option>`).join('')}</select></div></div></div>
-   <div class="card"><h3>📦 Paketi</h3><label class="row"><input type="checkbox" data-chk="ndoUsed" ${s.ndoUsed!==false?'checked':''} style="width:20px;height:20px"> Kad klijent ne dođe, termin se računa kao iskorišćen iz paketa</label></div>
+   ${bizCard()}
+   ${notifCard()}
+   ${FEAT('pkg')?'':'<!--'}<div class="card"><h3>📦 Paketi</h3><label class="row"><input type="checkbox" data-chk="ndoUsed" ${s.ndoUsed!==false?'checked':''} style="width:20px;height:20px"> Kad klijent ne dođe, termin se računa kao iskorišćen iz paketa</label></div>
+${FEAT('pkg')?'':'-->'}
    <div class="card"><h3>💬 Tekst poruka</h3><div class="small muted" style="margin-bottom:8px">Zamene: {ime} {datum} {vreme} {usluge} {salon} {telefon} {adresa}.</div>
     <label class="l">Podsetnik za termin</label><textarea class="fld" data-path="msgRem" rows="3">${esc(s.msgRem)}</textarea>
+    <label class="l" style="margin-top:8px">Potvrda zakazivanja</label><textarea class="fld" data-path="msgConf" rows="3">${esc(s.msgConf)}</textarea>
+    <label class="l" style="margin-top:8px">Zahvalnica posle termina</label><textarea class="fld" data-path="msgThx" rows="2">${esc(s.msgThx)}</textarea>
     <label class="l" style="margin-top:8px">Kad klijent kasni</label><textarea class="fld" data-path="msgLate" rows="2">${esc(s.msgLate)}</textarea>
     <button class="btn-s w" style="margin-top:8px" data-act="msgreset">↺ Podrazumevani tekst</button></div>
    ${gdCard()}
@@ -657,6 +685,33 @@ function pgPodesavanja(){const s=S(),sh=s.shop,inp=(p,l,t,ph)=>`<div><label clas
     <div class="seg" style="margin-top:12px">${[['s','Sitna slova'],['m','Normalna'],['l','Krupna']].map(x=>`<button data-set="fs" data-val="${x[0]}" class="${s.fs===x[0]?'on':''}">${x[1]}</button>`).join('')}</div></div>
    <div class="card"><h3>🔄 Ažuriranje</h3><div class="row sp"><span>Verzija <b>${VER}</b></span><button class="btn-s" data-act="checkupd">Proveri ažuriranje</button></div></div>
    ${supportCard()}`}
+
+/* ---------- VRSTA POSLA (čarobnjak) ---------- */
+const BIZ=[['Frizerski salon','💇','Šišanje, farbanje, feniranje',{pkg:false,hour:false},'Frizerski salon'],['Kozmetički salon','💄','Tretmani lica, depilacija, šminka',{pkg:true,hour:false},'Kozmetički salon'],
+  ['Masaža','💆','Relaks, sportska, terapeutska',{pkg:true,hour:true},'Masaža'],['Nokti — manikir i pedikir','💅','Manikir, gel, trajni lak, pedikir',{pkg:false,hour:false},'Nokti'],
+  ['Trepavice i obrve','👁️','Lash lift, ekstenzije, laminacija',{pkg:false,hour:false},'Trepavice i obrve'],['Ostalo','✨','Više vrsta usluga, studio, terapije',{pkg:true,hour:true},'']];
+let wz=null;
+function wizDlg(){if(RO){roBlock();return}const s=S();wz=wz||{biz:s.biz||'',feat:Object.assign({},s.feat),load:!db.services.length,name:s.shop.name||'',phone:s.shop.phone||''};
+  const b=BIZ.find(x=>x[0]===wz.biz);
+  $('dlgBody').innerHTML=`<h3>🧩 Čime se baviš?</h3><div class="small muted" style="margin-bottom:10px">Izaberi vrstu posla — aplikacija uključi opcije koje ti trebaju i učita uobičajene usluge. Sve se kasnije menja u Podešavanjima.</div>
+   <div class="more" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px">${BIZ.map(x=>`<button data-act="wizpick" data-v="${esc(x[0])}" style="${wz.biz===x[0]?'border-color:var(--acc);background:color-mix(in srgb,var(--acc) 14%,transparent)':''}"><span style="font-size:1.6rem">${x[1]}</span><div><b>${esc(x[0])}</b><div class="small muted">${esc(x[2])}</div></div></button>`).join('')}</div>
+   ${b?`<div class="grid g2" style="margin-top:12px"><div><label class="l">Naziv salona</label><input class="fld" id="wzName" value="${esc(wz.name)}" placeholder="npr. Studio Lepota"></div><div><label class="l">Telefon salona</label><input class="fld" id="wzPhone" type="tel" value="${esc(wz.phone)}" placeholder="06x xxx xxxx"></div></div>
+   <h4>Kako radiš</h4>
+   <label class="row" style="margin:6px 0"><input type="checkbox" id="wzPkg" ${wz.feat.pkg?'checked':''} style="width:20px;height:20px"> 📦 Paketi termina / članarine <span class="small muted">(npr. 10 masaža, mesečna karta)</span></label>
+   <label class="row" style="margin:6px 0"><input type="checkbox" id="wzHour" ${wz.feat.hour?'checked':''} style="width:20px;height:20px"> ⏱️ Naplata po satu <span class="small muted">(cena × trajanje termina)</span></label>
+   ${b[4]?`<label class="row" style="margin:6px 0"><input type="checkbox" id="wzLoad" ${wz.load?'checked':''} style="width:20px;height:20px"> ✂️ Učitaj uobičajene usluge (${PRESETS[b[4]].length}) — cene upisuješ sam</label>`:''}`:''}
+   <div class="row" style="margin-top:14px"><button class="grow" data-act="dlgclose">Kasnije</button><button class="btn-p grow" data-act="wizsave" ${b?'':'disabled'}>✅ Gotovo</button></div>`;
+  if(!$('dlg').open)$('dlg').showModal()}
+function wizRead(){if(!wz||!$('wzName'))return;wz.name=$('wzName').value.trim();wz.phone=$('wzPhone').value.trim();wz.feat.pkg=$('wzPkg').checked;wz.feat.hour=$('wzHour').checked;if($('wzLoad'))wz.load=$('wzLoad').checked}
+function wizSave(){wizRead();const b=BIZ.find(x=>x[0]===wz.biz);if(!b)return;const s=S();s.biz=wz.biz;s.feat=Object.assign({},wz.feat);if(wz.name)s.shop.name=wz.name;if(wz.phone)s.shop.phone=wz.phone;
+  let n=0;if(wz.load&&b[4]){const have=new Set(db.services.map(x=>nName(x.name)));PRESETS[b[4]].forEach(([nm,cat,dur])=>{if(!have.has(nName(nm))){db.services.push({id:uid(),name:nm,cat,dur,price:'',unit:'usl'});n++}})}
+  wz=null;save();$('dlg').close();if(n){go('usluge');toast('Učitano usluga: '+n+' — upiši cene ✏️')}else{render();toast('Podešeno ✔')}}
+function bizCard(){const s=S(),b=BIZ.find(x=>x[0]===s.biz);
+  return`<div class="card"><h3>🧩 Vrsta posla i opcije</h3><div class="row sp" style="margin-bottom:8px"><span>${b?b[1]+' <b>'+esc(b[0])+'</b>':'<span class="muted">Nije izabrano</span>'}</span><button class="btn-s w" data-act="wizard">${b?'Promeni':'Izaberi'}</button></div>
+   <label class="row" style="margin:6px 0"><input type="checkbox" data-chk="feat.pkg" ${FEAT('pkg')?'checked':''} style="width:20px;height:20px"> 📦 Paketi termina / članarine</label>
+   <label class="row" style="margin:6px 0"><input type="checkbox" data-chk="feat.hour" ${FEAT('hour')?'checked':''} style="width:20px;height:20px"> ⏱️ Naplata po satu (usluga „po radnom satu“)</label>
+   <label class="l" style="margin-top:10px">Poruke klijentima šaljem preko</label><div class="seg">${CHANS.map(([k,l])=>`<button data-set="chan" data-val="${k}" class="${(s.chan||'wa')===k?'on':''}">${l}</button>`).join('')}</div>
+   <label class="row" style="margin:10px 0 0"><input type="checkbox" data-chk="confAsk" ${s.confAsk!==false?'checked':''} style="width:20px;height:20px"> Posle zakazivanja ponudi slanje potvrde klijentu</label></div>`}
 /* ---------- GENERIČKA FORMA ---------- */
 let gf=null;
 function openForm(cfg){
@@ -1050,6 +1105,37 @@ async function admAct(a,d){
     case'admdel':if(!u)return;if(confirm('Obrisati korisnika '+n+'? Biće odjavljen na svim uređajima. Podaci njegovog salona ostaju na njegovim uređajima i Google Drive-u.')&&confirm('Sigurno obrisati '+n+'?'))await admCall('delete',{target:n},'Korisnik obrisan');return;
   }
 }
+/* ---------- OBAVEŠTENJA NA UREĐAJU ----------
+   Pre svakog termina, jutarnji pregled dana i uveče podsetnik da se klijentima pošalju poruke za sutra.
+   Rade dok je aplikacija otvorena ili u pozadini (nema servera za „push“). */
+const NK='atmosStudioNotif1';
+let ntSeen=(()=>{try{return JSON.parse(localStorage.getItem(NK))||{}}catch{return{}}})();
+const ntSup=()=>'Notification' in window;
+const ntOK=()=>ntSup()&&Notification.permission==='granted'&&S().notif&&S().notif.on&&(authState==='ok'||authState==='demo');
+async function ntShow(title,body,tag,act){try{const o={body,tag,icon:'icon-192.png',badge:'icon-192.png',data:{act:act||''}};
+  const r=navigator.serviceWorker&&await navigator.serviceWorker.getRegistration();if(r&&r.showNotification){await r.showNotification(title,o);return true}
+  const n=new Notification(title,o);n.onclick=()=>{window.focus();ntAct(act)};return true}catch{return false}}
+function ntMark(k){ntSeen[k]=Date.now();const lim=Date.now()-3*864e5;Object.keys(ntSeen).forEach(x=>{if(ntSeen[x]<lim)delete ntSeen[x]});try{localStorage.setItem(NK,JSON.stringify(ntSeen))}catch{}}
+function ntTick(){if(!ntOK())return;const now=new Date(),t=todayStr(),nm=now.getHours()*60+now.getMinutes(),bf=num(S().notif.before)||15,today=dayAppts(t).filter(a=>OPEN(a.status));
+  today.forEach(a=>{const d=tmin(a.time)-nm,k='a'+a.id+a.date+a.time;if(d<=bf&&d>=-5&&!ntSeen[k]){ntMark(k);const st=staffById(a.staffId);
+    ntShow('⏰ '+a.time+' · '+apptName(a),(apptSvc(a)||'Termin')+(st?' · '+st.name:'')+(d>0?' — za '+d+' min':' — sada'),k,'aedit:'+a.id)}});
+  if(nm>=tmin(S().dayStart||'08:00')-60&&!ntSeen['d'+t]){ntMark('d'+t);if(today.length)ntShow('📅 Danas '+today.length+' '+(today.length===1?'termin':'termina'),today.slice(0,5).map(a=>a.time+' '+apptName(a)).join(' · '),'d'+t,'tab:kalendar')}
+  const tm=addD(t,1),un=dayAppts(tm).filter(a=>OPEN(a.status)&&!a.remSent).length;
+  if(nm>=17*60&&un&&!ntSeen['r'+tm]){ntMark('r'+tm);ntShow('🔔 Podsetnici za sutra','Sutra '+un+' '+(un===1?'termin':'termina')+' — pošalji klijentima podsetnik ('+((CHANS.find(x=>x[0]===S().chan)||CHANS[0])[1])+').','r'+tm,'bulkrem:'+tm)}}
+function ntAct(a){if(!a)return;const i=String(a).indexOf(':'),k=a.slice(0,i),v=a.slice(i+1);if(authState==='locked')return;
+  if(k==='aedit'&&apptById(v))openAppt(v);else if(k==='tab')go(v);else if(k==='bulkrem')bulkRem(v)}
+async function ntEnable(){if(!ntSup()){toast('Ovaj uređaj ne podržava obaveštenja');return}let p=Notification.permission;
+  if(p!=='granted'){try{p=await Notification.requestPermission()}catch{}}
+  if(p!=='granted'){S().notif.on=false;persist();render();toast('Obaveštenja nisu dozvoljena — uključi ih u podešavanjima telefona za Atmos Studio');return}
+  S().notif.on=true;persist();render();ntShow('✅ Obaveštenja su uključena','Javljaću ti pre svakog termina, ujutru pregled dana i uveče podsetnike za sutra.','test','');setTimeout(ntTick,1500)}
+function notifCard(){const s=S().notif||{},on=ntSup()&&Notification.permission==='granted'&&s.on,denied=ntSup()&&Notification.permission==='denied';
+  return`<div class="card"><h3>🔔 Obaveštenja na ovom uređaju ${on?'<span class="badge b-ok">uključena</span>':''}</h3>
+   <div class="small muted" style="margin-bottom:8px">Aplikacija ti javlja: pre svakog termina, ujutru koliko termina imaš danas i uveče da pošalješ podsetnike klijentima za sutra. Radi dok je aplikacija otvorena ili u pozadini.</div>
+   ${!ntSup()?'<div class="small" style="color:var(--warn)">Ovaj uređaj ne podržava obaveštenja.</div>':on?`<div class="grid g2"><div><label class="l">Javi pre termina</label><select class="fld" data-path="notif.before">${[5,10,15,30,60].map(n=>`<option value="${n}" ${num(s.before)===n?'selected':''}>${n} min</option>`).join('')}</select></div><div style="align-self:end"><button data-act="ntoff" style="width:100%">Isključi</button></div></div>`
+   :`<button class="btn-p" data-act="nton" style="width:100%">🔔 Uključi obaveštenja</button>${denied?'<div class="small" style="color:var(--warn);margin-top:6px">Obaveštenja su blokirana — dozvoli ih u podešavanjima telefona / pregledača, pa klikni ponovo.</div>':''}`}</div>`}
+if(navigator.serviceWorker)navigator.serviceWorker.addEventListener('message',e=>{if(e.data&&e.data.type==='notif')ntAct(e.data.act)});
+setInterval(ntTick,60000);setTimeout(ntTick,5000);
+(function(){const n=new URLSearchParams(location.search).get('n');if(n)setTimeout(()=>ntAct(n),1800)})();
 
 /* ---------- GOOGLE DRIVE SINHRONIZACIJA ----------
    Podaci salona se čuvaju u fajlu „Atmos Studio — podaci.json“ na Google Drive-u KORISNIKA (dozvola drive.file:
@@ -1057,7 +1143,7 @@ async function admAct(a,d){
    Ako isti zapis menjaju dva uređaja, važi kasnija izmena. Brojevi računa se spajaju (uzima se veći). */
 const GD_CLIENT='867108184410-ctavf0871su36rju6n465rd0149ps2mu.apps.googleusercontent.com';
 const GD_SCOPE='https://www.googleapis.com/auth/drive.file',GD_NAME='Atmos Studio — podaci.json',GD_KEY='atmosStudioGD';
-const LOCAL_SET=['theme','accent','fs','backupDays','snapKeep','lastExport','calStaff'];
+const LOCAL_SET=['theme','accent','fs','backupDays','snapKeep','lastExport','calStaff','notif'];
 let gd=(()=>{try{const x=JSON.parse(localStorage.getItem(GD_KEY));if(x&&x.h)return x}catch{}return{on:false,fileId:'',h:{},mt:{},last:0,err:'',email:''}})();if(!gd.mt)gd.mt={};
 let gdTok=(()=>{try{const t=JSON.parse(sessionStorage.getItem(GD_KEY+'_t'));if(t&&t.exp>Date.now()+60000)return t}catch{}return null})();
 let gdClient=null,gdBusy=false,gdT=null;
@@ -1144,7 +1230,7 @@ $('impFile').onchange=e=>{if(RO){roBlock();e.target.value='';return}const f=e.ta
     save();go('pregled');toast('Podaci uvezeni ✔')}catch{toast('Nepoznat format fajla')}e.target.value=''};r.readAsText(f)};
 
 /* ---------- AKCIJE ---------- */
-const W_ACTS=new Set(['newappt','newcli','editcli','delcli','newsvc','editsvc','delsvc','presets','preset','newstaff','editstaff','delstaff','ast','apaid','apsave','apdel','newpkg','editpkg','delpkg','import','reset','logopick','logodel','msgreset','snaprest']);
+const W_ACTS=new Set(['wizard','wizsave','apnewsvc','newappt','newcli','editcli','delcli','newsvc','editsvc','delsvc','presets','preset','newstaff','editstaff','delstaff','ast','apaid','apsave','apdel','newpkg','editpkg','delpkg','import','reset','logopick','logodel','msgreset','snaprest']);
 /* u demo verziji: izvoz, uvoz, kopije i Google Drive nisu dostupni */
 const DEMO_BLOCK=new Set(['export','import','snaprest','gdconnect','gdsync','csvappt','csvcli','repprint','docshare','print']);
 document.addEventListener('click',async e=>{
@@ -1183,8 +1269,19 @@ document.addEventListener('click',async e=>{
     case'aedit':openAppt(id);return;
     case'apsvc':{apRead();const s=new Set(ae.a.svcs||[]);if(s.has(id))s.delete(id);else s.add(id);ae.a.svcs=[...s];ae.a.dur=Math.max(15,ae.a.svcs.reduce((t,x)=>t+(num((svcById(x)||{}).dur)||0),0)||num(ae.a.dur));const st=$('dlg').scrollTop;apDraw();$('dlg').scrollTop=st;return}
     case'apst':apRead();ae.a.status=d.v;apDraw();return;
-    case'apnewcli':{apRead();const nm=($('aCli').value||'').trim()||(prompt('Ime i prezime klijenta:')||'').trim();if(!nm)return;if(!db.clients.some(x=>nName(x.name)===nName(nm))&&demoFull()){toast(DEMO_LIMIT_MSG);return}const ph=(prompt('Telefon klijenta (za podsetnike):')||'').trim();let c=db.clients.find(x=>nName(x.name)===nName(nm));if(!c){c={id:uid(),name:nm,phone:ph,created:todayStr()};db.clients.push(c)}else if(ph)c.phone=ph;ae.a.cid=c.id;save();render();apDraw();return}
-    case'apsave':if(apSave()){$('dlg').close();render();toast(ae.rep?'Zakazano termina: '+ae.repN+' ✔':'Sačuvano ✔')}return;
+    case'apnewcli':{apCliDd(false);apRead();const nm=($('aCli').value||'').trim()||(prompt('Ime i prezime klijenta:')||'').trim();if(!nm)return;if(!db.clients.some(x=>nName(x.name)===nName(nm))&&demoFull()){toast(DEMO_LIMIT_MSG);return}const ph=(prompt('Telefon klijenta (za podsetnike):')||'').trim();let c=db.clients.find(x=>nName(x.name)===nName(nm));if(!c){c={id:uid(),name:nm,phone:ph,created:todayStr()};db.clients.push(c)}else if(ph)c.phone=ph;ae.a.cid=c.id;save();render();apDraw();return}
+    case'apsave':{const wasNew=ae.isNew;if(apSave()){$('dlg').close();render();toast(ae.rep?'Zakazano termina: '+ae.repN+' ✔':'Sačuvano ✔');
+      const x=ae.a,c=cliById(x.cid);if(wasNew&&S().confAsk!==false&&c&&c.phone&&OPEN(x.status))setTimeout(()=>msgDlg('✅ Potvrda termina · '+esc(c.name),c.phone,confMsg(x)),250)}return}
+    case'apcli':{const c=cliById(id);if(!c)return;$('aCli').value=c.name;apCliDd(false);apInfo();return}
+    case'apnewsvc':{apRead();const nm=(prompt('Naziv usluge:')||'').trim();if(!nm)return;const pr=num(prompt('Cena (RSD):')||'');const du=num(prompt('Trajanje (min):','30')||'30')||30;
+      const s={id:uid(),name:nm,cat:'',dur:du,price:pr||'',unit:'usl'};db.services.push(s);ae.a.svcs=[...(ae.a.svcs||[]),s.id];ae.a.dur=Math.max(15,ae.a.svcs.reduce((t,x)=>t+(num((svcById(x)||{}).dur)||0),0));save();const st=$('dlg').scrollTop;apDraw();$('dlg').scrollTop=st;return}
+    case'aconf':{const x=apptById(id);if(!x)return;const c=cliById(x.cid)||{};msgDlg('✅ Potvrda termina · '+esc(apptName(x)),c.phone,confMsg(x));return}
+    case'athx':{const x=apptById(id);if(!x)return;const c=cliById(x.cid)||{};msgDlg('💬 Zahvalnica · '+esc(apptName(x)),c.phone,thxMsg(x));return}
+    case'wizard':wz=null;wizDlg();return;
+    case'wizpick':{wizRead();if(!wz)wz={feat:{}};const b=BIZ.find(x=>x[0]===d.v);wz.biz=d.v;if(b)wz.feat=Object.assign({},b[3]);wizDlg();return}
+    case'wizsave':wizSave();return;
+    case'nton':ntEnable();return;
+    case'ntoff':S().notif.on=false;persist();render();toast('Obaveštenja isključena');return;
     case'apdel':{const x=ae.a,ser=x.ser&&db.appts.filter(y=>y.ser===x.ser&&y.date>x.date&&y.status==='zak');let all=false;
       if(ser&&ser.length)all=confirm(`Termin se ponavlja. Obrisati i sledećih ${ser.length} termina iz serije?\n\nOK = sve sledeće · Otkaži = samo ovaj`);else if(!confirm('Obrisati termin?'))return;
       db.appts=db.appts.filter(y=>y.id!==x.id&&!(all&&ser.some(z=>z.id===y.id)));save();$('dlg').close();render();toast('Termin obrisan');return}
@@ -1205,7 +1302,7 @@ document.addEventListener('click',async e=>{
     /* podešavanja */
     case'logopick':$('logoFile').click();return;
     case'logodel':S().logo='';save();render();return;
-    case'msgreset':S().msgRem=DEF_REM;S().msgLate=DEF_LATE;save();render();toast('Vraćen podrazumevani tekst');return;
+    case'msgreset':S().msgRem=DEF_REM;S().msgLate=DEF_LATE;S().msgConf=DEF_CONF;S().msgThx=DEF_THX;save();render();toast('Vraćen podrazumevani tekst');return;
     case'export':exportFile();return;
     case'import':$('impFile').click();return;
     case'snaprest':restoreSnap(+d.i);return;
@@ -1218,10 +1315,12 @@ document.addEventListener('click',async e=>{
 /* polja u podešavanjima i pretraga */
 document.addEventListener('input',e=>{const t=e.target;
   if(t.id==='q'){ui.q=t.value;const p=t.selectionStart;render();const n=$('q');if(n){n.focus();try{n.setSelectionRange(p,p)}catch{}}return}
-  if(t.dataset.path&&t.closest('#view')){if(RO){roBlock();return}let v=t.value;if(['slot'].includes(t.dataset.path))v=num(v);setPath(S(),t.dataset.path,v);persist()}
-  if(t.id==='aPrice'&&ae){}});
+  if(t.dataset.path&&t.closest('#view')){if(RO){roBlock();return}let v=t.value;if(['slot','notif.before'].includes(t.dataset.path))v=num(v);setPath(S(),t.dataset.path,v);persist()}
+  if(t.id==='aCli'&&ae)apCliDd();});
+document.addEventListener('focusin',e=>{if(e.target.id==='aCli'&&ae)apCliDd()});
+document.addEventListener('pointerdown',e=>{if($('aCliDd')&&!$('aCliDd').hidden&&!e.target.closest('.cbx'))apCliDd(false)});
 document.addEventListener('change',e=>{const t=e.target;
-  if(t.dataset.chk){if(RO){roBlock();return}S()[t.dataset.chk]=t.checked;save();render();return}
+  if(t.dataset.chk){if(RO){roBlock();return}setPath(S(),t.dataset.chk,t.checked);save();render();return}
   if(t.dataset.path&&t.tagName==='SELECT'&&t.closest('#view')){render();return}
   if(['aDate','aTime','aDur','aStaff','aCli','aPkg'].includes(t.id)&&ae&&$('aCf'))apInfo();});
 $('fab').onclick=()=>{if(RO){roBlock();return}const m={pregled:'newappt',kalendar:'newappt',klijenti:'newcli',paketi:'newpkg',usluge:'newsvc',zaposleni:'newstaff'}[ui.tab];if(m){const x=document.createElement('button');x.dataset.act=m;x.hidden=true;document.body.appendChild(x);x.click();x.remove()}};
@@ -1236,6 +1335,8 @@ loadSnaps().then(()=>takeSnap('automatski')).then(()=>{if(ui.tab==='podesavanja'
 (function(){const q=new URLSearchParams(location.search),t=q.get('tab');if(['kalendar','klijenti','paketi','usluge','zaposleni','izvestaji','podesavanja'].includes(t))ui.tab=t;render();
   if(q.get('new')==='appt')setTimeout(()=>{if(!RO)openAppt(null)},300)})();
 authStart();
+/* prvi ulazak: ponudi izbor vrste posla */
+const wzT=setInterval(()=>{if(S().biz||hasData()){clearInterval(wzT);return}if((authState==='ok'||authState==='demo')&&!document.querySelector('dialog[open]')){clearInterval(wzT);wizDlg()}},1500);
 setInterval(()=>{if(ui.tab==='kalendar'&&!document.querySelector('dialog[open]'))bgRender()},60000);
 function authStart(){
   $('authBtn').onclick=()=>{if(authState==='demo'||demoExpired()){openAuth();return}if(confirm('Odjaviti se? Za ponovni ulaz biće potrebni korisničko ime i PIN.')){clearAuth();lock()}};

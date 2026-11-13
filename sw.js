@@ -2,7 +2,7 @@
    Automatsko ažuriranje: promeni VERSION (i VER u index.html) pri svakom izdanju.
    Pregledač proverava sw.js na serveru; kad se bajtovi razlikuju, nova verzija se preuzme u pozadini,
    a aplikacija prikaže traku „Osveži“. */
-const VERSION = '1.1.0';
+const VERSION = '1.2.0';
 const CACHE = 'atmos-studio-' + VERSION;
 const ASSETS = ['./', 'index.html', 'manifest.json', 'icon-192.png', 'icon-512.png', 'icon-maskable.png'];
 
@@ -53,10 +53,11 @@ self.addEventListener('fetch', e => {
 
 self.addEventListener('notificationclick', e => {
   e.notification.close();
+  const act = (e.notification.data && e.notification.data.act) || '';
   e.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(cs => {
-      if (cs.length) return cs[0].focus();
-      return self.clients.openWindow('./index.html');
+      if (cs.length) { cs[0].postMessage({ type: 'notif', act }); return cs[0].focus(); }
+      return self.clients.openWindow('./index.html' + (act ? '?n=' + encodeURIComponent(act) : ''));
     })
   );
 });

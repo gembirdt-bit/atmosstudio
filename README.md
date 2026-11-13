@@ -8,6 +8,8 @@ Podaci salona se čuvaju na uređaju i, po želji, na **tvom Google Drive-u** �
 
 - **Kalendar** — dnevni prikaz sa kolonom za svakog zaposlenog, klik na prazno mesto zakazuje termin u to vreme, pregled nedelje sa brojem termina, crvena linija „sada“
 - **Termini** — klijent, usluge (trajanje se sabira samo), zaposleni, napomena, upozorenje kad se termini preklapaju, **ponavljanje** (svake 1–4 nedelje), statusi **Zakazan / Dolazi / Kasni / Završen / Otkazan / Nije došao**, cena iz cenovnika i oznaka **Naplaćeno**
+- **Vrsta posla** — pri prvom pokretanju izaberi frizerski salon, kozmetiku, masažu, nokte, trepavice i obrve ili ostalo; paketi i naplata po satu se uključuju po potrebi
+- **Obaveštenja** — pre termina, ujutru pregled dana, uveče podsetnik da pošalješ poruke klijentima za sutra
 - **Podsetnici** — poruka klijentu jednim dodirom (Viber / WhatsApp / SMS), „Podsetnici za sutra“ za sve klijente redom; poruka „kasnite“ klijentu koji kasni; tekst poruka se podešava
 - **Klijenti** — telefon, e-pošta, rođendan, **alergije / upozorenja**, beleške (boja, formula…), svi termini i paketi, najčešće usluge, dolaznost, ukupno plaćeno i dug; čestitka za rođendan
 - **Usluge** — cenovnik po kategorijama, trajanje, naplata **po usluzi ili po radnom satu**; gotovi spiskovi za frizere, kozmetiku, masažu i nokte
@@ -45,6 +47,13 @@ Potreban je Google Chrome (na većini telefona je već instaliran).
 - **Podešavanja → Google Drive**: poveži svoj Google nalog da podaci budu isti na svim uređajima.
 
 ## Verzije
+
+### 1.2.0
+- Pri prvom pokretanju biraš vrstu posla (frizer, kozmetika, masaža, nokti, trepavice i obrve, ostalo) — aplikacija učita uobičajene usluge i uključi potrebne opcije
+- Paketi i naplata po satu se uključuju / isključuju u Podešavanjima
+- Novi termin: izbor klijenta iz liste, dodavanje usluge direktno iz termina
+- Potvrda zakazivanja i zahvalnica klijentu preko WhatsApp-a, Vibera ili SMS-a; izbor glavnog kanala
+- Obaveštenja na uređaju: pre termina, pregled dana ujutru, podsetnici za sutra uveče
 
 ### 1.1.0
 - Aplikacija samo vodi termine — računi su uklonjeni
