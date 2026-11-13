@@ -18,7 +18,7 @@ Podaci salona se čuvaju na uređaju i, po želji, na **tvom Google Drive-u** �
 - **Izveštaji** — naplaćeno (termini i paketi), nenaplaćeno, po zaposlenima i uslugama, najprometniji sati, dolaznost, novi klijenti; mesec, 3 i 6 meseci, godina; štampa; CSV za Excel
 - **Google Drive** — isti podaci na svim uređajima (aplikacija vidi samo svoj fajl na tvom Drive-u)
 - **Rezervna kopija** — jednim dugmetom; automatske dnevne kopije na uređaju
-- **Besplatna probna verzija** — 30 dana, do 3 klijenta, bez izvoza i Google Drive-a (taster „Isprobaj besplatno“ na prijavi)
+- **Besplatna probna verzija** — 30 dana, do 10 klijenata, bez izvoza i Google Drive-a (taster „Isprobaj besplatno“ na prijavi)
 - **Automatsko ažuriranje** — nova verzija stiže sama, bez ponovne instalacije
 
 ## Instalacija
