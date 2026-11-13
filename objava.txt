@@ -1,2 +1,2 @@
 Izmeni ovaj fajl (npr. upiši novi datum) i sačuvaj na grani main — GitHub sam napravi nove APK i EXE fajlove i objavi ih u Releases.
-2026-11-13 Atmos Studio 1.1.0 
+2026-11-11 Atmos Studio 1.1.0
