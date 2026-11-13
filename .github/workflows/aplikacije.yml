@@ -1,6 +1,6 @@
 # Pravi Android APK i Windows instalaciju za Atmos Studio.
 # - Ručno: Actions → „Android i Windows aplikacije“ → Run workflow (objavljuje Release)
-# - Automatski: pri izmeni foldera android/ ili windows/ (fajlovi su u Artifacts)
+# - Automatski: pri izmeni foldera android/, windows/ ili fajla objava.txt na grani main (objavljuje Release)
 # - Tag v* (npr. v1.6.0) → objavljuje Release
 name: Android i Windows aplikacije
 
@@ -13,6 +13,7 @@ on:
       - 'android/**'
       - 'windows/**'
       - '.github/workflows/aplikacije.yml'
+      - 'objava.txt'
 
 permissions:
   contents: write
@@ -104,7 +105,7 @@ jobs:
 
   objavi:
     needs: [verzija, android, windows]
-    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v5
