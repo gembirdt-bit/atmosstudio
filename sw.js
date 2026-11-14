@@ -2,7 +2,7 @@
    Automatsko ažuriranje: promeni VERSION (i VER u index.html) pri svakom izdanju.
    Pregledač proverava sw.js na serveru; kad se bajtovi razlikuju, nova verzija se preuzme u pozadini,
    a aplikacija prikaže traku „Osveži“. */
-const VERSION = '1.2.4';
+const VERSION = '1.2.5';
 const CACHE = 'atmos-studio-' + VERSION;
 const ASSETS = ['./', 'index.html', 'manifest.json', 'icon-192.png', 'icon-512.png', 'icon-maskable.png'];
 
@@ -28,14 +28,22 @@ self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET' || new URL(req.url).origin !== location.origin) return;
 
-  /* stranica: prvo mreža (uvek najnovije), keš kao rezerva kad nema interneta */
   if (req.mode === 'navigate') {
-    e.respondWith(
-      fetch(req).then(res => {
+    /* stranica: prvo mreža (najnovija verzija), ali najviše 3 s — na slabom internetu otvara se sačuvana kopija,
+       a nova se preuzme u pozadini i stiže pri sledećem otvaranju. Bez interneta: odmah sačuvana kopija. */
+    e.respondWith((async () => {
+      const net = fetch(req, { cache: 'no-cache' }).then(res => {
         if (res && res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put('index.html', copy)); }
         return res;
-      }).catch(() => caches.match('index.html').then(r => r || caches.match('./')))
-    );
+      });
+      const saved = (await caches.match('index.html')) || (await caches.match('./'));
+      if (!saved) return net;
+      e.waitUntil(net.catch(() => {}));
+      return Promise.race([
+        net.then(res => (res && res.ok ? res : saved), () => saved),
+        new Promise(r => setTimeout(() => r(saved), 3000))
+      ]);
+    })());
     return;
   }
 

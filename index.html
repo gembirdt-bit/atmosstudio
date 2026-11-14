@@ -316,7 +316,7 @@ body.demo [data-act=export],body.demo [data-act=import],body.demo [data-act=snap
 if(window.ATMOS_BLOCKED)throw new Error('Atmos Studio: otvori Android, Windows ili Apple aplikaciju');
 /* iPhone / iPad (iPadOS se predstavlja kao Mac, ali ima ekran na dodir) */
 const IOS=/iPhone|iPad|iPod/.test(navigator.userAgent)||(/Macintosh/.test(navigator.userAgent)&&navigator.maxTouchPoints>1);
-const VER='1.2.4';
+const VER='1.2.5';
 let authState='locked'; /* locked = mora prijava; ok = licenca važi; expired = samo pregled; demo = probna verzija */
 let RO=true;
 const $=id=>document.getElementById(id);
