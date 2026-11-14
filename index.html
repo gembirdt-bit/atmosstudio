@@ -316,7 +316,7 @@ body.demo [data-act=export],body.demo [data-act=import],body.demo [data-act=snap
 if(window.ATMOS_BLOCKED)throw new Error('Atmos Studio: otvori Android, Windows ili Apple aplikaciju');
 /* iPhone / iPad (iPadOS se predstavlja kao Mac, ali ima ekran na dodir) */
 const IOS=/iPhone|iPad|iPod/.test(navigator.userAgent)||(/Macintosh/.test(navigator.userAgent)&&navigator.maxTouchPoints>1);
-const VER='1.2.5';
+const VER='1.2.6';
 let authState='locked'; /* locked = mora prijava; ok = licenca važi; expired = samo pregled; demo = probna verzija */
 let RO=true;
 const $=id=>document.getElementById(id);
@@ -734,7 +734,7 @@ ${FEAT('pkg')?'':'-->'}
    <div class="card"><h3>🎨 Izgled</h3><div class="seg">${[['dark','Tamna'],['light','Svetla'],['auto','Automatski']].map(x=>`<button data-set="theme" data-val="${x[0]}" class="${s.theme===x[0]?'on':''}">${x[1]}</button>`).join('')}</div>
     <div class="sw" style="margin-top:12px">${ACCS.map(a=>`<button data-set="accent" data-val="${a}" class="${s.accent===a?'on':''}" style="background:${a}"></button>`).join('')}</div>
     <div class="seg" style="margin-top:12px">${[['s','Sitna slova'],['m','Normalna'],['l','Krupna']].map(x=>`<button data-set="fs" data-val="${x[0]}" class="${s.fs===x[0]?'on':''}">${x[1]}</button>`).join('')}</div></div>
-   <div class="card"><h3>🔄 Ažuriranje</h3><div class="row sp"><span>Verzija <b>${VER}</b></span><button class="btn-s" data-act="checkupd">Proveri ažuriranje</button></div></div>
+   <div class="card"><h3>🔄 Ažuriranje</h3><div class="small muted">Verzija <b>${VER}</b>. Aplikacija sama proverava novu verziju pri svakom pokretanju i na svakih 30 minuta, a kad je nađe prikaže traku „Osveži“.</div></div>
    ${supportCard()}`}
 
 /* ---------- VRSTA POSLA (čarobnjak) ---------- */
