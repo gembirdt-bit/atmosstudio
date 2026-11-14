@@ -1,6 +1,6 @@
 # Atmos Studio
 
-**Atmos Studio** je aplikacija za frizerske i kozmetičke salone, masere, nokte, trepavice i sve delatnosti koje rade po terminima: **kalendar termina po zaposlenima**, **klijenti** sa istorijom i beleškama, **cenovnik usluga**, **paketi termina** (npr. 10 tretmana, mesečna karta), praćenje naplate, podsetnici klijentima preko **Vibera, WhatsApp-a i SMS-a** i izveštaji. Radi na **Android** telefonima i tabletima i na **Windows** računarima, i bez interneta. Sama se ažurira.
+**Atmos Studio** je aplikacija za frizerske i kozmetičke salone, masere, nokte, trepavice i sve delatnosti koje rade po terminima: **kalendar termina po zaposlenima**, **klijenti** sa istorijom i beleškama, **cenovnik usluga**, **paketi termina** (npr. 10 tretmana, mesečna karta), praćenje naplate, podsetnici klijentima preko **Vibera, WhatsApp-a i SMS-a** i izveštaji. Radi na **Android** telefonima i tabletima, na **Windows** računarima i na **iPhone / iPad / Mac** uređajima (sa početnog ekrana), i bez interneta. Sama se ažurira.
 
 Podaci salona se čuvaju na uređaju i, po želji, na **tvom Google Drive-u** — tako su isti na svim tvojim uređajima.
 
@@ -45,6 +45,12 @@ Potreban je Google Chrome (na većini telefona je već instaliran).
 - **Podešavanja → Salon**: naziv, telefon i adresa — idu u poruke klijentima.
 - **Usluge**: dodaj svoje ili učitaj gotov spisak, pa upiši cene.
 - **Podešavanja → Google Drive**: poveži svoj Google nalog da podaci budu isti na svim uređajima.
+
+### iPhone / iPad / Mac
+
+1. Otvori stranicu aplikacije u **Safari**-ju i dodirni **„📲 Instaliraj na iPhone / iPad / Mac“** — prikazaće se uputstvo.
+2. iPhone / iPad: **Deli → Dodaj na početni ekran → Dodaj**. Mac (Safari, macOS Sonoma+): **Datoteka → Dodaj u Dock**.
+3. Pokreni **Atmos Studio** sa ikonice i prijavi se. U običnom pregledaču aplikacija se ne otvara, samo sa ikonice.
 
 ## Verzije
 

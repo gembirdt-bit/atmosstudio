@@ -9,6 +9,10 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Atmos Studio">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
 :root{--acc:#ea580c;--bg:#111318;--bg2:#171a21;--card:#1b1f27;--card2:#252a35;--line:rgba(255,255,255,.1);--txt:#f1f3f7;--muted:#9aa3b2;--ok:#34d399;--warn:#fbbf24;--bad:#f87171;--r:14px;--nav:64px}
 :root[data-theme=light]{--bg:#f3f4f6;--bg2:#e9ebef;--card:#fff;--card2:#f1f3f6;--line:rgba(20,30,50,.13);--txt:#151a24;--muted:#5d6676;--ok:#059669;--warn:#b45309;--bad:#dc2626}
@@ -225,49 +229,94 @@ body.demo [data-act=export],body.demo [data-act=import],body.demo [data-act=snap
 <input type="file" id="logoFile" accept="image/png,image/jpeg,image/webp" hidden>
 
 <script>
-/* ---------- SAMO APLIKACIJA (APK / Windows) ----------
-   Iz običnog pregledača i PWA prikazuje se ekran za preuzimanje aplikacije.
-   Android APK otvara index.html?app=android, Windows program šalje „AtmosStudioApp“ u user-agent-u. */
+/* ---------- SAMO APLIKACIJA (APK / Windows / Apple sa početnog ekrana) ----------
+   Iz običnog pregledača prikazuje se ekran za preuzimanje aplikacije.
+   Android APK otvara index.html?app=android, Windows program šalje „AtmosStudioApp“ u user-agent-u.
+   iPhone / iPad: samo kad je pokrenuta sa početnog ekrana (navigator.standalone === true — postoji samo u Apple WebKit-u).
+   Mac: samo kao Safari veb-aplikacija iz Dock-a (display-mode: standalone).
+   GestureEvent postoji samo u Apple WebKit-u, pa lažiranje user-agent-a u Chrome-u / Edge-u ne otvara aplikaciju. */
 (function(){
   var DL='https://github.com/gembirdt-bit/atmosstudio/releases/latest/download/';
   var q=new URLSearchParams(location.search),ua=navigator.userAgent||'',ref=document.referrer||'';
-  var ok=/AtmosStudioApp|atmos-studio\/[\d.]+ .*Electron\//.test(ua)||q.get('app')==='android'||ref.indexOf('android-app://io.github.gembirdt_bit.atmosstudio')===0||/^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  var iOS=/iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1);
+  var mac=!iOS&&/Macintosh/.test(ua),apple=iOS||mac,webkit=typeof window.GestureEvent!=='undefined';
+  var dispSA=false;try{dispSA=matchMedia('(display-mode: standalone)').matches}catch(e){}
+  var appleApp=webkit&&(iOS?navigator.standalone===true:mac&&dispSA);
+  var ok=appleApp||/AtmosStudioApp|atmos-studio\/[\d.]+ .*Electron\//.test(ua)||q.get('app')==='android'||ref.indexOf('android-app://io.github.gembirdt_bit.atmosstudio')===0||/^(localhost|127\.0\.0\.1)$/.test(location.hostname);
   try{if(ok)sessionStorage.setItem('atmosApp','1');else ok=sessionStorage.getItem('atmosApp')==='1'}catch(e){}
   if(ok)return;
   window.ATMOS_BLOCKED=true;
-  var android=/Android/i.test(ua);
+  var android=/Android/i.test(ua),safari=webkit&&!/CriOS|FxiOS|EdgiOS|OPiOS|GSA\//.test(ua);
   var btn='display:block;box-sizing:border-box;width:100%;max-width:340px;margin:0 auto 12px;padding:14px 18px;border-radius:12px;font-size:16px;font-weight:600;text-decoration:none;text-align:center;cursor:pointer;border:0;';
   var main='background:#e9570b;color:#fff;',sec='background:#22262f;color:#e8eaf0;border:1px solid #343a46;';
   var aBtn='<a style="'+btn+(android?main:sec)+'" href="'+DL+'AtmosStudio.apk">📱 Preuzmi za Android (APK)</a>';
-  var wBtn='<a style="'+btn+(android?sec:main)+'" href="'+DL+'AtmosStudio-Setup.exe">💻 Preuzmi za Windows</a>';
-  document.body.className='';
-  document.body.style.cssText='margin:0;padding:0;min-height:100vh;background:#111318;color:#e8eaf0;font:16px/1.5 system-ui,Segoe UI,Roboto,sans-serif';
-  document.body.innerHTML='<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px 20px;box-sizing:border-box">'
-   +'<img src="icon-192.png" alt="" style="width:96px;height:96px;border-radius:22px;margin-bottom:18px">'
-   +'<h1 style="font-size:24px;margin:0 0 8px">Atmos Studio</h1>'
-   +'<p style="margin:0 0 24px;color:#a3a8b8;max-width:440px">Aplikacija se koristi samo kao <b>Android aplikacija</b> ili <b>Windows program</b>. Preuzmi je, instaliraj i prijavi se istim korisničkim imenom i PIN-om.</p>'
-   +(android?aBtn+wBtn:wBtn+aBtn)
-   +'<p style="margin:4px 0 22px;font-size:13px;color:#7d8394;max-width:440px">Android: dozvoli instalaciju iz ovog izvora kad telefon pita. Windows: ako se pojavi „Windows je zaštitio računar“, klikni <i>Više informacija → Ipak pokreni</i>. Postoji i <a style="color:#a3a8b8" href="'+DL+'AtmosStudio-Portable.exe">verzija bez instalacije</a>.</p>'
-   +'<div style="border-top:1px solid #2a2f3a;padding-top:18px;max-width:440px;width:100%">'
-   +'<p style="margin:0 0 12px;font-size:14px;color:#a3a8b8">Već imaš podatke u ovom pregledaču? Sačuvaj ih pa ih u aplikaciji uvezi dugmetom <i>Podešavanja → ⬆ Uvezi bazu</i>.</p>'
-   +'<button id="gateExp" style="'+btn+sec+'">💾 Izvezi podatke (JSON)</button>'
-   +'<p id="gateMsg" style="margin:0;font-size:14px;color:#a3a8b8"></p>'
-   +'<p style="margin:14px 0 0;font-size:13px;color:#7d8394">Pomoć: <a style="color:#a3a8b8" href="https://wa.me/381606611488">WhatsApp 060 661 1488</a></p>'
-   +'</div></div>';
-  document.getElementById('gateExp').onclick=function(){
-    var raw=null;try{raw=localStorage.getItem('atmosStudio1')}catch(e){}
-    var m=document.getElementById('gateMsg');
-    if(!raw){m.textContent='U ovom pregledaču nema sačuvanih podataka.';return}
-    var d=new Date(),p=function(n){return(n<10?'0':'')+n},name='atmos-studio-backup-'+d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'.json';
-    var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([raw],{type:'application/json'}));a.download=name;
-    document.body.appendChild(a);a.click();a.remove();m.textContent='Preuzet fajl '+name+' ✔';
+  var wBtn='<a style="'+btn+(android||apple?sec:main)+'" href="'+DL+'AtmosStudio-Setup.exe">💻 Preuzmi za Windows</a>';
+  var iBtn='<button id="gateIos" style="'+btn+(apple?main:sec)+'">📲 Instaliraj na iPhone / iPad / Mac</button>';
+  var shareIco='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#4da3ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-4px;margin:0 2px"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>';
+  var box='min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(28px + env(safe-area-inset-top)) 20px calc(28px + env(safe-area-inset-bottom));box-sizing:border-box';
+  var step=function(n,html){return'<li style="display:flex;gap:12px;align-items:flex-start;text-align:left;margin:0 0 14px"><span style="flex:none;width:28px;height:28px;border-radius:50%;background:#e9570b;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:14px">'+n+'</span><span style="padding-top:3px">'+html+'</span></li>'};
+  var ol=function(items){var h='';for(var i=0;i<items.length;i++)h+=step(i+1,items[i]);return'<ol style="list-style:none;padding:0;margin:0 auto;max-width:420px;width:100%">'+h+'</ol>'};
+  var card=function(title,body){return'<div style="background:#181b22;border:1px solid #2a2f3a;border-radius:16px;padding:18px 16px 6px;margin:0 auto 16px;max-width:460px;width:100%;box-sizing:border-box"><h2 style="font-size:17px;margin:0 0 14px">'+title+'</h2>'+body+'</div>'};
+  var iosCard=card('📱 iPhone i iPad',
+     (!safari&&iOS?'<p style="margin:0 0 14px;color:#fbbf24;font-size:14px">Sada si u drugom pregledaču. Kopiraj link i otvori ga u <b>Safari</b>-ju.</p><button id="gateCopy" style="'+btn+sec+'">📋 Kopiraj link</button>':'')
+    +ol(['Otvori ovu stranicu u <b>Safari</b>-ju.',
+      'Dodirni dugme <b>Deli</b> '+shareIco+'. Na iPhone-u je u donjoj traci (ako ga ne vidiš, dodirni <b>⋯</b> pa <b>Deli</b>). Na iPad-u je gore desno.',
+      'Pomeri meni naniže i izaberi <b>„Dodaj na početni ekran“</b> <span style="color:#7d8394">(Add to Home Screen)</span>.',
+      'Ako postoji prekidač <b>„Otvori kao veb aplikaciju“</b>, neka bude uključen. Dodirni <b>Dodaj</b>.',
+      'Zatvori Safari i pokreni <b>Atmos Studio</b> sa ikonice na početnom ekranu. Prijavi se korisničkim imenom i PIN-om ili izaberi <b>„Isprobaj besplatno“</b>.']));
+  var macCard=card('💻 Mac',ol(['Otvori ovu stranicu u <b>Safari</b>-ju (macOS Sonoma ili noviji).',
+      'U meniju izaberi <b>Datoteka → Dodaj u Dock</b> <span style="color:#7d8394">(File → Add to Dock)</span>, pa klikni <b>Dodaj</b>.',
+      'Pokreni <b>Atmos Studio</b> iz Dock-a ili Launchpad-a i prijavi se.']));
+  var guide=function(){
+    window.scrollTo(0,0);
+    document.getElementById('gate').innerHTML='<div style="'+box+';justify-content:flex-start">'
+     +'<img src="icon-192.png" alt="" style="width:72px;height:72px;border-radius:17px;margin:8px 0 12px">'
+     +'<h1 style="font-size:22px;margin:0 0 6px">Instalacija na Apple uređaj</h1>'
+     +'<p style="margin:0 0 20px;color:#a3a8b8;max-width:440px;font-size:15px">Atmos Studio se na Apple uređajima dodaje na početni ekran i radi kao prava aplikacija — preko celog ekrana, i bez interneta.</p>'
+     +(mac?macCard+iosCard:iosCard+macCard)
+     +'<p style="margin:0 0 18px;font-size:13px;color:#7d8394;max-width:440px">Aplikacija radi samo kad se otvori sa ikonice. U pregledaču će uvek biti ovaj ekran. Obaveštenja na iPhone-u rade od iOS 16.4.</p>'
+     +'<button id="gateBack" style="'+btn+sec+'">← Nazad</button></div>';
+    document.getElementById('gateBack').onclick=home;
+    var c=document.getElementById('gateCopy');
+    if(c)c.onclick=function(){var u=location.origin+location.pathname;var fin=function(){c.textContent='✔ Link kopiran — nalepi ga u Safari'};
+      try{navigator.clipboard.writeText(u).then(fin,function(){prompt('Kopiraj link:',u)})}catch(e){prompt('Kopiraj link:',u)}};
   };
+  var home=function(){
+    window.scrollTo(0,0);
+    document.getElementById('gate').innerHTML='<div style="'+box+'">'
+     +'<img src="icon-192.png" alt="" style="width:96px;height:96px;border-radius:22px;margin-bottom:18px">'
+     +'<h1 style="font-size:24px;margin:0 0 8px">Atmos Studio</h1>'
+     +'<p style="margin:0 0 24px;color:#a3a8b8;max-width:440px">Aplikacija se koristi kao <b>Android aplikacija</b>, <b>Windows program</b> ili na <b>iPhone / iPad / Mac</b> sa početnog ekrana. Instaliraj je i prijavi se istim korisničkim imenom i PIN-om.</p>'
+     +(apple?iBtn+wBtn+aBtn:android?aBtn+wBtn+iBtn:wBtn+aBtn+iBtn)
+     +'<p style="margin:4px 0 22px;font-size:13px;color:#7d8394;max-width:440px">Android: dozvoli instalaciju iz ovog izvora kad telefon pita. Windows: ako se pojavi „Windows je zaštitio računar“, klikni <i>Više informacija → Ipak pokreni</i>. Postoji i <a style="color:#a3a8b8" href="'+DL+'AtmosStudio-Portable.exe">verzija bez instalacije</a>.</p>'
+     +'<div style="border-top:1px solid #2a2f3a;padding-top:18px;max-width:440px;width:100%">'
+     +'<p style="margin:0 0 12px;font-size:14px;color:#a3a8b8">Već imaš podatke u ovom pregledaču? Sačuvaj ih pa ih u aplikaciji uvezi dugmetom <i>Podešavanja → ⬆ Uvezi bazu</i>.</p>'
+     +'<button id="gateExp" style="'+btn+sec+'">💾 Izvezi podatke (JSON)</button>'
+     +'<p id="gateMsg" style="margin:0;font-size:14px;color:#a3a8b8"></p>'
+     +'<p style="margin:14px 0 0;font-size:13px;color:#7d8394">Pomoć: <a style="color:#a3a8b8" href="https://wa.me/381606611488">WhatsApp 060 661 1488</a></p>'
+     +'</div></div>';
+    document.getElementById('gateIos').onclick=guide;
+    document.getElementById('gateExp').onclick=function(){
+      var raw=null;try{raw=localStorage.getItem('atmosStudio1')}catch(e){}
+      var m=document.getElementById('gateMsg');
+      if(!raw){m.textContent='U ovom pregledaču nema sačuvanih podataka.';return}
+      var d=new Date(),p=function(n){return(n<10?'0':'')+n},name='atmos-studio-backup-'+d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'.json';
+      var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([raw],{type:'application/json'}));a.download=name;
+      document.body.appendChild(a);a.click();a.remove();m.textContent='Preuzet fajl '+name+' ✔';
+    };
+  };
+  document.body.className='';
+  document.body.style.cssText='margin:0;padding:0;min-height:100vh;background:#111318;color:#e8eaf0;font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif';
+  document.body.innerHTML='<div id="gate"></div>';
+  home();
 })();
 </script>
 <script>
 'use strict';
-if(window.ATMOS_BLOCKED)throw new Error('Atmos Studio: otvori Android ili Windows aplikaciju');
-const VER='1.2.2';
+if(window.ATMOS_BLOCKED)throw new Error('Atmos Studio: otvori Android, Windows ili Apple aplikaciju');
+/* iPhone / iPad (iPadOS se predstavlja kao Mac, ali ima ekran na dodir) */
+const IOS=/iPhone|iPad|iPod/.test(navigator.userAgent)||(/Macintosh/.test(navigator.userAgent)&&navigator.maxTouchPoints>1);
+const VER='1.2.3';
 let authState='locked'; /* locked = mora prijava; ok = licenca važi; expired = samo pregled; demo = probna verzija */
 let RO=true;
 const $=id=>document.getElementById(id);
@@ -316,7 +365,9 @@ function persist(){if(RO)return true;if(demoOver()){db=load();toast(DEMO_LIMIT_M
   try{localStorage.setItem(KEY,JSON.stringify(db));if(typeof gdSoon==='function')gdSoon();return true}catch{toast('Greška pri čuvanju (memorija puna?) — napravi rezervnu kopiju!');return false}}
 function save(){return persist()&&(updateBadge(),true)}
 function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('on'),2800)}
-function download(name,text,mime){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:mime}));a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+async function download(name,text,mime){
+  if(IOS&&window.isSecureContext&&navigator.share){try{const f=new File([text],name,{type:mime});if(!navigator.canShare||navigator.canShare({files:[f]})){await navigator.share({files:[f],title:name});return}}catch(e){if(e&&e.name==='AbortError')return}}
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:mime}));a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 function setPath(o,p,v){const k=p.split('.');let c=o;while(k.length>1)c=c[k.shift()];c[k[0]]=v}
 const cliById=id=>db.clients.find(c=>c.id===id);
 const svcById=id=>db.services.find(s=>s.id===id);
@@ -602,7 +653,7 @@ function msgDlg(title,phone,text,onSent){
     if(!p&&ch!=='copy'){shareText('Poruka',t);return}
     if(ch==='viber'){try{await navigator.clipboard.writeText(t)}catch{}location.href='viber://chat?number=%2B'+p;toast('Tekst je kopiran — nalepi ga u Viber')}
     else if(ch==='wa')window.open('https://wa.me/'+p+'?text='+encodeURIComponent(t),'_blank');
-    else if(ch==='sms')location.href='sms:+'+p+(/iPhone|iPad/.test(navigator.userAgent)?'&':'?')+'body='+encodeURIComponent(t);
+    else if(ch==='sms')location.href='sms:+'+p+(IOS?'&':'?')+'body='+encodeURIComponent(t);
     if(onSent)onSent()})}
 function bulkRem(d){const l=dayAppts(d).filter(a=>OPEN(a.status));
   $('dlgBody').innerHTML=`<h3>🔔 Podsetnici · ${esc(dLabel(d))}</h3><div class="small muted" style="margin-bottom:10px">Dodirni kanal pored klijenta — otvoriće se poruka sa tekstom, samo je pošalji. Posle se vrati ovde za sledećeg.</div>
@@ -613,7 +664,7 @@ function bulkRem(d){const l=dayAppts(d).filter(a=>OPEN(a.status));
   $('dlgBody').querySelectorAll('[data-br]').forEach(b=>b.onclick=async()=>{const a=apptById(b.dataset.id),c=cliById(a.cid)||{},t=remMsg(a),p=phoneIntl(c.phone),ch=b.dataset.br;
     if(ch==='viber'){try{await navigator.clipboard.writeText(t)}catch{}location.href='viber://chat?number=%2B'+p;toast('Tekst je kopiran — nalepi ga u Viber')}
     else if(ch==='wa')window.open('https://wa.me/'+p+'?text='+encodeURIComponent(t),'_blank');
-    else location.href='sms:+'+p+(/iPhone|iPad/.test(navigator.userAgent)?'&':'?')+'body='+encodeURIComponent(t);
+    else location.href='sms:+'+p+(IOS?'&':'?')+'body='+encodeURIComponent(t);
     if(!RO){a.remSent=todayStr();save()}setTimeout(()=>{const st=$('dlg').scrollTop;bulkRem(d);$('dlg').scrollTop=st;bgRender()},400)})}
 
 /* ---------- RAČUN (štampa / PDF) ---------- */
@@ -930,7 +981,7 @@ function deviceId(){
     const a=new Uint8Array(12);crypto.getRandomValues(a);d=Array.from(a,x=>'abcdefghijklmnopqrstuvwxyz0123456789'[x%36]).join('');
     localStorage.setItem(DEV_KEY,d);return d}catch{return ''}
 }
-function deviceName(){const ua=navigator.userAgent||'';return /AtmosStudioApp/.test(ua)?'Windows':/Android/i.test(ua)?'Android':/iPhone|iPad/i.test(ua)?'iPhone':'Pregledač'}
+function deviceName(){const ua=navigator.userAgent||'';return /AtmosStudioApp/.test(ua)?'Windows':/Android/i.test(ua)?'Android':/iPad/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1)?'iPad':/iPhone|iPod/.test(ua)?'iPhone':/Macintosh/.test(ua)?'Mac':'Pregledač'}
 const lockedMsg=r=>'Previše pogrešnih pokušaja. Nalog je privremeno zaključan — pokušaj ponovo za '+(r.minutes||15)+' minuta.';
 const limitMsg=r=>'Nalog je već aktiviran na '+(r.max||3)+' uređaja. Za novi uređaj javi se podršci (taster Aktivacija).';
 const blockedMsg='Ovaj uređaj je isključen sa naloga. Javi se podršci (taster Aktivacija).';
@@ -1218,7 +1269,7 @@ function gdStart(){setInterval(()=>{if(gd.on&&gdValid())gdSync()},5*60000);setIn
 /* ---------- IZVOZ / UVOZ ---------- */
 async function exportFile(){const name=`atmos-studio-backup-${todayStr()}.json`,text=JSON.stringify(db);
   const done=m=>{if(!RO){S().lastExport=todayStr();persist()}render();toast(m)};
-  if(window.isSecureContext&&navigator.share&&/Android|iPhone|iPad/i.test(navigator.userAgent)){const file=new File([text],name,{type:'application/json'});
+  if(window.isSecureContext&&navigator.share&&(IOS||/Android/i.test(navigator.userAgent))){const file=new File([text],name,{type:'application/json'});
     try{if(!navigator.canShare||navigator.canShare({files:[file]})){await navigator.share({files:[file],title:name});done('Kopija podeljena ✔');return}}catch(e){if(e&&e.name==='AbortError')return}}
   download(name,text,'application/json');done('Kopija preuzeta kao fajl ✔')}
 $('impFile').onchange=e=>{if(RO){roBlock();e.target.value='';return}const f=e.target.files[0];if(!f)return;const r=new FileReader();
