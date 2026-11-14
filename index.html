@@ -286,8 +286,8 @@ body.demo [data-act=export],body.demo [data-act=import],body.demo [data-act=snap
     document.getElementById('gate').innerHTML='<div style="'+box+'">'
      +'<img src="icon-192.png" alt="" style="width:96px;height:96px;border-radius:22px;margin-bottom:18px">'
      +'<h1 style="font-size:24px;margin:0 0 8px">Atmos Studio</h1>'
-     +'<p style="margin:0 0 24px;color:#a3a8b8;max-width:440px">Aplikacija se koristi kao <b>Android aplikacija</b>, <b>Windows program</b> ili na <b>iPhone / iPad / Mac</b> sa početnog ekrana. Instaliraj je i prijavi se istim korisničkim imenom i PIN-om.</p>'
-     +(apple?iBtn+wBtn+aBtn:android?aBtn+wBtn+iBtn:wBtn+aBtn+iBtn)
+     +'<p style="margin:0 0 24px;color:#a3a8b8;max-width:440px">Aplikacija se koristi kao <b>Android aplikacija</b>'+(apple?', <b>Windows program</b> ili na <b>iPhone / iPad / Mac</b> sa početnog ekrana':' ili <b>Windows program</b>')+'. Instaliraj je i prijavi se istim korisničkim imenom i PIN-om.</p>'
+     +(apple?iBtn+wBtn+aBtn:android?aBtn+wBtn:wBtn+aBtn)
      +'<p style="margin:4px 0 22px;font-size:13px;color:#7d8394;max-width:440px">Android: dozvoli instalaciju iz ovog izvora kad telefon pita. Windows: ako se pojavi „Windows je zaštitio računar“, klikni <i>Više informacija → Ipak pokreni</i>. Postoji i <a style="color:#a3a8b8" href="'+DL+'AtmosStudio-Portable.exe">verzija bez instalacije</a>.</p>'
      +'<div style="border-top:1px solid #2a2f3a;padding-top:18px;max-width:440px;width:100%">'
      +'<p style="margin:0 0 12px;font-size:14px;color:#a3a8b8">Već imaš podatke u ovom pregledaču? Sačuvaj ih pa ih u aplikaciji uvezi dugmetom <i>Podešavanja → ⬆ Uvezi bazu</i>.</p>'
@@ -295,7 +295,7 @@ body.demo [data-act=export],body.demo [data-act=import],body.demo [data-act=snap
      +'<p id="gateMsg" style="margin:0;font-size:14px;color:#a3a8b8"></p>'
      +'<p style="margin:14px 0 0;font-size:13px;color:#7d8394">Pomoć: <a style="color:#a3a8b8" href="https://wa.me/381606611488">WhatsApp 060 661 1488</a></p>'
      +'</div></div>';
-    document.getElementById('gateIos').onclick=guide;
+    var gi=document.getElementById('gateIos');if(gi)gi.onclick=guide;
     document.getElementById('gateExp').onclick=function(){
       var raw=null;try{raw=localStorage.getItem('atmosStudio1')}catch(e){}
       var m=document.getElementById('gateMsg');
@@ -316,7 +316,7 @@ body.demo [data-act=export],body.demo [data-act=import],body.demo [data-act=snap
 if(window.ATMOS_BLOCKED)throw new Error('Atmos Studio: otvori Android, Windows ili Apple aplikaciju');
 /* iPhone / iPad (iPadOS se predstavlja kao Mac, ali ima ekran na dodir) */
 const IOS=/iPhone|iPad|iPod/.test(navigator.userAgent)||(/Macintosh/.test(navigator.userAgent)&&navigator.maxTouchPoints>1);
-const VER='1.2.3';
+const VER='1.2.4';
 let authState='locked'; /* locked = mora prijava; ok = licenca važi; expired = samo pregled; demo = probna verzija */
 let RO=true;
 const $=id=>document.getElementById(id);
