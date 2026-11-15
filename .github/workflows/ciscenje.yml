@@ -1,0 +1,32 @@
+# Jednokratno: briše stara izdanja, tagove i grane koji pokazuju na stari (javni) izvorni kod.
+# Zadržava samo najnovije izdanje. Posle pokretanja ovaj fajl se briše.
+name: Jednokratno čišćenje stare istorije
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  ocisti:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      R: ${{ github.repository }}
+    steps:
+      - run: |
+          NOVO=$(gh api repos/$R/releases/latest --jq .tag_name)
+          echo "Zadržavam: $NOVO"
+          gh api repos/$R/releases --paginate --jq '.[] | "\(.id) \(.tag_name)"' | while read id t; do
+            [ "$t" = "$NOVO" ] && continue
+            gh api -X DELETE repos/$R/releases/$id && echo "izdanje obrisano: $t"
+          done
+          gh api repos/$R/git/matching-refs/tags --jq '.[].ref' | while read ref; do
+            [ "$ref" = "refs/tags/$NOVO" ] && continue
+            gh api -X DELETE repos/$R/git/${ref#refs/} && echo "tag obrisan: $ref"
+          done
+          gh api repos/$R/git/matching-refs/heads --jq '.[].ref' | while read ref; do
+            [ "$ref" = "refs/heads/main" ] && continue
+            gh api -X DELETE repos/$R/git/${ref#refs/} && echo "grana obrisana: $ref"
+          done
