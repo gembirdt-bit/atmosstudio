@@ -24,9 +24,9 @@ jobs:
           done
           gh api repos/$R/git/matching-refs/tags --jq '.[].ref' | while read ref; do
             [ "$ref" = "refs/tags/$NOVO" ] && continue
-            gh api -X DELETE repos/$R/git/${ref#refs/} && echo "tag obrisan: $ref"
+            gh api -X DELETE repos/$R/git/$ref && echo "tag obrisan: $ref"
           done
           gh api repos/$R/git/matching-refs/heads --jq '.[].ref' | while read ref; do
             [ "$ref" = "refs/heads/main" ] && continue
-            gh api -X DELETE repos/$R/git/${ref#refs/} && echo "grana obrisana: $ref"
+            gh api -X DELETE repos/$R/git/$ref && echo "grana obrisana: $ref"
           done
