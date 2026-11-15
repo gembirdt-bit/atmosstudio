@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="appName">Atmos Studio</string>
+    <string name="launcherName">Atmos Studio</string>
+    <string name="hostName">gembirdt-bit.github.io</string>
+    <string name="launchUrl">https://gembirdt-bit.github.io/atmosstudio/index.html?app=android</string>
+    <string name="providerAuthority">io.github.gembirdt_bit.atmosstudio.fileprovider</string>
+    <string name="assetStatements" translatable="false">
+        [{
+            \"relation\": [\"delegate_permission/common.handle_all_urls\"],
+            \"target\": {\"namespace\": \"web\", \"site\": \"https://gembirdt-bit.github.io\"}
+        }]
+    </string>
+</resources>
