@@ -63,6 +63,12 @@
 
         <activity android:name="com.google.androidbrowserhelper.trusted.FocusActivity" />
 
+        <!-- Android 13+: Chrome traži dozvolu za obaveštenja preko ove aplikacije.
+             Bez ove aktivnosti dugme „Uključi obaveštenja“ ne radi ništa. -->
+        <activity
+            android:name="com.google.androidbrowserhelper.trusted.NotificationPermissionRequestActivity"
+            android:exported="false" />
+
         <activity
             android:name="com.google.androidbrowserhelper.trusted.WebViewFallbackActivity"
             android:configChanges="orientation|screenSize"
