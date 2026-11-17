@@ -14,6 +14,7 @@ Podaci salona se čuvaju na uređaju i, po želji, na **tvom Google Drive-u** �
 - **Klijenti** — telefon, e-pošta, rođendan, **alergije / upozorenja**, beleške (boja, formula…), svi termini i paketi, najčešće usluge, dolaznost, ukupno plaćeno i dug; čestitka za rođendan
 - **Usluge** — cenovnik po kategorijama, trajanje, naplata **po usluzi ili po radnom satu**; gotovi spiskovi za frizere, kozmetiku, masažu i nokte
 - **Paketi** — broj termina i rok važenja, aplikacija sama broji iskorišćene termine, upozorenje kad ostane 1 termin ili paket ističe, plaćen / nije plaćen
+- **Račun** (uključuje se u Podešavanjima) — štampa / PDF računa za završen termin ili prodat paket, sa PIB-om, tekućim računom i napomenom; račun nije fiskalni
 - **Zaposleni** — boja u kalendaru, broj termina i naplaćeno po zaposlenom
 - **Izveštaji** — naplaćeno (termini i paketi), nenaplaćeno, po zaposlenima i uslugama, najprometniji sati, dolaznost, novi klijenti; mesec, 3 i 6 meseci, godina; štampa; CSV za Excel
 - **Google Drive** — isti podaci na svim uređajima (aplikacija vidi samo svoj fajl na tvom Drive-u)
@@ -53,6 +54,10 @@ Potreban je Google Chrome (na većini telefona je već instaliran).
 3. Pokreni **Atmos Studio** sa ikonice i prijavi se. U običnom pregledaču aplikacija se ne otvara, samo sa ikonice.
 
 ## Verzije
+
+### 1.4.0
+- Štampa računa (uključuje se u Podešavanjima → Štampa računa): dugme „🧾 Račun“ na završenim terminima i paketima, broj računa R-godina-redni broj, PIB, matični broj, tekući račun i napomena na računu
+- Na dnu svakog računa sitnim slovima stoji da dokument nije fiskalni račun i služi samo u informativne svrhe
 
 ### 1.2.0
 - Pri prvom pokretanju biraš vrstu posla (frizer, kozmetika, masaža, nokti, trepavice i obrve, ostalo) — aplikacija učita uobičajene usluge i uključi potrebne opcije
