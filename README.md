@@ -78,4 +78,4 @@ Potreban je Google Chrome (na većini telefona je već instaliran).
 
 ## Podrška
 
-WhatsApp **060 661 1488** · vasserviserbgd@gmail.com · Gemb-Bit Željko Ilić
+WhatsApp **060 661 1488** · vasserviserbgd@gmail.com · zeljkoracunariborca
